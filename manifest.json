@@ -5,5 +5,13 @@
   "background": {
     "service_worker": "background.js"
   },
-  "action": {}
+  "action": {},
+  "permissions": ["tabs", "activeTab", "scripting"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content-script.js"]
+    }
+  ]
 }

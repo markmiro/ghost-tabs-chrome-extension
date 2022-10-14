@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Popup</title>
+    <link rel="stylesheet" href="tachyons.css" />
+    <meta name="color-scheme" content="light dark" />
+
+    <style>
+      body > * {
+        padding: 1em;
+        border-bottom: 1px solid;
+      }
+      body > *:last-child {
+        border-bottom: none;
+      }
+    </style>
+  </head>
+  <body class="flex flex-column sans-serif" style="width: 300px">
+    <div>
+      <label>
+        <div class="flex justify-between items-center">
+          <b>Minimum icon opacity</b>
+          <input type="number" min="0" max="100" value="20" />
+        </div>
+        <input
+          class="w-100"
+          type="range"
+          min="0"
+          max="100"
+          step="10"
+          value="20"
+        />
+        <div class="flex justify-between">
+          <div class="flex-shrink-0">0%</div>
+          <div class="flex-shrink-0">100%</div>
+        </div>
+      </label>
+      <small class="db mt1 o-60">
+        Icons will fade down to this opacity and will not fade out any further.
+        If you set it to zero, icons will disapear.
+      </small>
+    </div>
+
+    <div>
+      <label>
+        <div class="flex justify-between items-center">
+          <b>Time to fade out completely</b>
+          <input type="number" min="0" max="24" value="1" />
+        </div>
+        <input class="w-100" type="range" min="0" max="24" step="1" value="1" />
+        <div class="flex justify-between">
+          <div class="flex-shrink-0">1 minute</div>
+          <div class="flex-shrink-0">24&nbsp;hours</div>
+        </div>
+      </label>
+      <small class="db mt1 o-60">
+        The faster the speed, the quicker they get to their min fade.
+      </small>
+    </div>
+
+    <label class="flex items-center" style="gap: 0.5ch">
+      <input type="checkbox" /> Fade opacity
+    </label>
+
+    <label class="flex items-center" style="gap: 0.5ch">
+      <input type="checkbox" /> Fade saturation
+    </label>
+
+    <label class="flex items-center" style="gap: 0.5ch">
+      <input type="checkbox" /> Fade to white
+    </label>
+
+    <label class="flex items-center" style="gap: 0.5ch">
+      <input type="checkbox" /> Fade to red
+    </label>
+
+    <label class="flex items-center" style="gap: 0.5ch">
+      <input type="checkbox" /> Fade to hue
+    </label>
+
+    <label class="flex items-center" style="gap: 0.5ch">
+      <input type="checkbox" /> Show hours unused
+    </label>
+  </body>
+</html>
