@@ -1,5 +1,6 @@
 console.log("INSTALLED hello world content script!");
 
+// TODO: move this to background script
 function generateFaviconUri(url, options = { alpha: 1 }) {
   return new Promise((resolve, reject) => {
     let img = new Image();
