@@ -52,6 +52,8 @@ Resources:
 - [Security](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#security)
 - [Adding TypeScript](https://developer.chrome.com/docs/extensions/mv3/getstarted/development-basics/#types)
 - [When do Chrome extensions cause CSP reports?](https://www.debugbear.com/blog/chrome-extension-csp-error-noise#:~:text=A%20Content%20Security%20Policy%20(CSP,or%20block%20inline%20script%20tags.)
+- [The img-src Directive](https://content-security-policy.com/img-src/)
+- [Content security policy (web.dev)](https://web.dev/csp)
 
 Considerations:
 
@@ -61,12 +63,23 @@ Considerations:
   - https://chrome.google.com/webstore/detail/tab-suspender/fiabciakcmgepblmdkmemdbbkilneeeh
 - Chrome has an upcoming favicon API, but it seems buggy and not fully featured?
 
+Implementation notes:
+
+- Content security policy on many websites means I can't change the icon, because they have a header in the HTML file returned that is like: `Content-Security-Policy: img-src 'self'`.
+- In manifest.json
+  - `"action": {},` is blank because otherwise `action.onClicked` doesn't work.
+  - `"permissions": ["activeTab"],` allows sending messages from background tab to content script.
+- `chrome.action.onClicked.addListener` doesn't work if there is a default popup.
+-
+
 Similar extensions:
 
 - [Tab Hibernate](https://chrome.google.com/webstore/detail/tab-hibernate/ammlihljcndoijbkoobiobhjgoopiidn?hl=en-US)
 - [The Great Suspender Original](https://chrome.google.com/webstore/detail/the-great-suspender-origi/ahmkjjgdligadogjedmnogbpbcpofeeo?hl=en-US)
 - [Tiny Suspender](https://chrome.google.com/webstore/detail/tiny-suspender/bbomjaikkcabgmfaomdichgcodnaeecf?hl=en-US)
 - [Auto Tab Discard](https://chrome.google.com/webstore/detail/auto-tab-discard/jhnleheckmknfcgijgkadoemagpecfol?hl=en-US)
+- [Disable Content-Security-Policy
+  ](https://chrome.google.com/webstore/detail/disable-content-security/ieelmcmcagommplceebfedjlakkhpden)
 
 Keywords:
 
