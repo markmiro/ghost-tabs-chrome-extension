@@ -41,16 +41,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       setFavicon(dataUri);
     });
   }
-  if (request.greeting) {
-    alert("GREETING: " + request.greeting);
-
-    // generateFaviconUri(params.favIconUrl).then((favIconDataUri) => {
-    //   setFavicon(favIconDataUri);
-    //   // document.getElementById("faviconLink").href = document.getElementById(
-    //   //   "faviconImg"
-    //   // ).src = faviconData;
-    // });
-  }
 });
 
 // window.addEventListener("load", (event) => {
@@ -63,10 +53,3 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 //     setFavicon(dataUri);
 //   });
 // });
-
-// chrome.runtime.sendMessage(
-//   extensionId?: string,
-//   message: any,
-//   options?: object,
-//   callback?: function,
-// )
