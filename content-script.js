@@ -42,14 +42,3 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
   }
 });
-
-// window.addEventListener("load", (event) => {
-//   console.log("page is fully loaded");
-//   let link = document.querySelector("link[rel~='icon']");
-//   console.log(link);
-//   const href = `chrome://favicon/${document.location.origin}`;
-//   generateFaviconUri(href, { alpha: 0.5 }).then((dataUri) => {
-//     console.log(dataUri);
-//     setFavicon(dataUri);
-//   });
-// });
