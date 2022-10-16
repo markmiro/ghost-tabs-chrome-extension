@@ -63,3 +63,27 @@ chrome.action.onClicked.addListener((tab) => {
     chrome.tabs.sendMessage(tab.id, { favicon: dataUrl });
   });
 });
+
+// https://github.com/PhilGrayson/chrome-csp-disable/blob/79371297b6a1f88d1142450dfbd5e85f7e7d9307/background.js
+// https://developer.chrome.com/docs/extensions/mv3/mv3-migration-checklist/#api-blocking
+// If you enable this function, add "webRequest" to manifest.json permissions.
+// Even then, it doesn't seemt to work
+// chrome.webRequest.onHeadersReceived.addListener(
+//   (details) => {
+//     // TODO: search for `img-src 'self'` and remove it, instead of removing all
+//     for (let i = 0; i < details.responseHeaders.length; i++) {
+//       if (
+//         details.responseHeaders[i].name.toLowerCase() ===
+//         "content-security-policy"
+//       ) {
+//         details.responseHeaders[i].value = "";
+//       }
+//     }
+
+//     return {
+//       responseHeaders: details.responseHeaders,
+//     };
+//   },
+//   { urls: ["*://*/*"], types: ["main_frame"] },
+//   ["blocking", "responseHeaders"]
+// );
