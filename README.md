@@ -1,5 +1,6 @@
 TODO:
 
+- Replace default.ico with the earth icon that Chrome uses
 - Inject content script into each pagee
   - It runs a countdown timer every time page becomes inactive
   - It updates the favicon using the favicon from the background.js web worker
@@ -54,6 +55,9 @@ Resources:
 - [When do Chrome extensions cause CSP reports?](https://www.debugbear.com/blog/chrome-extension-csp-error-noise#:~:text=A%20Content%20Security%20Policy%20(CSP,or%20block%20inline%20script%20tags.)
 - [The img-src Directive](https://content-security-policy.com/img-src/)
 - [Content security policy (web.dev)](https://web.dev/csp)
+- [
+  Disable-Content-Security-Policy
+  extension source](https://github.com/WithoutHair/Disable-Content-Security-Policy)
 
 Considerations:
 
