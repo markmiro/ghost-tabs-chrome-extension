@@ -24,7 +24,9 @@ function generateFaviconUri(url, options = { alpha: 1 }) {
 
 // https://stackoverflow.com/a/260876
 function setFavicon(href) {
-  let link = document.querySelector("link[rel~='icon']");
+  // Get the last link instead of the first because some websites like github.com have multiple, and we want to change the last one.
+  let links = document.querySelectorAll("link[rel~='icon']");
+  const link = links[links.length - 1];
   if (!link) {
     link = document.createElement("link");
     link.rel = "icon";
