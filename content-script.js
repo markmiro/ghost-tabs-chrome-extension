@@ -1,4 +1,4 @@
-console.log("INSTALLED hello world content script!");
+console.log("INSTALLED ghost tabs content script!");
 
 // https://stackoverflow.com/a/260876
 function setFavicon(href) {
