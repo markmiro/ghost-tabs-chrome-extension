@@ -17,32 +17,6 @@ chrome.runtime.onInstalled.addListener(async () => {
   console.log(`Created tab ${tab.id}`);
 });
 
-chrome.tabs.onActivated.addListener(({ tabId, windowId }) => {
-  console.log("tab id: " + tabId);
-  chrome.tabs.get(tabId, async (tab) => {
-    // https://trezy.com/blog/loading-images-with-web-workers
-    const response = await fetch(tab.favIconUrl, { mode: "no-cors" });
-    // Once the file has been fetched, we'll convert it to a `Blob`
-    const fileBlob = await response.blob();
-    console.log(tab.favIconUrl, fileBlob);
-
-    // const imageBitmap = createImageBitmap(fileBlob);
-    // const canvas = new OffscreenCanvas(16, 16);
-    // const context = canvas.getContext("2d");
-    // context.globalAlpha = 0.5;
-    // context.drawImage(imageBitmap);
-    // context.filter = "grayscale(100%)";
-
-    // Send icon to content script
-    // chrome.tabs.sendMessage(tab.id, { greeting: "hello!" });
-
-    // chrome.scripting.executeScript({
-    //   target: { tabId: tabId },
-    //   func: () => {},
-    // });
-  });
-});
-
 // https://github.com/markmiro/hashdrop/blob/03c5a087eeca49c41e0bf9583f9634451e712c10/frontend/src/util/dropUtils.ts
 function blobToDataUrl(blob) {
   return new Promise((resolve, reject) => {
@@ -53,13 +27,33 @@ function blobToDataUrl(blob) {
   });
 }
 
-async function urlToDataUrl(url) {
+async function urlToBlob(url) {
   // https://trezy.com/blog/loading-images-with-web-workers
   const response = await fetch(url, { mode: "no-cors" });
   // Once the file has been fetched, we'll convert it to a `Blob`
-  const fileBlob = await response.blob();
-  const dataUrl = await blobToDataUrl(fileBlob);
-  return dataUrl;
+  return await response.blob();
+}
+
+async function fadeIcon(url, amount = 0.5) {
+  let favIconUrl = url;
+  if (!favIconUrl) {
+    favIconUrl = chrome.runtime.getURL("img/default-icon.png");
+  }
+
+  const fileBlob = await urlToBlob(favIconUrl);
+  const imageBitmap = await createImageBitmap(fileBlob);
+  const canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
+  const context = canvas.getContext("2d");
+  context.globalAlpha = amount;
+  // context.filter = "grayscale(100%)";
+  context.drawImage(imageBitmap, 0, 0);
+
+  // context.fillStyle = "red";
+  // context.fillRect(0, 0, 5, 5);
+
+  const returnBlob = await canvas.convertToBlob();
+  // https://stackoverflow.com/a/30881444
+  return await blobToDataUrl(returnBlob);
 }
 
 chrome.action.onClicked.addListener(async () => {
@@ -67,19 +61,14 @@ chrome.action.onClicked.addListener(async () => {
   console.log("clicked");
   const tabs = await chrome.tabs.query({ currentWindow: true });
   console.log(tabs);
-  tabs.forEach((tab) => {
-    let favIconUrl = tab.favIconUrl;
-    if (!favIconUrl) {
-      favIconUrl = chrome.runtime.getURL("img/default-icon.png");
-    }
-    urlToDataUrl(favIconUrl).then((dataUrl) => {
-      // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
-      // chrome.tabs.sendMessage(tab.id, { greeting: "hello how are you!" });
-      chrome.tabs.sendMessage(tab.id, {
-        action: "UPDATE_FAVICON",
-        dataUrl,
-        // favIconUrl: tab.favIconUrl,
-      });
+  tabs.forEach(async (tab) => {
+    // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
+    // chrome.tabs.sendMessage(tab.id, { greeting: "hello how are you!" });
+    const dataUrl = await fadeIcon(tab.favIconUrl);
+    chrome.tabs.sendMessage(tab.id, {
+      action: "UPDATE_FAVICON",
+      dataUrl,
+      // favIconUrl: tab.favIconUrl,
     });
   });
 });
