@@ -1,76 +1,7 @@
-// https://developer.chrome.com/docs/extensions/reference/action/#icon
-chrome.runtime.onInstalled.addListener(async () => {
-  const canvas = new OffscreenCanvas(16, 16);
-  const context = canvas.getContext("2d");
-  context.clearRect(0, 0, 16, 16);
-  context.fillStyle = "#00FF00"; // Green
-  context.fillRect(0, 0, 16, 16);
-  const imageData = context.getImageData(0, 0, 16, 16);
-  chrome.action.setIcon({ imageData: imageData }, () => {
-    /* ... */
-  });
-});
-
 chrome.runtime.onInstalled.addListener(async () => {
   let url = chrome.runtime.getURL("debug.html");
   let tab = await chrome.tabs.create({ url });
   console.log(`Created tab ${tab.id}`);
-});
-
-// https://github.com/markmiro/hashdrop/blob/03c5a087eeca49c41e0bf9583f9634451e712c10/frontend/src/util/dropUtils.ts
-function blobToDataUrl(blob) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-}
-
-async function urlToBlob(url) {
-  // https://trezy.com/blog/loading-images-with-web-workers
-  const response = await fetch(url, { mode: "no-cors" });
-  // Once the file has been fetched, we'll convert it to a `Blob`
-  return await response.blob();
-}
-
-async function fadeIcon(url, amount = 0.5) {
-  let favIconUrl = url;
-  if (!favIconUrl) {
-    favIconUrl = chrome.runtime.getURL("img/default-icon.png");
-  }
-
-  const fileBlob = await urlToBlob(favIconUrl);
-  const imageBitmap = await createImageBitmap(fileBlob);
-  const canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
-  const context = canvas.getContext("2d");
-  context.globalAlpha = amount;
-  // context.filter = "grayscale(100%)";
-  context.drawImage(imageBitmap, 0, 0);
-
-  // context.fillStyle = "red";
-  // context.fillRect(0, 0, 5, 5);
-
-  const returnBlob = await canvas.convertToBlob();
-  // https://stackoverflow.com/a/30881444
-  return await blobToDataUrl(returnBlob);
-}
-
-chrome.action.onClicked.addListener(async () => {
-  // debugger;
-  console.log("clicked");
-  const tabs = await chrome.tabs.query({ currentWindow: true });
-  console.log(tabs);
-  tabs.forEach(async (tab) => {
-    // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
-    // chrome.tabs.sendMessage(tab.id, { greeting: "hello how are you!" });
-    const dataUrl = await fadeIcon(tab.favIconUrl);
-    chrome.tabs.sendMessage(tab.id, {
-      action: "UPDATE_FAVICON",
-      dataUrl,
-      // favIconUrl: tab.favIconUrl,
-    });
-  });
 });
 
 // https://github.com/PhilGrayson/chrome-csp-disable/blob/79371297b6a1f88d1142450dfbd5e85f7e7d9307/background.js

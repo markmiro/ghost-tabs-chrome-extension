@@ -3,12 +3,18 @@
   "version": "1.0",
   "manifest_version": 3,
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
-  "action": {},
   "icons": {
     "32": "img/ghost-extension-icon-32.png",
     "128": "img/ghost-extension-icon-128.png"
+  },
+  "action": {
+    "default_icon": {
+      "32": "img/ghost-extension-icon-32.png"
+    },
+    "default_popup": "popup.html"
   },
   "permissions": [
     "tabs",
