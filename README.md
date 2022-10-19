@@ -1,13 +1,6 @@
 TODO:
 
-- If multiple favicon <link /> items in head, then find the one that the browser is going to use. This will also depend on the `devicePixelRatio`.
-- Replace default.ico with the earth icon that Chrome uses
-- Remove all rules (for debugging)
-- Button to reload all tabs (to allow it to start being used). Or maybe iterate over each one
-- Inject content script into each pagee
-  - It runs a countdown timer every time page becomes inactive
-  - It updates the favicon using the favicon from the background.js web worker
-- Send the favicon to the content script
+- "use strict";
 - Create a little badge that appears orange and turns red over time?
 - Store image in a way that's easy to copy modify it, and then update the favicon
 
