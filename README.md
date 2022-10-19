@@ -1,6 +1,9 @@
 TODO:
 
+- If multiple favicon <link /> items in head, then find the one that the browser is going to use. This will also depend on the `devicePixelRatio`.
 - Replace default.ico with the earth icon that Chrome uses
+- Remove all rules (for debugging)
+- Button to reload all tabs (to allow it to start being used). Or maybe iterate over each one
 - Inject content script into each pagee
   - It runs a countdown timer every time page becomes inactive
   - It updates the favicon using the favicon from the background.js web worker
@@ -66,6 +69,7 @@ Considerations:
 - TabSuspender is the big one, but made by some guy in Russia? Also source isn't on github.
   - https://chrome.google.com/webstore/detail/tab-suspender/fiabciakcmgepblmdkmemdbbkilneeeh
 - Chrome has an upcoming favicon API, but it seems buggy and not fully featured?
+- I can have multiple `content-security-policy` HTTP headers, but subsequent ones can only become [more restrictive](https://chrisguitarguy.com/2019/07/05/working-with-multiple-content-security-policy-headers/)
 
 Implementation notes:
 
@@ -74,7 +78,7 @@ Implementation notes:
   - `"action": {},` is blank because otherwise `action.onClicked` doesn't work.
   - `"permissions": ["activeTab"],` allows sending messages from background tab to content script.
 - `chrome.action.onClicked.addListener` doesn't work if there is a default popup.
--
+- Rules added to a page via `updateSessionRules` aren't easily removed. You may need to restart the browser, or remove the extension.
 
 Similar extensions:
 
