@@ -12,7 +12,7 @@ chrome.runtime.onInstalled.addListener(async () => {
 });
 
 chrome.runtime.onInstalled.addListener(async () => {
-  let url = chrome.runtime.getURL("hello.html");
+  let url = chrome.runtime.getURL("debug.html");
   let tab = await chrome.tabs.create({ url });
   console.log(`Created tab ${tab.id}`);
 });
