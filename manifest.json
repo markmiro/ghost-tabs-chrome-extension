@@ -21,7 +21,8 @@
     "activeTab",
     "scripting",
     "webRequest",
-    "declarativeNetRequest"
+    "declarativeNetRequest",
+    "idle"
   ],
   "host_permissions": ["http://*/*", "https://*/*"],
   "content_scripts": [
