@@ -6,21 +6,18 @@
     "service_worker": "background.js"
   },
   "action": {},
-  "permissions": ["tabs", "activeTab", "scripting", "declarativeNetRequest"],
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "scripting",
+    "webRequest",
+    "declarativeNetRequest"
+  ],
   "host_permissions": ["http://*/*", "https://*/*"],
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
       "js": ["content-script.js"]
     }
-  ],
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "ruleset_1",
-        "enabled": true,
-        "path": "rules.json"
-      }
-    ]
-  }
+  ]
 }
