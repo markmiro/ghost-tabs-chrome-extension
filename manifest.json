@@ -6,6 +6,10 @@
     "service_worker": "background.js"
   },
   "action": {},
+  "icons": {
+    "32": "img/ghost-extension-icon-32.png",
+    "128": "img/ghost-extension-icon-128.png"
+  },
   "permissions": [
     "tabs",
     "activeTab",
