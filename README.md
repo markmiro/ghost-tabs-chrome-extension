@@ -1,5 +1,7 @@
 TODO:
 
+- on idle, go through all the tabs and modify the fade amount of the favicon
+- overnight, expire all tabs (show red?)
 - "use strict";
 - Create a little badge that appears orange and turns red over time?
 - Store image in a way that's easy to copy modify it, and then update the favicon
