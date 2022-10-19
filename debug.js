@@ -3,7 +3,7 @@
   console.log(tabs);
 })();
 
-document.getElementById("reset-all-rules").onclick = async () => {
+document.getElementById("js-reset-all-rules").onclick = async () => {
   const rules = await chrome.declarativeNetRequest.getSessionRules();
   if (rules.length === 0) {
     alert("No rules to remove.");
@@ -16,14 +16,14 @@ document.getElementById("reset-all-rules").onclick = async () => {
   alert(`Removed ids: ${ruleIds.join(", ")}.`);
 };
 
-document.getElementById("reload-all").onclick = async () => {
+document.getElementById("js-reload-all").onclick = async () => {
   const tabs = await chrome.tabs.query({ currentWindow: true });
   tabs.forEach((tab) => {
     chrome.tabs.reload(tab.id, { bypassCache: true });
   });
 };
 
-document.getElementById("open-popular-sites").onclick = async () => {
+document.getElementById("js-open-popular-sites").onclick = async () => {
   chrome.windows.create({
     focused: true,
     // https://en.wikipedia.org/wiki/List_of_most_visited_websites
