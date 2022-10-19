@@ -23,5 +23,6 @@
       "matches": ["http://*/*", "https://*/*"],
       "js": ["content-script.js"]
     }
-  ]
+  ],
+  "options_page": "debug.html"
 }
