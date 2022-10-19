@@ -20,6 +20,22 @@
         text-align: start;
         padding: 0.5em;
       }
+      .tbd {
+        opacity: 0.5;
+        pointer-events: none;
+        position: relative;
+      }
+      .tbd::after {
+        position: absolute;
+        font-size: 2em;
+        content: "🚧";
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: grid;
+        place-items: center;
+      }
     </style>
   </head>
   <body class="flex flex-column sans-serif" style="width: 300px">
@@ -31,7 +47,7 @@
       <button id="js-reload-all">🔄 Reload all tabs</button>
       <button id="js-fade-all">👻 Fade all</button>
     </div>
-    <div>
+    <div class="tbd">
       <label>
         <div class="flex justify-between items-center">
           <b>Minimum icon opacity</b>
@@ -56,7 +72,7 @@
       </small>
     </div>
 
-    <div>
+    <div class="tbd">
       <label>
         <div class="flex justify-between items-center">
           <b>Time to fade out completely</b>
@@ -73,27 +89,27 @@
       </small>
     </div>
 
-    <label class="flex items-center" style="gap: 0.5ch">
+    <label class="flex items-center tbd" style="gap: 0.5ch">
       <input type="checkbox" /> Fade opacity
     </label>
 
-    <label class="flex items-center" style="gap: 0.5ch">
+    <label class="flex items-center tbd" style="gap: 0.5ch">
       <input type="checkbox" /> Fade saturation
     </label>
 
-    <label class="flex items-center" style="gap: 0.5ch">
+    <label class="flex items-center tbd" style="gap: 0.5ch">
       <input type="checkbox" /> Fade to white
     </label>
 
-    <label class="flex items-center" style="gap: 0.5ch">
+    <label class="flex items-center tbd" style="gap: 0.5ch">
       <input type="checkbox" /> Fade to red
     </label>
 
-    <label class="flex items-center" style="gap: 0.5ch">
+    <label class="flex items-center tbd" style="gap: 0.5ch">
       <input type="checkbox" /> Fade to hue
     </label>
 
-    <label class="flex items-center" style="gap: 0.5ch">
+    <label class="flex items-center tbd" style="gap: 0.5ch">
       <input type="checkbox" /> Show hours unused
     </label>
     <!--  -->
