@@ -30,5 +30,5 @@
       "js": ["content-script.js"]
     }
   ],
-  "options_page": "debug.html"
+  "options_page": "options.html"
 }

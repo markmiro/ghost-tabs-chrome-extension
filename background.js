@@ -1,9 +1,3 @@
-chrome.runtime.onInstalled.addListener(async () => {
-  let url = chrome.runtime.getURL("debug.html");
-  let tab = await chrome.tabs.create({ url });
-  console.log(`Created tab ${tab.id}`);
-});
-
 // https://github.com/PhilGrayson/chrome-csp-disable/blob/79371297b6a1f88d1142450dfbd5e85f7e7d9307/background.js
 // https://developer.chrome.com/docs/extensions/mv3/mv3-migration-checklist/#api-blocking
 // If you enable this function, add "webRequest" to manifest.json permissions.
