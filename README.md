@@ -1,5 +1,6 @@
 TODO:
 
+- Keep track of original favicons
 - on idle, go through all the tabs and modify the fade amount of the favicon
 - overnight, expire all tabs (show red?)
 - "use strict";
