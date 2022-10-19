@@ -68,7 +68,11 @@ chrome.action.onClicked.addListener(async () => {
   const tabs = await chrome.tabs.query({ currentWindow: true });
   console.log(tabs);
   tabs.forEach((tab) => {
-    urlToDataUrl(tab.favIconUrl).then((dataUrl) => {
+    let favIconUrl = tab.favIconUrl;
+    if (!favIconUrl) {
+      favIconUrl = chrome.runtime.getURL("img/default-icon.png");
+    }
+    urlToDataUrl(favIconUrl).then((dataUrl) => {
       // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
       // chrome.tabs.sendMessage(tab.id, { greeting: "hello how are you!" });
       chrome.tabs.sendMessage(tab.id, {
