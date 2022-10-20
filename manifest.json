@@ -1,5 +1,8 @@
 {
   "name": "Ghost Tabs",
+  "description": "Fades out tabs that are no longer fresh, so it's easier to tell which tabs are old and probably need to be closed.",
+  "author": "Mark Miro",
+  "homepage_url": "https://github.com/markmiro/ghost-tabs-chrome-extension",
   "version": "0.1",
   "manifest_version": 3,
   "background": {
