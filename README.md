@@ -1,5 +1,13 @@
 TODO:
 
+- [ ] Put all this in the content script
+  - Fading and unfading
+  - Detecting if the page is active
+  - Storing history of whether the page is active
+  - Potentially iterate through all icon links to find the favicon that actually gets used
+    - But what if the svg is being used? How do I fade it?
+    - May need to deal with data url favicons getting less priority and not updating
+- [ ] Use spaced repetition curve for fading
 - Add buttons:
   - [x] Move inactive tabs left
   - [ ] Move inactive tabs right
