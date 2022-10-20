@@ -1,11 +1,15 @@
 TODO:
 
-- Keep track of original favicons
-- on idle, go through all the tabs and modify the fade amount of the favicon
-- overnight, expire all tabs (show red?)
-- "use strict";
-- Create a little badge that appears orange and turns red over time?
-- Store image in a way that's easy to copy modify it, and then update the favicon
+- Add buttons:
+  - [x] Move inactive tabs left
+  - [ ] Move inactive tabs right
+- [ ] Measure time for fading out multiple tab icons (to determine if I need the idle permission).
+- [ ] Keep track of original favicons
+- [ ] on idle, go through all the tabs and modify the fade amount of the favicon
+- [ ] overnight, expire all tabs (show red?)
+- [ ] "use strict";
+- [ ] Create a little badge that appears orange and turns red over time?
+- [ ] Store image in a way that's easy to copy modify it, and then update the favicon
 
 How freshness is calculated:
 
@@ -51,12 +55,21 @@ Resources:
 - [match patterns](https://developer.chrome.com/docs/extensions/mv3/match_patterns/)
 - [Security](https://developer.chrome.com/docs/extensions/mv3/content_scripts/#security)
 - [Adding TypeScript](https://developer.chrome.com/docs/extensions/mv3/getstarted/development-basics/#types)
-- [When do Chrome extensions cause CSP reports?](https://www.debugbear.com/blog/chrome-extension-csp-error-noise#:~:text=A%20Content%20Security%20Policy%20(CSP,or%20block%20inline%20script%20tags.)
+- [When do Chrome extensions cause CSP reports](https://www.debugbear.com/blog/chrome-extension-csp-error-noise)
 - [The img-src Directive](https://content-security-policy.com/img-src/)
 - [Content security policy (web.dev)](https://web.dev/csp)
-- [
-  Disable-Content-Security-Policy
-  extension source](https://github.com/WithoutHair/Disable-Content-Security-Policy)
+- [Disable-Content-Security-Policy extension source](https://github.com/WithoutHair/Disable-Content-Security-Policy)
+- [Publishing as a non-trader on the Chrome Web Store](https://stackoverflow.com/questions/72488292/chrome-webstore-developer-dashboard-am-i-a-trader-or-non-trader)
+- [Publishing to the Chrome Web Store](https://developer.chrome.com/docs/webstore/publish/#step5)
+- [Determine if in development, or in production](https://stackoverflow.com/questions/36339862/how-to-know-chrome-extension-is-in-development-or-production-environment)
+
+Security Resources (content security policy — CSP, cross origin request — CORS):
+
+- [Manifest - Sandbox](https://developer.chrome.com/docs/extensions/mv3/manifest/sandbox/)
+- [Overview of Manifest V3: Remotely hosted code](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-overview/#remotely-hosted-code)
+- [Migrating to V3 — CSP](https://developer.chrome.com/docs/extensions/mv3/mv3-migration/#content-security-policy)
+- [Content script fetchs](https://www.chromium.org/Home/chromium-security/extension-content-script-fetches/)
+- [eval (but also innerHTML)](https://developer.chrome.com/docs/extensions/mv3/sandboxingEval/)
 
 Considerations:
 
@@ -82,8 +95,7 @@ Similar extensions:
 - [The Great Suspender Original](https://chrome.google.com/webstore/detail/the-great-suspender-origi/ahmkjjgdligadogjedmnogbpbcpofeeo?hl=en-US)
 - [Tiny Suspender](https://chrome.google.com/webstore/detail/tiny-suspender/bbomjaikkcabgmfaomdichgcodnaeecf?hl=en-US)
 - [Auto Tab Discard](https://chrome.google.com/webstore/detail/auto-tab-discard/jhnleheckmknfcgijgkadoemagpecfol?hl=en-US)
-- [Disable Content-Security-Policy
-  ](https://chrome.google.com/webstore/detail/disable-content-security/ieelmcmcagommplceebfedjlakkhpden)
+- [Disable Content-Security-Policy](https://chrome.google.com/webstore/detail/disable-content-security/ieelmcmcagommplceebfedjlakkhpden)
 
 Keywords:
 
