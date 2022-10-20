@@ -70,6 +70,7 @@ Resources:
 - [Publishing as a non-trader on the Chrome Web Store](https://stackoverflow.com/questions/72488292/chrome-webstore-developer-dashboard-am-i-a-trader-or-non-trader)
 - [Publishing to the Chrome Web Store](https://developer.chrome.com/docs/webstore/publish/#step5)
 - [Determine if in development, or in production](https://stackoverflow.com/questions/36339862/how-to-know-chrome-extension-is-in-development-or-production-environment)
+- [Why not `chrome://favicon/...` — stackoverflow.com](https://stackoverflow.com/questions/10665321/reliably-getting-favicons-in-chrome-extensions-chrome-favicon)
 
 Security Resources (content security policy — CSP, cross origin request — CORS):
 
