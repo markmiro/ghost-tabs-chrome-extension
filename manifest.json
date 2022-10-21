@@ -19,7 +19,8 @@
     },
     "default_popup": "popup.html"
   },
-  "permissions": ["tabs"],
+  "permissions": ["tabs", "webRequest", "declarativeNetRequest"],
+  "host_permissions": ["http://*/*", "https://*/*"],
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
