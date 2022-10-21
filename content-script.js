@@ -32,15 +32,32 @@ function setFavicon(href) {
 
 (async () => {
   const { fadeIcon } = await import(chrome.runtime.getURL("fade-icon.js"));
+  const { sleep } = await import(chrome.runtime.getURL("util.js"));
+  let favIconUrl;
 
-  const { tabId, favIconUrl } = await chrome.runtime.sendMessage({ action: "GET_BASIC_DATA" });
-  console.log('response for GET_BASIC_DATA', { tabId, favIconUrl });
+  // Loop until we get a url that doesn't start with `data:`
+  let foundCorrectIcon = false;
+  let tries = 0;
+  while (!foundCorrectIcon && tries < 5) {
+    console.log('try to find the correct icon...');
+    const data = await chrome.runtime.sendMessage({ action: "GET_BASIC_DATA" });
+    console.log('basic data');
+    if (!(data.favIconUrl && data.favIconUrl.startsWith('data:'))) {
+      favIconUrl = data.favIconUrl;
+      break;
+    }
+    console.log('response for GET_BASIC_DATA', data);
+    await sleep(200);
+  }
 
   chrome.runtime.onMessage.addListener(async (request) => {
-    console.log("clicked! sent to content script");
+    console.log("clicked! sent to content script", favIconUrl);
     if (request.action === "FADE") {
-      setFavicon(await fadeIcon(favIconUrl, 0.5));
+      console.log('ACTION: FADE', favIconUrl);
+      const fadedIconUrl = await fadeIcon(favIconUrl, 0.5);
+      setFavicon(fadedIconUrl);
     } else if (request.action === 'UNFADE') {
+      console.log('ACTION: UNFADE', favIconUrl);
       setFavicon(favIconUrl);
     }
   });

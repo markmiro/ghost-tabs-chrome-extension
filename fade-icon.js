@@ -24,7 +24,9 @@ export async function urlToBlob(url) {
   // https://trezy.com/blog/loading-images-with-web-workers
   const response = await fetch(url, { mode: "no-cors" });
   // Once the file has been fetched, we'll convert it to a `Blob`
-  return await response.blob();
+  const blob = await response.blob();
+  if (blob.size === 0) throw new Error('Empty blob.');
+  return blob;
 }
 
 export async function fadeIcon(url, amount = 0.5) {

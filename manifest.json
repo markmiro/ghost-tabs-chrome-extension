@@ -31,6 +31,7 @@
     {
       "resources": [
         "fade-icon.js",
+        "util.js",
         "img/generated/earth-black.png",
         "img/generated/earth-white.png"
       ],

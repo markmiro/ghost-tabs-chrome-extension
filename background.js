@@ -9,3 +9,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
   }
 });
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.favIconUrl) {
+    if (tab.favIconUrl.startsWith('data:')) {
+      console.log(tabId, 'data:...');
+    } else {
+      console.log(tabId, tab.favIconUrl);
+    }
+  }
+});
+
+// Note: URL may not be available
+// https://developer.chrome.com/docs/extensions/reference/tabs/#event-onCreated
+chrome.tabs.onCreated.addListener((tab) => {
+  console.log('TAB CREATED', tab.id, { favIconUrl: tab.favIconUrl });
+})
