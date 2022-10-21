@@ -102,7 +102,7 @@ document.getElementById("js-open-test-sites").onclick = async () => {
     url: [
       // "https://example.com", // no icon
       // "https://github.com/site-map", // svg icon
-      "https://news.ycombinator.com", // requires fixing content-security-policty headers
+      // "https://news.ycombinator.com", // requires fixing content-security-policty headers
       "http://localhost:3000/none",
       "http://localhost:3000/ico",
       "http://localhost:3000/svg",
