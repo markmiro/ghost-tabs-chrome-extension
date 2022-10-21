@@ -1,13 +1,16 @@
-import { fadeIcon, initIcons, isDarkMode } from './fade-icon.js';
+import { getDefaultIconUrl } from './fade-icon.js';
 
 chrome.tabs.query({ currentWindow: true }, async tabs => {
+  const defaultIconUrl = await getDefaultIconUrl();
   let all = '';
-  const icons = await initIcons();
-  const defaultIconUrl = isDarkMode() ? icons.defaultLightIcon : icons.defaultDarkIcon;
   tabs.forEach(tab => {
-    all += `<img src="${tab.favIconUrl || defaultIconUrl}" width="16px" height="16px" />`;
+    all += `
+      <div>
+        <img src="${tab.favIconUrl || defaultIconUrl}" width="16px" height="16px" />
+        ${tab.favIconUrl}
+      </div>`;
   })
-  document.getElementById('js-tab-data').innerHTML = `<div class="flex" style="gap: .25em">${all}</div>`;
+  document.getElementById('js-tab-data').innerHTML = `<div class="flex flex-column">${all}</div>`;
 });
 
 
@@ -17,14 +20,10 @@ document.getElementById('js-fade-all').addEventListener('click', async () => {
   const tabs = await chrome.tabs.query({ currentWindow: true });
   console.log(tabs);
   tabs.forEach(async (tab) => {
-    // Using `host` rather than hostname to include urls like `localhost:3000` (with ":")
-    const cacheKey = (new URL(tab.url)).host;
-    const dataUrl = await fadeIcon(tab.favIconUrl, 0.5, cacheKey);
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
     chrome.tabs.sendMessage(tab.id, {
-      action: "UPDATE_FAVICON",
-      dataUrl,
-      // favIconUrl: tab.favIconUrl,
+      action: "FADE",
+      forSeconds: 60
     });
   });
 });
@@ -35,13 +34,10 @@ document.getElementById('js-unfade-all').addEventListener('click', async () => {
   const tabs = await chrome.tabs.query({ currentWindow: true });
   console.log(tabs);
   tabs.forEach(async (tab) => {
-    const cacheKey = (new URL(tab.url)).host;
-    const dataUrl = await fadeIcon(tab.favIconUrl, 1, cacheKey);
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
     chrome.tabs.sendMessage(tab.id, {
-      action: "UPDATE_FAVICON",
-      dataUrl,
-      // favIconUrl: tab.favIconUrl,
+      action: "UNFADE",
+      forSeconds: 60
     });
   });
 });
@@ -52,14 +48,10 @@ document.getElementById('js-random-fade').addEventListener('click', async () => 
   const tabs = await chrome.tabs.query({ currentWindow: true });
   console.log(tabs);
   tabs.forEach(async (tab) => {
-    const fadeAmount = Math.random() > 0.5 ? 1 : .5;
-    const cacheKey = (new URL(tab.url)).host;
-    const dataUrl = await fadeIcon(tab.favIconUrl, fadeAmount, cacheKey);
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
     chrome.tabs.sendMessage(tab.id, {
-      action: "UPDATE_FAVICON",
-      dataUrl,
-      // favIconUrl: tab.favIconUrl,
+      action: Math.random() > 0.5 ? "FADE" : "UNFADE",
+      forSeconds: 60
     });
   });
 });

@@ -26,5 +26,15 @@
       "js": ["content-script.js"]
     }
   ],
-  "options_page": "options.html"
+  "options_page": "options.html",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "fade-icon.js",
+        "img/generated/earth-black.png",
+        "img/generated/earth-white.png"
+      ],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ]
 }

@@ -30,9 +30,18 @@ function setFavicon(href) {
   link.href = href;
 }
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log("clicked! sent to content script");
-  if (request.action === "UPDATE_FAVICON") {
-    setFavicon(request.dataUrl);
-  }
-});
+(async () => {
+  const { fadeIcon } = await import(chrome.runtime.getURL("fade-icon.js"));
+
+  const { tabId, favIconUrl } = await chrome.runtime.sendMessage({ action: "GET_BASIC_DATA" });
+  console.log('response for GET_BASIC_DATA', { tabId, favIconUrl });
+
+  chrome.runtime.onMessage.addListener(async (request) => {
+    console.log("clicked! sent to content script");
+    if (request.action === "FADE") {
+      setFavicon(await fadeIcon(favIconUrl, 0.5));
+    } else if (request.action === 'UNFADE') {
+      setFavicon(favIconUrl);
+    }
+  });
+})();
