@@ -101,6 +101,28 @@ Implementation notes:
 - `chrome.action.onClicked.addListener` doesn't work if there is a default popup.
 - Rules added to a page via `updateSessionRules` aren't easily removed. You may need to restart the browser, or remove the extension.
 
+---
+
+Notes on updating favicons:
+
+If you update the favicon of a tab, close the tab, and then re-open it, Chrome will initially use the updated icon,
+which can be observed via `chrome.tabs.onUpdated.addListener`, and the listener is called again with the actual page favicon. Getting the favicon from the second update as the "correct" icon isn't ideal.
+
+Going from a `favIconUrl` to a blob sometimes fails when it's done within a content script. I think this might be a
+CSP or CORS issue, but the actual problem is that the blob returns empty.
+
+A few possible solutions to getting the "original" favicon url consistently:
+
+- If data URL, wait for a non-data URL
+  - PRO: I'll be able to always load the latest favicon when web pages update
+  - CON: If web page sets the favicon using a data URL. This is unlikely, so it might be fine to take this approach.
+  - CON: Requires `tabs` permission
+- Store original favicon url on first load in local storage (via content script)
+  - CON: How do I update the favicon if it gets updated? Actually, I can maybe just use sessions storage
+  - CON: What if the data URL gets loaded? I might be able to keep calling `GET_BASIC_DATA` until I get a non-data URL.
+
+---
+
 Similar extensions:
 
 - [Tab Hibernate](https://chrome.google.com/webstore/detail/tab-hibernate/ammlihljcndoijbkoobiobhjgoopiidn?hl=en-US)
