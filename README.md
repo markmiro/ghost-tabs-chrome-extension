@@ -1,6 +1,8 @@
 TODO:
 
+- Test with svg favicons
 - [ ] Put all this in the content script
+  - Request default
   - Fading and unfading
   - Detecting if the page is active
   - Storing history of whether the page is active
@@ -71,6 +73,7 @@ Resources:
 - [Publishing to the Chrome Web Store](https://developer.chrome.com/docs/webstore/publish/#step5)
 - [Determine if in development, or in production](https://stackoverflow.com/questions/36339862/how-to-know-chrome-extension-is-in-development-or-production-environment)
 - [Why not `chrome://favicon/...` — stackoverflow.com](https://stackoverflow.com/questions/10665321/reliably-getting-favicons-in-chrome-extensions-chrome-favicon)
+- [Process SVG favicons](https://levelup.gitconnected.com/draw-an-svg-to-canvas-and-download-it-as-image-in-javascript-f7f7713cf81f)
 
 Security Resources (content security policy — CSP, cross origin request — CORS):
 
