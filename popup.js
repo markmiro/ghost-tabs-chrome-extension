@@ -86,7 +86,7 @@ const POPULAR_SITES = [
   "https://netflix.com",
   "https://reddit.com",
   // "https://linkedin.com",
-  "https://vk.com",
+  // "https://vk.com",
   "https://weather.com",
   "https://duckduckgo.com",
   "https://microsoft.com",
