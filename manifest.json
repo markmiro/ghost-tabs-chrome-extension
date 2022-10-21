@@ -10,12 +10,12 @@
     "type": "module"
   },
   "icons": {
-    "32": "img/ghost-extension-icon-32.png",
-    "128": "img/ghost-extension-icon-128.png"
+    "32": "img/generated/ghost-extension-icon-32.png",
+    "128": "img/generated/ghost-extension-icon-128.png"
   },
   "action": {
     "default_icon": {
-      "32": "img/ghost-extension-icon-32.png"
+      "32": "img/generated/ghost-extension-icon-32.png"
     },
     "default_popup": "popup.html"
   },
