@@ -1,18 +1,15 @@
-import { fadeIcon } from './fade-icon.js';
+import { fadeIcon, initIcons, isDarkMode } from './fade-icon.js';
 
-async function getCurrentTab() {
-  let queryOptions = { active: true, lastFocusedWindow: true };
-  // `tab` will either be a `tabs.Tab` instance or `undefined`.
-  let [tab] = await chrome.tabs.query(queryOptions);
-  return tab;
-}
-
-chrome.runtime.sendMessage({ action: "GET_ACTIVE" }, responseActive => {
-  getCurrentTab().then(tab => {
-    // TODO: possibility of script injection attack via innerHTML?
-    document.getElementById('js-tab-data').innerHTML = `<i>Current tab url: ${JSON.stringify(tab.url)}</i>`;
-  });
+chrome.tabs.query({ currentWindow: true }, async tabs => {
+  let all = '';
+  const icons = await initIcons();
+  const defaultIconUrl = isDarkMode() ? icons.defaultLightIcon : icons.defaultDarkIcon;
+  tabs.forEach(tab => {
+    all += `<img src="${tab.favIconUrl || defaultIconUrl}" width="16px" height="16px" />`;
+  })
+  document.getElementById('js-tab-data').innerHTML = `<div class="flex" style="gap: .25em">${all}</div>`;
 });
+
 
 document.getElementById('js-fade-all').addEventListener('click', async () => {
   // debugger;

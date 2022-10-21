@@ -13,6 +13,18 @@ function blobToDataUrl(blob) {
 }
 
 async function urlToBlob(url) {
+export async function initIcons() {
+  return {
+    defaultLightIcon: await chrome.runtime.getURL("img/generated/earth-white.png"),
+    defaultDarkIcon: await chrome.runtime.getURL("img/generated/earth-black.png"),
+  }
+}
+
+export function isDarkMode() {
+  // https://stackoverflow.com/a/57795495
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
   // https://trezy.com/blog/loading-images-with-web-workers
   const response = await fetch(url, { mode: "no-cors" });
   // Once the file has been fetched, we'll convert it to a `Blob`
