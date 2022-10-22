@@ -31,30 +31,39 @@ function setFavicon(href) {
 }
 
 (async () => {
-  const { sleep } = await import(chrome.runtime.getURL("util.js"));
+  const { sleep, isSvg } = await import(chrome.runtime.getURL("util.js"));
   const { fixSvg } = await import(chrome.runtime.getURL("util-dom.js"));
-  let favIconUrl;
 
-  // Loop until we get a url that doesn't start with `data:`
-  let foundCorrectIcon = false;
-  let tries = 0;
-  while (!foundCorrectIcon && tries < 5) {
-    console.log('try to find the correct icon...');
-    const data = await chrome.runtime.sendMessage({ action: "GET_BASIC_DATA" });
-    console.log('basic data');
-    if (!(data.favIconUrl && data.favIconUrl.startsWith('data:'))) {
-      favIconUrl = data.favIconUrl;
-      break;
-    }
-    console.log('response for GET_BASIC_DATA', data);
-    await sleep(200);
+  // In theory, data urls can be used for favicons, but in practice, I haven't seen it.
+  // If this starts to be more common, I'll have to resort to a much more complicated solution
+  // that involves tracking data urls that have been used.
+  function isFavIconUntouched(favIconUrl) {
+    return !(favIconUrl && favIconUrl.startsWith('data:'));
   }
 
+  async function getFaviconUrl() {
+    // Loop until we get a url that doesn't start with `data:`
+    for (let tries = 0; tries <= 5; tries++) {
+      console.log('try to find the correct icon...');
+      const urlCandidate = await chrome.runtime.sendMessage({ action: "GET_FAVICONURL" });
+      if (isFavIconUntouched(urlCandidate)) {
+        return urlCandidate;
+      }
+      console.log('response for GET_FAVICONURL', urlCandidate);
+      // Wait because we don't want to try again right away
+      await sleep(400);
+    }
+  }
+
+  // ---
+
+  let favIconUrl = await getFaviconUrl();
+  console.log("clicked! sent to content script", favIconUrl);
+
   chrome.runtime.onMessage.addListener(async (request) => {
-    console.log("clicked! sent to content script", favIconUrl);
     if (request.action === "FADE") {
       console.log('ACTION: FADE', favIconUrl);
-      if (favIconUrl && favIconUrl.toLowerCase().endsWith('.svg')) {
+      if (await isSvg(favIconUrl)) {
         favIconUrl = await fixSvg(favIconUrl);
       }
       const newIconUrl = await chrome.runtime.sendMessage({ action: "FADE_ICON", favIconUrl });

@@ -3,12 +3,8 @@ import { fadeIcon } from './util.js';
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (!request) return;
-  if (request.action === 'GET_BASIC_DATA') {
-    sendResponse({
-      tabId: sender.tab.id,
-      favIconUrl: sender.tab.favIconUrl
-      // tab: sender.tab,
-    });
+  if (request.action === 'GET_FAVICONURL') {
+    sendResponse(sender.tab.favIconUrl);
   } else if (request.action === 'FADE_ICON') {
     console.log('Got `FADE_ICON` into background.js');
     fadeIcon(request.favIconUrl, 0.5).then(newIconUrl => {

@@ -27,6 +27,8 @@ export async function urlToBlob(url) {
 
 export async function isSvg(url) {
   if (!url) return false;
+  if (url && url.toLowerCase().endsWith('.svg')) return true;
+  // NOTE: calling `urlToBlob` from a content script fails.
   let fileBlob = await urlToBlob(url);
   return await fileBlob.type.includes("svg"); // image/svg+xml
 }
