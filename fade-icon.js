@@ -8,7 +8,16 @@ export function blobToDataUrl(blob) {
   });
 }
 
+function isInWorker() {
+  return typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
+}
+
 function isDarkMode() {
+  // TODO:support dark mode if this module is imported in a background service worker
+  console.log('Need to somehow get darkmode support here');
+  if (isInWorker()) {
+    return false;
+  }
   // https://stackoverflow.com/a/57795495
   return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
