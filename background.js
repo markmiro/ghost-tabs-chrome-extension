@@ -16,6 +16,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       console.log('Response sent:', newIconUrl);
       sendResponse(newIconUrl);
     });
+    // https://stackoverflow.com/q/44056271
     return true; // Return true to indicate async response;
   }
 });
