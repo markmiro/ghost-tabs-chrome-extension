@@ -1,5 +1,5 @@
 // import "./background-headers.js";
-import { fadeIcon } from './fade-icon.js';
+import { fadeIcon } from './util.js';
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (!request) return;

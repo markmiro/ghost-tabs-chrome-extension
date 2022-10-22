@@ -29,7 +29,7 @@
   "options_page": "options.html",
   "web_accessible_resources": [
     {
-      "resources": ["util.js"],
+      "resources": ["util.js", "util-dom.js"],
       "matches": ["http://*/*", "https://*/*"]
     }
   ]

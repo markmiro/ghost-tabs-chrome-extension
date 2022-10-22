@@ -6,27 +6,74 @@ export function isInWorker() {
   return typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
 }
 
-// https://levelup.gitconnected.com/draw-an-svg-to-canvas-and-download-it-as-image-in-javascript-f7f7713cf81f
-// Can't fix the SVG in background script because Image element isn't available in web workers.
-export function fixSvg(favIconUrl) {
-  if (isInWorker()) throw new Error("Not available in web workders.");
-  const width = 32;
-  const height = 32;
-  return new Promise((resolve) => {
-    let image = new Image();
-    // Add cross origin because sites like GitHub throw a `Tainted canvases may not be exported` error
-    // https://stackoverflow.com/a/22716873
-    image.crossOrigin = "anonymous"
-    image.onload = () => {
-      let canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
-      let context = canvas.getContext('2d');
-      // draw image in canvas starting left-0 , top - 0  
-      context.drawImage(image, 0, 0, width, height);
-      const dataUrl = canvas.toDataURL();
-      resolve(dataUrl);
-    };
-    image.src = favIconUrl;
-  })
+// https://github.com/markmiro/hashdrop/blob/03c5a087eeca49c41e0bf9583f9634451e712c10/frontend/src/util/dropUtils.ts
+export function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+export async function urlToBlob(url) {
+  // https://trezy.com/blog/loading-images-with-web-workers
+  const response = await fetch(url, { mode: "no-cors" });
+  // Once the file has been fetched, we'll convert it to a `Blob`
+  const blob = await response.blob();
+  if (blob.size === 0) throw new Error('Empty blob.');
+  return blob;
+}
+
+export async function isSvg(url) {
+  if (!url) return false;
+  let fileBlob = await urlToBlob(url);
+  return await fileBlob.type.includes("svg"); // image/svg+xml
+}
+
+function isDarkMode() {
+  // TODO:support dark mode if this module is imported in a background service worker
+  console.log('Need to somehow get darkmode support here');
+  if (isInWorker()) {
+    return false;
+  }
+  // https://stackoverflow.com/a/57795495
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+export async function getDefaultIconUrl() {
+  const defaultLightIcon = await chrome.runtime.getURL("img/generated/earth-white.png");
+  const defaultDarkIcon = await chrome.runtime.getURL("img/generated/earth-black.png");
+  const defaultIconUrl = isDarkMode() ? defaultLightIcon : defaultDarkIcon;
+  return defaultIconUrl;
+}
+
+export async function fadeIcon(url, amount = 0.5) {
+  if (isInWorker() && await isSvg(url)) {
+    // https://bugs.chromium.org/p/chromium/issues/detail?id=606317
+    throw new Error(fileBlob.type + ' is not supported.');
+  }
+
+  let favIconUrl = await getDefaultIconUrl();
+  if (url) favIconUrl = url;
+
+  let fileBlob = await urlToBlob(favIconUrl);
+  const imageBitmap = await createImageBitmap(fileBlob);
+
+  const canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
+  const context = canvas.getContext("2d");
+  context.globalAlpha = amount;
+  context.filter = `grayscale(${(1 - amount) * 100}%)`;
+  context.drawImage(imageBitmap, 0, 0);
+
+  // context.fillStyle = "red";
+  // context.fillRect(0, 0, 5, 5);
+
+  // https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas#instance_methods
+  // Would love to do `canvas.toDataURL()`, but the `OffscreenCanvas` for use in web workers doesn't have that feature.
+  const returnBlob = await canvas.convertToBlob();
+  // https://stackoverflow.com/a/30881444
+  const returnDataUrl = await blobToDataUrl(returnBlob);
+
+  return returnDataUrl;
 }

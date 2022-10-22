@@ -31,7 +31,8 @@ function setFavicon(href) {
 }
 
 (async () => {
-  const { sleep, fixSvg } = await import(chrome.runtime.getURL("util.js"));
+  const { sleep } = await import(chrome.runtime.getURL("util.js"));
+  const { fixSvg } = await import(chrome.runtime.getURL("util-dom.js"));
   let favIconUrl;
 
   // Loop until we get a url that doesn't start with `data:`

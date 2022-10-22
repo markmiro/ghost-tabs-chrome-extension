@@ -1,4 +1,5 @@
-import { getDefaultIconUrl, fadeIcon } from './fade-icon.js';
+import { getDefaultIconUrl } from './util.js';
+import { fadeIcon } from './util-dom.js';
 
 chrome.tabs.query({ currentWindow: true }, async tabs => {
   const defaultIconUrl = await getDefaultIconUrl();
