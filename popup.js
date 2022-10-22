@@ -1,15 +1,24 @@
-import { getDefaultIconUrl } from './fade-icon.js';
+import { getDefaultIconUrl, fadeIcon } from './fade-icon.js';
 
 chrome.tabs.query({ currentWindow: true }, async tabs => {
   const defaultIconUrl = await getDefaultIconUrl();
+  const fadedIconUrls = tabs.map(tab => fadeIcon(tab.favIconUrl, 0.5));
+
+  let i = 0;
   let all = '';
-  tabs.forEach(tab => {
+  for await (const fadedUrl of fadedIconUrls) {
+    console.log('url', tabs[i].favIconUrl, fadedUrl);
+    const favIconUrl = tabs[i].favIconUrl || defaultIconUrl;
     all += `
       <div>
-        <img src="${tab.favIconUrl || defaultIconUrl}" width="16px" height="16px" />
-        ${tab.favIconUrl}
-      </div>`;
-  })
+        <img src="${favIconUrl}" width="16px" height="16px" />
+        <img src="${fadedUrl}" width="16px" height="16px" />
+        ${tabs[i].favIconUrl}
+      </div>
+    `;
+    i++;
+  }
+
   document.getElementById('js-tab-data').innerHTML = `<div class="flex flex-column">${all}</div>`;
 });
 
