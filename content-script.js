@@ -31,7 +31,6 @@ function setFavicon(href) {
 }
 
 (async () => {
-  const { fadeIcon } = await import(chrome.runtime.getURL("fade-icon.js"));
   const { sleep } = await import(chrome.runtime.getURL("util.js"));
   let favIconUrl;
 
@@ -54,8 +53,8 @@ function setFavicon(href) {
     console.log("clicked! sent to content script", favIconUrl);
     if (request.action === "FADE") {
       console.log('ACTION: FADE', favIconUrl);
-      const fadedIconUrl = await fadeIcon(favIconUrl, 0.5);
-      setFavicon(fadedIconUrl);
+      const newIconUrl = await chrome.runtime.sendMessage({ action: "FADE_ICON", favIconUrl });
+      setFavicon(newIconUrl);
     } else if (request.action === 'UNFADE') {
       console.log('ACTION: UNFADE', favIconUrl);
       setFavicon(favIconUrl);
