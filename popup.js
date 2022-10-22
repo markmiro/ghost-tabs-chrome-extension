@@ -29,7 +29,6 @@ document.getElementById('js-fade-current-tab').addEventListener('click', async (
   const tab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
   chrome.tabs.sendMessage(tab.id, {
     action: "FADE",
-    forSeconds: 60
   });
 })
 
@@ -40,10 +39,7 @@ document.getElementById('js-fade-all').addEventListener('click', async () => {
   console.log(tabs);
   tabs.forEach(async (tab) => {
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
-    chrome.tabs.sendMessage(tab.id, {
-      action: "FADE",
-      forSeconds: 60
-    });
+    chrome.tabs.sendMessage(tab.id, { action: "FADE" });
   });
 });
 
@@ -54,10 +50,7 @@ document.getElementById('js-unfade-all').addEventListener('click', async () => {
   console.log(tabs);
   tabs.forEach(async (tab) => {
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
-    chrome.tabs.sendMessage(tab.id, {
-      action: "UNFADE",
-      forSeconds: 60
-    });
+    chrome.tabs.sendMessage(tab.id, { action: "UNFADE" });
   });
 });
 
@@ -68,10 +61,7 @@ document.getElementById('js-random-fade').addEventListener('click', async () => 
   console.log(tabs);
   tabs.forEach(async (tab) => {
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
-    chrome.tabs.sendMessage(tab.id, {
-      action: Math.random() > 0.5 ? "FADE" : "UNFADE",
-      forSeconds: 60
-    });
+    chrome.tabs.sendMessage(tab.id, { action: Math.random() > 0.5 ? "FADE" : "UNFADE" });
   });
 });
 
