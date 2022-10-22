@@ -1,6 +1,5 @@
 TODO:
 
-- Test with svg favicons
 - [ ] Put all this in the content script
   - Request default
   - Fading and unfading
@@ -58,6 +57,7 @@ Features?
 
 Resources:
 
+- [Publish Chrome extension via: Chrome Developer Dashboard](https://chrome.google.com/webstore/devconsole)
 - https://stackoverflow.com/a/45974139
 - https://groups.google.com/a/chromium.org/g/chromium-extensions/c/qS1rVpQVl8o
 - [host permissions](https://developer.chrome.com/docs/extensions/mv3/declare_permissions/#host-permissions)
