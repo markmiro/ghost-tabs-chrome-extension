@@ -43,6 +43,11 @@ export async function fadeIcon(url, amount = 0.5) {
   if (url) favIconUrl = url;
 
   const fileBlob = await urlToBlob(favIconUrl);
+  // image/svg+xml
+  if (fileBlob.type.includes("svg")) {
+    // https://bugs.chromium.org/p/chromium/issues/detail?id=606317
+    throw new Error(fileBlob.type + ' is not supported.');
+  }
   const imageBitmap = await createImageBitmap(fileBlob);
 
   const canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
@@ -54,6 +59,8 @@ export async function fadeIcon(url, amount = 0.5) {
   // context.fillStyle = "red";
   // context.fillRect(0, 0, 5, 5);
 
+  // https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas#instance_methods
+  // Would love to do `canvas.toDataURL()`, but the `OffscreenCanvas` for use in web workers doesn't have that feature.
   const returnBlob = await canvas.convertToBlob();
   // https://stackoverflow.com/a/30881444
   const returnDataUrl = await blobToDataUrl(returnBlob);
