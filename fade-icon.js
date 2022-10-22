@@ -1,3 +1,5 @@
+import { fixSvg, isInWorker } from './util.js'
+
 // https://github.com/markmiro/hashdrop/blob/03c5a087eeca49c41e0bf9583f9634451e712c10/frontend/src/util/dropUtils.ts
 export function blobToDataUrl(blob) {
   return new Promise((resolve, reject) => {
@@ -6,10 +8,6 @@ export function blobToDataUrl(blob) {
     reader.onerror = reject;
     reader.readAsDataURL(blob);
   });
-}
-
-function isInWorker() {
-  return typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
 }
 
 function isDarkMode() {
@@ -42,11 +40,15 @@ export async function fadeIcon(url, amount = 0.5) {
   let favIconUrl = await getDefaultIconUrl();
   if (url) favIconUrl = url;
 
-  const fileBlob = await urlToBlob(favIconUrl);
+  let fileBlob = await urlToBlob(favIconUrl);
   // image/svg+xml
   if (fileBlob.type.includes("svg")) {
-    // https://bugs.chromium.org/p/chromium/issues/detail?id=606317
-    throw new Error(fileBlob.type + ' is not supported.');
+    if (isInWorker()) {
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=606317
+      throw new Error(fileBlob.type + ' is not supported.');
+    } else {
+      fileBlob = await urlToBlob(await fixSvg(favIconUrl));
+    }
   }
   const imageBitmap = await createImageBitmap(fileBlob);
 
