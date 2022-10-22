@@ -23,6 +23,15 @@ chrome.tabs.query({ currentWindow: true }, async tabs => {
 });
 
 
+document.getElementById('js-fade-current-tab').addEventListener('click', async () => {
+  console.log("clicked");
+  const tab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
+  chrome.tabs.sendMessage(tab.id, {
+    action: "FADE",
+    forSeconds: 60
+  });
+})
+
 document.getElementById('js-fade-all').addEventListener('click', async () => {
   // debugger;
   console.log("clicked");
