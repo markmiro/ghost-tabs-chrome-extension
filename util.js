@@ -62,13 +62,13 @@ export async function fadeIcon(url, amount = 0.5) {
   const imageBitmap = await createImageBitmap(fileBlob);
 
   const canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
-  const context = canvas.getContext("2d");
-  context.globalAlpha = amount;
-  context.filter = `grayscale(${(1 - amount) * 100}%)`;
-  context.drawImage(imageBitmap, 0, 0);
+  const ctx = canvas.getContext("2d");
+  ctx.globalAlpha = amount;
+  ctx.filter = `grayscale(${(1 - amount) * 100}%)`;
+  ctx.drawImage(imageBitmap, 0, 0);
 
-  // context.fillStyle = "red";
-  // context.fillRect(0, 0, 5, 5);
+  // ctx.fillStyle = "red";
+  // ctx.fillRect(0, 0, 5, 5);
 
   // https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas#instance_methods
   // Would love to do `canvas.toDataURL()`, but the `OffscreenCanvas` for use in web workers doesn't have that feature.
