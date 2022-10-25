@@ -1,3 +1,13 @@
+body {
+  accent-color: black;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    accent-color: white;
+  }
+}
+
 body > * {
   padding: 1em;
   border-top: 1px solid;
@@ -25,4 +35,8 @@ button {
   height: 100%;
   display: grid;
   place-items: center;
+}
+
+a:any-link {
+  color: currentColor;
 }
