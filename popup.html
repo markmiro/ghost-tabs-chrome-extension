@@ -5,39 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Popup</title>
-    <link rel="stylesheet" href="tachyons.css" />
+    <link rel="stylesheet" href="css/tachyons.css" />
+    <link rel="stylesheet" href="css/styles.css" />
     <meta name="color-scheme" content="light dark" />
-
-    <style>
-      body > * {
-        padding: 1em;
-        border-top: 1px solid;
-      }
-      body > *:first-child {
-        border-top: none;
-      }
-      button {
-        text-align: start;
-        padding: 0.5em;
-      }
-      .tbd {
-        opacity: 0.5;
-        pointer-events: none;
-        position: relative;
-        display: none; /* remove this to show construction */
-      }
-      .tbd::after {
-        position: absolute;
-        font-size: 2em;
-        content: "🚧";
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: grid;
-        place-items: center;
-      }
-    </style>
   </head>
   <body class="flex flex-column sans-serif" style="width: 300px">
     <div class="flex flex-column" style="gap: 0.5em">
