@@ -94,7 +94,9 @@ function setFavicon(href) {
     }
   }
 
-  unreadIconViaWorker(favIconUrl);
+  if (document.visibilityState && document.visibilityState === "hidden") {
+    unreadIconViaWorker(favIconUrl);
+  }
   document.addEventListener("visibilitychange", handleVisibilityChange, { useCapture: false });
 
   chrome.runtime.onMessage.addListener(async (request) => {
