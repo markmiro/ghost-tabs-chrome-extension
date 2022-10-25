@@ -31,8 +31,8 @@ function setFavicon(href) {
 }
 
 (async () => {
-  const { sleep, isSvg } = await import(chrome.runtime.getURL("util.js"));
-  const { fixSvg } = await import(chrome.runtime.getURL("util-dom.js"));
+  const { sleep, isSvg } = await import(chrome.runtime.getURL("js/util.js"));
+  const { fixSvg } = await import(chrome.runtime.getURL("js/util-dom.js"));
 
   // In theory, data urls can be used for favicons, but in practice, I haven't seen it.
   // If this starts to be more common, I'll have to resort to a much more complicated solution
