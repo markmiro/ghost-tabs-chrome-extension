@@ -26,7 +26,6 @@
       "js": ["js/content-script.js"]
     }
   ],
-  "options_page": "options.html",
   "web_accessible_resources": [
     {
       "resources": ["js/util.js", "js/util-dom.js"],
