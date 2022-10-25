@@ -1,6 +1,20 @@
 import { getDefaultIconUrl } from './util.js';
 import { fadeIcon } from './util-dom.js';
 
+document.getElementById('js-start').addEventListener('click', async () => {
+  const tabs = await chrome.tabs.query({});
+  tabs.forEach(async (tab) => {
+    chrome.tabs.sendMessage(tab.id, { action: "START" });
+  });
+});
+
+document.getElementById('js-stop').addEventListener('click', async () => {
+  const tabs = await chrome.tabs.query({});
+  tabs.forEach(async (tab) => {
+    chrome.tabs.sendMessage(tab.id, { action: "STOP" });
+  });
+});
+
 chrome.tabs.query({ currentWindow: true }, async tabs => {
   const defaultIconUrl = await getDefaultIconUrl();
   const fadedIconUrls = tabs.map(tab => fadeIcon(tab.favIconUrl, 0.5));
@@ -40,6 +54,13 @@ document.getElementById('js-fade-all').addEventListener('click', async () => {
   tabs.forEach(async (tab) => {
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
     chrome.tabs.sendMessage(tab.id, { action: "FADE" });
+  });
+});
+
+document.getElementById('js-play-fade-all').addEventListener('click', async () => {
+  const tabs = await chrome.tabs.query({ currentWindow: true });
+  tabs.forEach(async (tab) => {
+    chrome.tabs.sendMessage(tab.id, { action: "PLAY_FADE" });
   });
 });
 

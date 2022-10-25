@@ -1,4 +1,4 @@
-import { fadeIcon as fadeIconBase, isInWorker, isSvg } from './util.js';
+import { fadeIcon as fadeIconBase, unreadIcon as unreadIconBase, isInWorker, isSvg } from './util.js';
 
 if (isInWorker()) throw new Error("`util-dom.js` is not available in web workers.");
 
@@ -31,4 +31,11 @@ export async function fadeIcon(url, amount) {
     return fadeIconBase(await fixSvg(url), amount);
   }
   return fadeIconBase(url, amount);
+}
+
+export async function unreadIcon(url, amount) {
+  if (await isSvg(url)) {
+    return unreadIconBase(await fixSvg(url), amount);
+  }
+  return unreadIconBase(url, amount);
 }
