@@ -50,6 +50,8 @@ export async function getDefaultIconUrl() {
 }
 
 export async function fadeIcon(url, amount = 0.5) {
+  if (amount > 1 || amount < 0) console.error('Only accepts numbers between 0 and 1.');
+
   if (isInWorker() && await isSvg(url)) {
     // https://bugs.chromium.org/p/chromium/issues/detail?id=606317
     throw new Error(fileBlob.type + ' is not supported.');
@@ -63,7 +65,8 @@ export async function fadeIcon(url, amount = 0.5) {
 
   const canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
   const ctx = canvas.getContext("2d");
-  const adjustedAmount = amount * .8 + .25;
+  const minOpacity = 0.25;
+  const adjustedAmount = amount * (1 - minOpacity) + minOpacity;
   ctx.globalAlpha = adjustedAmount;
   ctx.filter = `grayscale(${(1 - adjustedAmount) * 100}%)`;
   ctx.drawImage(imageBitmap, 0, 0);
