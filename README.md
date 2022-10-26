@@ -10,7 +10,7 @@ TODO:
     - May need to deal with data url favicons getting less priority and not updating
 - [ ] Use spaced repetition curve for fading
 - Add buttons:
-  - [x] Move inactive tabs left
+  - [ ] Move inactive tabs left
   - [ ] Move inactive tabs right
 - [ ] Measure time for fading out multiple tab icons (to determine if I need the idle permission).
 - [ ] Keep track of original favicons
