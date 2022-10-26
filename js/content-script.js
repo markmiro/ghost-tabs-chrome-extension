@@ -1,5 +1,7 @@
 console.log("INSTALLED ghost tabs content script!");
 
+let IS_DATA_URL_BLOCKED = false;
+
 // https://stackoverflow.com/a/260876
 function setFavicon(href) {
   // Remove existing favicons
@@ -27,7 +29,21 @@ function setFavicon(href) {
   document.getElementsByTagName("head")[0].appendChild(link);
 
   link.type = "image/png";
+  // https://stackoverflow.com/a/61901020
+  // https://developer.mozilla.org/en-US/docs/Web/API/SecurityPolicyViolationEvent
+  document.addEventListener("securitypolicyviolation", (e) => {
+    console.log('CSP ERROR FROM CONTENT SCRIPT:: event: ', e);
+    // Checking all this to decrease the chance that it was triggered by something else
+    // Possibly add `&& sourceFile === "chrome-extension"`
+    if (e.blockedURI === 'data' && e.violatedDirective === 'img-src') {
+      IS_DATA_URL_BLOCKED = true;
+      // TODO: send this data up to the popup so user can see why this tab doesn't get faded.
+    }
+  }, { once: true });
   link.href = href;
+
+  // TODO: Consider removing dynamically added links too
+  // https://github.com/Elliot67/env-specific-favicon/blob/main/src/contentScripts/index.ts#L53
 }
 
 (async () => {

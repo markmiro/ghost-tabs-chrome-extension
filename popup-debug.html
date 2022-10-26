@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Popup</title>
+    <link rel="stylesheet" href="css/tachyons.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <meta name="color-scheme" content="light dark" />
+  </head>
+  <body class="flex flex-column sans-serif">
+    <a href="popup.html">← Back</a>
+    <div class="flex flex-column" style="gap: 0.5em">
+      <button id="js-start">🎬 Start</button>
+      <button id="js-stop">✋ Stop</button>
+
+      <button id="js-open-test-sites">⭐️🧪 Open window with test pages</button>
+      <button id="js-open-popular-sites-some">
+        ⭐️ Open window with 5 popular sites
+      </button>
+      <button id="js-open-popular-sites">
+        ⭐️⭐️⭐️ Open window with lots of popular sites
+      </button>
+      <button id="js-reload-all">🔄 Reload all tabs</button>
+      <button id="js-fade-current-tab">👻 Fade current tab</button>
+      <button id="js-fade-all">👻👻👻 Fade all in window</button>
+      <button id="js-play-fade-all">👻👻👻 ▶️ Fade all in window</button>
+      <button id="js-unfade-all">🧟🧟🧟 Unfade all in window</button>
+      <button id="js-random-fade">👻/🧟 Random fade all in window</button>
+    </div>
+    <div>
+      <b>Tab data</b>
+      <div id="js-tab-data" style="overflow: auto"></div>
+    </div>
+
+    <label class="flex items-center tbd" style="gap: 0.5ch">
+      <input type="checkbox" /> Fade opacity
+    </label>
+
+    <label class="flex items-center tbd" style="gap: 0.5ch">
+      <input type="checkbox" /> Fade saturation
+    </label>
+
+    <label class="flex items-center tbd" style="gap: 0.5ch">
+      Fade to: [white, white ,red, custom hue]
+    </label>
+
+    <label class="flex items-center tbd" style="gap: 0.5ch">
+      <input type="checkbox" /> Show hours unused
+    </label>
+    <!--  -->
+    <script src="js/popup-debug.js" type="module"></script>
+  </body>
+</html>

@@ -9,47 +9,64 @@
     <link rel="stylesheet" href="css/styles.css" />
     <meta name="color-scheme" content="light dark" />
   </head>
-  <body class="flex flex-column sans-serif" style="width: 300px">
-    <div class="flex flex-column" style="gap: 0.5em">
-      <button id="js-start">🎬 Start</button>
-      <button id="js-stop">✋ Stop</button>
-
-      <button id="js-open-test-sites">⭐️🧪 Open window with test pages</button>
-      <button id="js-open-popular-sites-some">
-        ⭐️ Open window with 5 popular sites
-      </button>
-      <button id="js-open-popular-sites">
-        ⭐️⭐️⭐️ Open window with lots of popular sites
-      </button>
-      <button id="js-reload-all">🔄 Reload all tabs</button>
-      <button id="js-fade-current-tab">👻 Fade current tab</button>
-      <button id="js-fade-all">👻👻👻 Fade all in window</button>
-      <button id="js-play-fade-all">👻👻👻 ▶️ Fade all in window</button>
-      <button id="js-unfade-all">🧟🧟🧟 Unfade all in window</button>
-      <button id="js-random-fade">👻/🧟 Random fade all in window</button>
-    </div>
+  <body class="flex flex-column sans-serif">
     <div>
-      <b>Tab data</b>
-      <div id="js-tab-data" style="overflow: auto"></div>
+      <label class="flex items-center" style="gap: 0.5ch">
+        <input type="checkbox" /> Enabled
+      </label>
+      <button class="mt2">Reload all tabs</button>
     </div>
-    <div class="tbd">
+
+    <div class="flex justify-between">
+      <div class="flex-grow-1">
+        <label class="flex items-center" style="gap: 0.5ch">
+          <input type="checkbox" /> Show freshness badge
+        </label>
+        <small class="db mt1 o-60">
+          Show a badge that goes from green to red as the page loses freshness.
+        </small>
+      </div>
+      <div class="ml2"></div>
+      <div class="flex-shrink-0">
+        <img
+          src="img/generated/preview-earth-black-fresh-full.png"
+          width="62"
+          height="40"
+        />
+      </div>
+    </div>
+
+    <div class="flex justify-between">
+      <div class="flex-grow-1">
+        <label class="flex items-center" style="gap: 0.5ch">
+          <input type="checkbox" /> Show unread badge
+        </label>
+        <small class="db mt1 o-60">
+          Show a blue badge when opening a new tab.
+        </small>
+      </div>
+      <div class="ml2"></div>
+      <div class="flex-shrink-0">
+        <img
+          src="img/generated/preview-earth-black-unread-full.png"
+          width="62"
+          height="40"
+        />
+      </div>
+    </div>
+
+    <div>
       <label>
         <div class="flex justify-between items-center">
-          <b>Minimum icon opacity</b>
-          <input type="number" min="0" max="100" value="20" />
+          <span>Minimum icon opacity:</span>
+          <b>25%</b>
         </div>
-        <input
-          class="w-100"
-          type="range"
-          min="0"
-          max="100"
-          step="10"
-          value="20"
-        />
-        <div class="flex justify-between">
+        <!-- 0%, 5%, 10%, 25%, 50%, 100% (don't fade) -->
+        <input class="w-100" type="range" min="0" max="6" step="1" value="3" />
+        <small class="flex justify-between">
           <div class="flex-shrink-0">0%</div>
-          <div class="flex-shrink-0">100%</div>
-        </div>
+          <div class="flex-shrink-0">100% (don't fade)</div>
+        </small>
       </label>
       <small class="db mt1 o-60">
         Icons will fade down to this opacity and will not fade out any further.
@@ -57,47 +74,91 @@
       </small>
     </div>
 
+    <div>
+      <label>
+        <div class="flex justify-between items-center">
+          <span>Time to fade out to 50%:</span>
+          <!-- 1 minute, 15 minutes, 30 minutes, 1 hours, 2 hours, 4 hours, 8 hours, 16 hours -->
+          <b>1 minute</b>
+        </div>
+        <input class="w-100" type="range" min="0" max="7" step="1" value="0" />
+        <small class="flex justify-between">
+          <div class="flex-shrink-0">1 minute</div>
+          <div class="flex-shrink-0">16 hours</div>
+        </small>
+      </label>
+      <small class="db mt1 o-60">
+        Fade is calculated according to a curve based on the
+        <a
+          href="https://en.wikipedia.org/wiki/Forgetting_curve"
+          target="_blank"
+        >
+          forgetting curve </a
+        >.
+      </small>
+    </div>
+
     <div class="tbd">
       <label>
         <div class="flex justify-between items-center">
-          <b>Time to fade out completely</b>
-          <input type="number" min="0" max="24" value="1" />
+          <span>Time to reset freshness back to 100%:</span>
+          <!-- 0 seconds, 1 second, 2 seconds, 5 seconds, 10 seconds, 30 seconds, 1 minute, 2 minutes, 5 minutes, 10 minutes -->
+          <b>0 seconds</b>
         </div>
-        <input class="w-100" type="range" min="0" max="24" step="1" value="1" />
-        <div class="flex justify-between">
-          <div class="flex-shrink-0">1 minute</div>
-          <div class="flex-shrink-0">24&nbsp;hours</div>
-        </div>
+        <input class="w-100" type="range" min="0" max="9" step="1" value="0" />
+        <small class="flex justify-between">
+          <div class="flex-shrink-0">0 seconds</div>
+          <div class="flex-shrink-0">10 minutes</div>
+        </small>
       </label>
       <small class="db mt1 o-60">
         The faster the speed, the quicker they get to their min fade.
       </small>
     </div>
 
-    <label class="flex items-center tbd" style="gap: 0.5ch">
-      <input type="checkbox" /> Fade opacity
-    </label>
+    <div class="flex justify-between tbd">
+      <div class="flex-grow-1">
+        <label class="flex items-center" style="gap: 0.5ch">
+          <input type="checkbox" /> Expire tabs
+        </label>
+        <div class="mt2"></div>
+        <label>
+          <div class="flex justify-between items-center">
+            <span>Time to expire a tab:</span>
+            <!-- 1 hour, 2 hours, 4 hours, 8 hours, 16 hours, overnight -->
+            <b class="b rounded">Overnight</b>
+          </div>
+          <input
+            class="w-100"
+            type="range"
+            min="0"
+            max="5"
+            step="1"
+            value="5"
+          />
+          <small class="flex justify-between">
+            <div class="flex-shrink-0">1 hour</div>
+            <div class="flex-shrink-0">Overnight</div>
+          </small>
+        </label>
+        <!-- <div class="mt2"></div> -->
+        <!-- <button>Close expired tabs</button> -->
+      </div>
+      <div class="ml2"></div>
+      <div class="flex-shrink-0">
+        <img
+          src="img/generated/preview-earth-black-expired-full.png"
+          width="62"
+          height="40"
+        />
+      </div>
+    </div>
 
-    <label class="flex items-center tbd" style="gap: 0.5ch">
-      <input type="checkbox" /> Fade saturation
-    </label>
+    <small class="flex justify-between items-center">
+      <a href="popup-debug.html">🐛 Debug view</a>
+      <button>Reset Settings</button>
+    </small>
 
-    <label class="flex items-center tbd" style="gap: 0.5ch">
-      <input type="checkbox" /> Fade to white
-    </label>
-
-    <label class="flex items-center tbd" style="gap: 0.5ch">
-      <input type="checkbox" /> Fade to red
-    </label>
-
-    <label class="flex items-center tbd" style="gap: 0.5ch">
-      <input type="checkbox" /> Fade to hue
-    </label>
-
-    <label class="flex items-center tbd" style="gap: 0.5ch">
-      <input type="checkbox" /> Show hours unused
-    </label>
-    <!--  -->
     <script src="js/popup.js" type="module"></script>
   </body>
 </html>
