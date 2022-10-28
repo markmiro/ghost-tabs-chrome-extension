@@ -1,5 +1,4 @@
 // import "./background-headers.js";
-import { TEST_PAGES } from './util-debug.js';
 import { fadeIcon, unreadIcon } from './util.js';
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -24,12 +23,4 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.tabs.onActivated.addListener(({ tabId, windowId }) => {
   console.log('activated', tabId);
   chrome.tabs.sendMessage(tabId, { action: "ACTIVATED" });
-});
-
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.windows.create({
-    focused: true,
-    url: TEST_PAGES,
-    // url: POPULAR_SITES,
-  });
 });
