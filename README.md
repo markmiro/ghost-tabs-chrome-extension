@@ -74,6 +74,7 @@ Resources:
 - [Determine if in development, or in production](https://stackoverflow.com/questions/36339862/how-to-know-chrome-extension-is-in-development-or-production-environment)
 - [Why not `chrome://favicon/...` — stackoverflow.com](https://stackoverflow.com/questions/10665321/reliably-getting-favicons-in-chrome-extensions-chrome-favicon)
 - [Process SVG favicons](https://levelup.gitconnected.com/draw-an-svg-to-canvas-and-download-it-as-image-in-javascript-f7f7713cf81f)
+- [`chrome.windows.create()` creates inactive tabs that report that they're visible](https://bugs.chromium.org/p/chromium/issues/detail?id=1379232)
 
 Security Resources (content security policy — CSP, cross origin request — CORS):
 
