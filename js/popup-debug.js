@@ -23,13 +23,13 @@ chrome.tabs.query({ currentWindow: true }, async tabs => {
   let all = '';
   for await (const fadedUrl of fadedIconUrls) {
     console.log('url', tabs[i].favIconUrl, fadedUrl);
-    const favIconUrl = tabs[i].favIconUrl || defaultIconUrl;
-    const indexOfDot = tabs[i].favIconUrl.lastIndexOf(".");
+    const favIconUrl = tabs[i].favIconUrl;
+    const indexOfDot = favIconUrl?.lastIndexOf(".");
     all += `
       <div>
-        <img src="${favIconUrl}" width="16px" height="16px" />
+        <img src="${favIconUrl || defaultIconUrl}" width="16px" height="16px" />
         <img src="${fadedUrl}" width="16px" height="16px" />
-        ${tabs[i].favIconUrl.startsWith('data:') ? '<span class="o-20">data...</div>' : tabs[i].favIconUrl.slice(indexOfDot)}
+        ${favIconUrl && (favIconUrl.startsWith('data:') ? '<span class="o-20">data...</div>' : favIconUrl.slice(indexOfDot))}
       </div>
     `;
     i++;
