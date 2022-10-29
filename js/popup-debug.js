@@ -39,6 +39,32 @@ chrome.tabs.query({ currentWindow: true }, async tabs => {
   document.getElementById('js-tab-data').innerHTML = `<div class="flex flex-column">${all}</div>`;
 });
 
+document.getElementById('js-print-vars-all').addEventListener('click', async () => {
+  const tabs = await chrome.tabs.query({ currentWindow: true });
+  const allTabVars = tabs.map(tab => chrome.tabs.sendMessage(tab.id, { action: "PRINT_VARS" }));
+
+  let all = '';
+  let i = 0;
+  for await (const tabVars of allTabVars) {
+    all += `<pre>${JSON.stringify({ title: tabs[i].title, ...tabVars }, null, '  ')}</pre>`;
+    i++;
+  }
+  document.getElementById('js-tab-data').innerHTML = `<div>${all}</div>`;
+});
+
+document.getElementById('js-print-vars-current-tab').addEventListener('click', async () => {
+  const tab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
+  chrome.tabs.sendMessage(tab.id, {
+    action: "PRINT_VARS",
+  });
+});
+
+document.getElementById('js-unread-current-tab').addEventListener('click', async () => {
+  const tab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
+  chrome.tabs.sendMessage(tab.id, {
+    action: "MARK_UNREAD",
+  });
+});
 
 document.getElementById('js-fade-current-tab').addEventListener('click', async () => {
   console.log("clicked");

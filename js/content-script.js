@@ -1,8 +1,10 @@
 console.log("INSTALLED ghost tabs content script!");
 
 let IS_DATA_URL_BLOCKED = false;
-
-
+let favIconUrl;
+let tabFreshness = 1;
+let intervalId;
+const MINUTES = 5;
 
 (async () => {
   const { sleep, isSvg } = await import(chrome.runtime.getURL("js/util.js"));
@@ -48,11 +50,7 @@ let IS_DATA_URL_BLOCKED = false;
 
   // ---
 
-  let favIconUrl = await getFaviconUrl();
-  let tabFreshness = 1;
-  let intervalId;
-  const MINUTES = 5;
-  console.log("clicked! sent to content script", favIconUrl);
+  favIconUrl = await getFaviconUrl();
 
   async function handleVisibilityChange() {
     if (document.visibilityState === "hidden") {
@@ -73,7 +71,7 @@ let IS_DATA_URL_BLOCKED = false;
   }
   document.addEventListener("visibilitychange", handleVisibilityChange, { useCapture: false });
 
-  chrome.runtime.onMessage.addListener(async (request) => {
+  chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
     if (request.action === "ACTIVATED") {
       console.log('PAGE VISIBLE');
       clearInterval(intervalId);
@@ -102,6 +100,19 @@ let IS_DATA_URL_BLOCKED = false;
       document.removeEventListener("visibilitychange", handleVisibilityChange, false);
       tabFreshness = 1;
       setFavicon(favIconUrl);
+    } else if (request.action === 'MARK_UNREAD') {
+      clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", handleVisibilityChange, false);
+      unreadIconViaWorker(favIconUrl);
+    } else if (request.action === 'PRINT_VARS') {
+      const vars = {
+        IS_DATA_URL_BLOCKED,
+        tabFreshness,
+        favIconUrl,
+        intervalId,
+      };
+      console.log(vars);
+      sendResponse(vars);
     }
   });
 })();
