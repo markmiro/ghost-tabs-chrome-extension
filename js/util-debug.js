@@ -1,16 +1,32 @@
+const warningPage = chrome.runtime.getURL("debug-pages-warning.html");
+
+// Pages that test various icon stuff
 export const TEST_PAGES = [
-  "https://example.com", // no icon
-  "https://github.com/site-map", // svg icon
-  // "https://news.ycombinator.com", // requires fixing content-security-policty headers
+  warningPage,
   "http://localhost:3000/none",
   "http://localhost:3000/ico",
   "http://localhost:3000/svg",
   "http://localhost:3000/png-multiple",
-  "http://localhost:3000/jpg-multiple"
+  "http://localhost:3000/jpg-multiple",
+];
+
+// Sites that 
+export const TEST_SITES = [
+  warningPage,
+  "https://example.com", // no icon
+  "https://github.com/site-map", // svg icon
+];
+
+// Sites that have CSP issues with updating the icon.
+// Require fixing content-security-policy headers.
+export const CSP_SITES = [
+  warningPage,
+  "https://news.ycombinator.com",
 ];
 
 // https://en.wikipedia.org/wiki/List_of_most_visited_websites
 export const POPULAR_SITES = [
+  warningPage,
   "https://google.com",
   "https://youtube.com",
   "https://facebook.com",
@@ -32,4 +48,4 @@ export const POPULAR_SITES = [
   "https://ebay.com",
   "https://msn.com",
   "https://booking.com",
-]
+];
