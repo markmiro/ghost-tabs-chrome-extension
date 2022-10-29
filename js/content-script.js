@@ -5,10 +5,22 @@ let favIconUrl;
 let tabFreshness = 1;
 let intervalId;
 const MINUTES = 5;
+let VARS = {
+  visibilityState: undefined,
+  hidden: undefined,
+};
 
 (async () => {
   const { sleep, isSvg } = await import(chrome.runtime.getURL("js/util.js"));
   const { fixSvg, setFavicon } = await import(chrome.runtime.getURL("js/util-dom.js"));
+
+  // Visibility state
+  VARS.visibilityState = document.visibilityState;
+  VARS.hidden = document.hidden;
+  document.addEventListener("visibilitychange", () => {
+    VARS.visibilityState = document.visibilityState;
+    VARS.hidden = document.hidden;
+  }, false);
 
   // In theory, data urls can be used for favicons, but in practice, I haven't seen it.
   // If this starts to be more common, I'll have to resort to a much more complicated solution
@@ -110,6 +122,7 @@ const MINUTES = 5;
         tabFreshness,
         favIconUrl,
         intervalId,
+        ...VARS
       };
       console.log(vars);
       sendResponse(vars);
