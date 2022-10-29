@@ -12,6 +12,11 @@
   <body class="flex flex-column sans-serif">
     <div id="js-page-not-supported"></div>
 
+    <div class="pa3 flex flex-column" style="gap: 0.5em">
+      <a href="popup-debug.html" class="pa2 ba">🐛 Debug view</a>
+      <button id="js-reload-all">🔄 Reload all tabs in current window</button>
+    </div>
+
     <div class="pa3">
       <button id="js-counter">Clicks: 0</button>
     </div>
@@ -22,9 +27,6 @@
       <label class="flex items-center" style="gap: 0.5ch">
         <input type="checkbox" id="js-enabled" /> Enabled
       </label>
-      <button id="js-reload-all" class="mt2">
-        Reload all tabs in current window
-      </button>
     </div>
 
     <hr />
@@ -179,7 +181,6 @@
     <hr />
 
     <small class="pa3 flex justify-between items-center">
-      <a href="popup-debug.html">🐛 Debug view</a>
       <button>Reset Settings</button>
     </small>
 
