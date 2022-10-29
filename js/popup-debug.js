@@ -1,6 +1,6 @@
 import { getDefaultIconUrl } from './util.js';
 import { fadeIcon } from './util-dom.js';
-import { POPULAR_SITES, TEST_PAGES } from './util-debug.js';
+import { CSP_SITES, POPULAR_SITES, TEST_PAGES } from './util-debug.js';
 
 document.getElementById('js-start').addEventListener('click', async () => {
   const tabs = await chrome.tabs.query({});
@@ -113,5 +113,12 @@ document.getElementById("js-open-popular-sites").onclick = async () => {
   chrome.windows.create({
     focused: true,
     url: POPULAR_SITES,
+  });
+};
+
+document.getElementById("js-open-csp-sites").onclick = async () => {
+  chrome.windows.create({
+    focused: true,
+    url: CSP_SITES,
   });
 };
