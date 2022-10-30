@@ -1,3 +1,15 @@
+import { DEBUG } from './util.js';
+
+if (DEBUG) {
+  document.getElementById('js-debug-link').classList.remove('dn');
+} else {
+  document.addEventListener('keypress', e => {
+    if (e.key === 'k') {
+      window.location.assign(chrome.runtime.getURL('popup-debug.html'));
+    }
+  })
+}
+
 {
   const badSites = [
     'https://chrome.google.com/webstore',
@@ -20,12 +32,6 @@
   // Prevent submission when clicking random buttons
   $optionsForm.addEventListener('submit', e => e.preventDefault());
 }
-
-let clicks = 0;
-document.getElementById('js-counter').addEventListener('click', e => {
-  clicks++;
-  document.getElementById('js-counter').innerText = 'Clicks: ' + clicks;
-});
 
 document.getElementById("js-reload-all").onclick = async () => {
   const tabs = await chrome.tabs.query({ currentWindow: true });
