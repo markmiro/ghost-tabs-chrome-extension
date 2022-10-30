@@ -19,3 +19,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 });
+
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.tabs.create({
+    active: true,
+    url: chrome.runtime.getURL('on-installed.html')
+  });
+});
