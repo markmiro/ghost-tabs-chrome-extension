@@ -13,6 +13,14 @@
   });
 }
 
+{
+  const $optionsForm = document.getElementById('js-options-form');
+  const options = {};
+
+  // Prevent submission when clicking random buttons
+  $optionsForm.addEventListener('submit', e => e.preventDefault());
+}
+
 let clicks = 0;
 document.getElementById('js-counter').addEventListener('click', e => {
   clicks++;
