@@ -32,10 +32,3 @@ if (DEBUG) {
   // Prevent submission when clicking random buttons
   $optionsForm.addEventListener('submit', e => e.preventDefault());
 }
-
-document.getElementById("js-reload-all").onclick = async () => {
-  const tabs = await chrome.tabs.query({ currentWindow: true });
-  tabs.forEach((tab) => {
-    chrome.tabs.reload(tab.id, { bypassCache: false });
-  });
-};
