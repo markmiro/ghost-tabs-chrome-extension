@@ -61,6 +61,10 @@ let VARS = {
     return undefined;
   }
 
+  async function resetIcon() {
+    setFavicon(favIconUrl);
+  }
+
   async function fadeIconViaWorker(favIconUrl, opacity) {
     if (await isSvg(favIconUrl)) {
       favIconUrl = await fixSvg(favIconUrl);
@@ -81,7 +85,7 @@ let VARS = {
     console.log("handleVisibilityChange() => document.visibilityState: ", document.visibilityState);
     if (document.visibilityState === 'visible') {
       unread = false;
-      setFavicon(favIconUrl);
+      resetIcon();
       // Doesn't trigger if tab is loaded in the background, so we're not using it.
     }
   }
@@ -103,7 +107,7 @@ let VARS = {
     } else if (request.action === 'UNFADE') {
       console.log('ACTION: UNFADE', favIconUrl);
       tabFreshness = 1;
-      setFavicon(favIconUrl);
+      resetIcon();
     } else if (request.action === "PLAY_FADE") {
       clearInterval(intervalId);
       intervalId = setInterval(() => {
@@ -118,7 +122,7 @@ let VARS = {
       clearInterval(intervalId);
       document.removeEventListener("visibilitychange", handleVisibilityChange, false);
       tabFreshness = 1;
-      setFavicon(favIconUrl);
+      resetIcon();
     } else if (request.action === 'MARK_UNREAD') {
       unread = true;
       clearInterval(intervalId);
