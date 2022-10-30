@@ -40,6 +40,10 @@ export async function unreadIcon(url, amount) {
   return unreadIconBase(url, amount);
 }
 
+export function getFaviconLinks() {
+  return document.querySelectorAll("link[rel~='icon']");
+}
+
 // https://stackoverflow.com/a/260876
 export function setFavicon(href) {
   // Remove existing favicons
@@ -58,7 +62,7 @@ export function setFavicon(href) {
   //
   // Messing with the links should be find since it's all in the head, and most websites don't change
   // content up there dynamically.
-  const allFavicons = document.querySelectorAll("link[rel~='icon']");
+  const allFavicons = getFaviconLinks();
   allFavicons.forEach((favicon) => favicon.remove());
 
   // Create a new link element

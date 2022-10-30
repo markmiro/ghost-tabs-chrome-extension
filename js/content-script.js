@@ -13,7 +13,7 @@ let VARS = {
 
 (async () => {
   const { sleep, isSvg } = await import(chrome.runtime.getURL("js/util.js"));
-  const { fixSvg, setFavicon } = await import(chrome.runtime.getURL("js/util-dom.js"));
+  const { fixSvg, setFavicon, getFaviconLinks } = await import(chrome.runtime.getURL("js/util-dom.js"));
 
   // Visibility state
   VARS.visibilityState = document.visibilityState;
@@ -31,6 +31,21 @@ let VARS = {
   }
 
   async function getFaviconUrl() {
+    // Strategy:
+    // • If there is no link icon, don't try to get root favicon.ico
+    //   • If no root favicon.ico, get tht 
+    // • If there are link icons, keep querying until Chrome tells us which icon is actually chosen.
+
+    const links = getFaviconLinks();
+    if (!links || links.length === 0) {
+      let response = await fetch('/favicon.ico');
+      if (response.ok) {
+        return response.url;
+      } else {
+        return undefined;
+      }
+    }
+
     // Loop until we get a url that doesn't start with `data:`
     for (let tries = 0; tries <= 3; tries++) {
       console.log('try to find the correct icon...');
@@ -42,6 +57,7 @@ let VARS = {
       // Wait because we don't want to try again right away
       await sleep(tries * 100);
     }
+
     return undefined;
   }
 
