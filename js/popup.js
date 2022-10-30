@@ -39,3 +39,10 @@ document.getElementById('js-unread-current-tab').addEventListener('click', async
     action: "MARK_UNREAD",
   });
 });
+
+document.getElementById('js-reset-icons').addEventListener('click', async () => {
+  const tabs = await chrome.tabs.query({});
+  tabs.forEach(tab =>
+    chrome.tabs.sendMessage(tab.id, { action: "STOP" })
+  );
+});

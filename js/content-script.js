@@ -90,6 +90,12 @@ let VARS = {
     }
   }
 
+  async function stop() {
+    clearInterval(intervalId);
+    document.removeEventListener("visibilitychange", handleVisibilityChange, false);
+    tabFreshness = 1;
+  }
+
   // ---
 
   favIconUrl = await getFaviconUrl();
@@ -119,9 +125,7 @@ let VARS = {
       // https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
       document.addEventListener("visibilitychange", handleVisibilityChange, false);
     } else if (request.action === 'STOP') {
-      clearInterval(intervalId);
-      document.removeEventListener("visibilitychange", handleVisibilityChange, false);
-      tabFreshness = 1;
+      stop();
       resetIcon();
     } else if (request.action === 'MARK_UNREAD') {
       unread = true;
