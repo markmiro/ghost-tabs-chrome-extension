@@ -4,6 +4,7 @@ let IS_DATA_URL_BLOCKED = false;
 let favIconUrl;
 let tabFreshness = 1;
 let intervalId;
+let unread = document.visibilityState === "hidden";
 const MINUTES = 5;
 let VARS = {
   visibilityState: undefined,
@@ -60,36 +61,26 @@ let VARS = {
     setFavicon(newIconUrl);
   }
 
-  // ---
-
-  favIconUrl = await getFaviconUrl();
-
   async function handleVisibilityChange() {
-    if (document.visibilityState === "hidden") {
-      console.log('PAGE HIDDEN');
-      intervalId = setInterval(async () => {
-        if (document.visibilityState === "hidden") {
-          tabFreshness *= 0.8;
-          fadeIconViaWorker(favIconUrl, tabFreshness);
-        }
-      }, 200);
-    } else {
+    console.log("handleVisibilityChange() => document.visibilityState: ", document.visibilityState);
+    if (document.visibilityState === 'visible') {
+      unread = false;
+      setFavicon(favIconUrl);
       // Doesn't trigger if tab is loaded in the background, so we're not using it.
     }
   }
 
-  if (document.visibilityState && document.visibilityState === "hidden") {
+  // ---
+
+  favIconUrl = await getFaviconUrl();
+
+  if (unread) {
     unreadIconViaWorker(favIconUrl);
   }
-  document.addEventListener("visibilitychange", handleVisibilityChange, { useCapture: false });
+  document.addEventListener("visibilitychange", handleVisibilityChange, false);
 
   chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
-    if (request.action === "ACTIVATED") {
-      console.log('PAGE VISIBLE');
-      clearInterval(intervalId);
-      tabFreshness = 1;
-      setFavicon(favIconUrl);
-    } else if (request.action === "FADE") {
+    if (request.action === "FADE") {
       console.log('ACTION: FADE', favIconUrl);
       tabFreshness *= 0.5;
       fadeIconViaWorker(favIconUrl, tabFreshness);
@@ -113,6 +104,7 @@ let VARS = {
       tabFreshness = 1;
       setFavicon(favIconUrl);
     } else if (request.action === 'MARK_UNREAD') {
+      unread = true;
       clearInterval(intervalId);
       document.removeEventListener("visibilitychange", handleVisibilityChange, false);
       unreadIconViaWorker(favIconUrl);

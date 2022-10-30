@@ -19,8 +19,3 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 });
-
-chrome.tabs.onActivated.addListener(({ tabId, windowId }) => {
-  console.log('activated', tabId);
-  chrome.tabs.sendMessage(tabId, { action: "ACTIVATED" });
-});
