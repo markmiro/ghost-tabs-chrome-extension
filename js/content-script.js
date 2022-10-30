@@ -125,8 +125,6 @@ let VARS = {
       resetIcon();
     } else if (request.action === 'MARK_UNREAD') {
       unread = true;
-      clearInterval(intervalId);
-      document.removeEventListener("visibilitychange", handleVisibilityChange, false);
       unreadIconViaWorker(favIconUrl);
     } else if (request.action === 'PRINT_VARS') {
       const vars = {

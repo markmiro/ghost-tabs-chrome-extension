@@ -32,3 +32,10 @@ if (DEBUG) {
   // Prevent submission when clicking random buttons
   $optionsForm.addEventListener('submit', e => e.preventDefault());
 }
+
+document.getElementById('js-unread-current-tab').addEventListener('click', async () => {
+  const tab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
+  chrome.tabs.sendMessage(tab.id, {
+    action: "MARK_UNREAD",
+  });
+});
