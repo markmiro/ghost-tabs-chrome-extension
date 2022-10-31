@@ -31,6 +31,16 @@ if (DEBUG) {
 
   // Prevent submission when clicking random buttons
   $optionsForm.addEventListener('submit', e => e.preventDefault());
+
+  chrome.storage.local.get('options', (data) => {
+    Object.assign(options, data.options);
+    $optionsForm.showUnreadBadge.checked = Boolean(options.showUnreadBadge);
+  });
+
+  $optionsForm.showUnreadBadge.addEventListener('change', (event) => {
+    options.showUnreadBadge = event.target.checked;
+    chrome.storage.local.set({ options });
+  });
 }
 
 document.getElementById('js-unread-current-tab').addEventListener('click', async () => {

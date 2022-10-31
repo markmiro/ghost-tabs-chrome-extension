@@ -90,20 +90,48 @@ let VARS = {
     }
   }
 
-  async function stop() {
+  function cleanup() {
     clearInterval(intervalId);
     document.removeEventListener("visibilitychange", handleVisibilityChange, false);
+  }
+
+  async function stop() {
+    cleanup();
     tabFreshness = 1;
   }
 
-  // ---
-
   favIconUrl = await getFaviconUrl();
 
-  if (unread) {
-    unreadIconViaWorker(favIconUrl);
+  async function update(options) {
+    if (options.showUnreadBadge) {
+      if (unread) {
+        unreadIconViaWorker(favIconUrl);
+      }
+      document.addEventListener("visibilitychange", handleVisibilityChange, false);
+    } else {
+      resetIcon();
+    }
+
+    return cleanup;
   }
-  document.addEventListener("visibilitychange", handleVisibilityChange, false);
+
+  {
+    const options = {};
+    chrome.storage.local.get('options')
+      .then(data => {
+        Object.assign(options, data.options);
+        return update(options);
+      })
+      .then((cleanup) => {
+        chrome.storage.onChanged.addListener((changes, area) => {
+          cleanup();
+          if (area === 'local' && changes.options?.newValue) {
+            Object.assign(options, changes.options.newValue);
+            update(options);
+          }
+        });
+      });
+  }
 
   chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
     if (request.action === "FADE") {
@@ -130,6 +158,7 @@ let VARS = {
     } else if (request.action === 'MARK_UNREAD') {
       unread = true;
       unreadIconViaWorker(favIconUrl);
+      document.addEventListener("visibilitychange", handleVisibilityChange, false);
     } else if (request.action === 'PRINT_VARS') {
       const vars = {
         IS_DATA_URL_BLOCKED,
