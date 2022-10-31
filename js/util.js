@@ -121,8 +121,8 @@ export async function unreadIcon(url) {
 
   const canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
   const ctx = canvas.getContext("2d");
-  ctx.globalAlpha = 0.3;
-  ctx.filter = "grayscale(60%)";
+  ctx.globalAlpha = 0.75;
+  ctx.filter = "grayscale(80%)";
   ctx.drawImage(imageBitmap, 0, 0);
 
   ctx.globalAlpha = 1;
