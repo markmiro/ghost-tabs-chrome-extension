@@ -3,20 +3,20 @@ import { fadeIcon } from './util-dom.js';
 import { CSP_SITES, POPULAR_SITES, TEST_PAGES } from './util-debug.js';
 
 document.getElementById('js-start').addEventListener('click', async () => {
-  const tabs = await chrome.tabs.query({});
+  const tabs = await chrome.tabs.query({ pinned: false, windowType: 'normal' });
   tabs.forEach(async (tab) => {
     chrome.tabs.sendMessage(tab.id, { action: "START" });
   });
 });
 
 document.getElementById('js-stop').addEventListener('click', async () => {
-  const tabs = await chrome.tabs.query({});
+  const tabs = await chrome.tabs.query({ pinned: false, windowType: 'normal' });
   tabs.forEach(async (tab) => {
     chrome.tabs.sendMessage(tab.id, { action: "STOP" });
   });
 });
 
-chrome.tabs.query({ currentWindow: true }, async tabs => {
+chrome.tabs.query({ currentWindow: true, pinned: false, windowType: 'normal' }, async tabs => {
   const defaultIconUrl = await getDefaultIconUrl();
   const fadedIconUrls = tabs.map(tab => fadeIcon(tab.favIconUrl, 0.5));
 
@@ -77,7 +77,7 @@ document.getElementById('js-fade-current-tab').addEventListener('click', async (
 document.getElementById('js-fade-all').addEventListener('click', async () => {
   // debugger;
   console.log("clicked");
-  const tabs = await chrome.tabs.query({ currentWindow: true });
+  const tabs = await chrome.tabs.query({ currentWindow: true, pinned: false });
   console.log(tabs);
   tabs.forEach(async (tab) => {
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
@@ -86,7 +86,7 @@ document.getElementById('js-fade-all').addEventListener('click', async () => {
 });
 
 document.getElementById('js-play-fade-all').addEventListener('click', async () => {
-  const tabs = await chrome.tabs.query({ currentWindow: true });
+  const tabs = await chrome.tabs.query({ currentWindow: true, pinned: false });
   tabs.forEach(async (tab) => {
     chrome.tabs.sendMessage(tab.id, { action: "PLAY_FADE" });
   });
@@ -95,7 +95,7 @@ document.getElementById('js-play-fade-all').addEventListener('click', async () =
 document.getElementById('js-unfade-all').addEventListener('click', async () => {
   // debugger;
   console.log("clicked undo fade");
-  const tabs = await chrome.tabs.query({ currentWindow: true });
+  const tabs = await chrome.tabs.query({ currentWindow: true, pinned: false });
   console.log(tabs);
   tabs.forEach(async (tab) => {
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
@@ -106,7 +106,7 @@ document.getElementById('js-unfade-all').addEventListener('click', async () => {
 document.getElementById('js-random-fade').addEventListener('click', async () => {
   // debugger;
   console.log("clicked undo fade");
-  const tabs = await chrome.tabs.query({ currentWindow: true });
+  const tabs = await chrome.tabs.query({ currentWindow: true, pinned: false });
   console.log(tabs);
   tabs.forEach(async (tab) => {
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
@@ -115,7 +115,7 @@ document.getElementById('js-random-fade').addEventListener('click', async () => 
 });
 
 document.getElementById("js-reload-all").onclick = async () => {
-  const tabs = await chrome.tabs.query({ currentWindow: true });
+  const tabs = await chrome.tabs.query({ currentWindow: true, pinned: false });
   tabs.forEach((tab) => {
     chrome.tabs.reload(tab.id, { bypassCache: true });
   });

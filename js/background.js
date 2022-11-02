@@ -3,6 +3,11 @@ import { fadeIcon, unreadIcon } from './util.js';
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (!request) return;
+
+  // Ideally, pinned tabs shouldn't even get a content script. If so, these tabs wouldn't be sending messages to the background
+  // page. In the meantime, we ignore messages from pinned tabs.
+  if (sender?.tab?.pinned) return;
+
   if (request.action === 'GET_FAVICONURL') {
     sendResponse(sender.tab.favIconUrl);
   } else if (request.action === 'FADE_ICON') {
