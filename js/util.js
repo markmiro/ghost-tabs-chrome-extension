@@ -87,6 +87,8 @@ export async function fadeIcon(url, amount = 0.5) {
     throw new Error('SVG is not supported.');
   }
 
+  // TODO: move this to content-script since it can then listen to dark mode on the tab and update accordingly.
+  // I haven't found a way to detect dark mode in the background.
   let favIconUrl = await getDefaultIconUrl();
   if (url) favIconUrl = url;
 
