@@ -5,6 +5,7 @@ body {
     chrome://settings/?search=font+size
    */
   width: 48ch;
+
   cursor: default;
 }
 
@@ -41,4 +42,9 @@ button {
 
 a:any-link {
   color: currentColor;
+}
+
+[disabled] {
+  opacity: 0.3;
+  pointer-events: none;
 }

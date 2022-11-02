@@ -11,19 +11,21 @@ if (DEBUG) {
 }
 
 {
-  const badSites = [
+  const chromePages = [
     'https://chrome.google.com/webstore',
-    'chrome://extensions'
+    'chrome://'
   ]
 
   chrome.tabs.query({ currentWindow: true, active: true }, async (tabs) => {
     const tab = tabs?.[0];
     if (!tab) return;
-    const match = badSites.find(url => tab.url.startsWith(url));
+    const match = chromePages.find(url => tab.url.startsWith(url));
     if (match) {
-      document.getElementById('js-page-not-supported').innerHTML = `<b class="db pa3">⚠️ Page isn't supported: ${match}</b><hr />`;
+      document.getElementById('js-page-not-supported').innerHTML = `<b class="db pa3 bg-light-yellow black">⚠️ Chrome pages and the Chrome Web Store aren't supported.</b><hr />`;
+      document.getElementById('js-options-form').setAttribute('disabled', '');
     } else if (tab.pinned) {
-      document.getElementById('js-page-not-supported').innerHTML = `<b class="db pa3">⚠️ Page isn't supported because it's pinned</b><hr />`;
+      document.getElementById('js-page-not-supported').innerHTML = `<b class="db pa3 bg-light-yellow black">⚠️ Pinned tabs aren't supported</b><hr />`;
+      document.getElementById('js-options-form').setAttribute('disabled', '');
     }
   });
 }
