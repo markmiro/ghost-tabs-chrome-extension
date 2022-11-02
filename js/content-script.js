@@ -12,8 +12,7 @@ let VARS = {
 };
 
 (async () => {
-  const { isSvg } = await import(chrome.runtime.getURL("js/util.js"));
-  const { fixSvg, setFavicon, getFaviconUrl } = await import(chrome.runtime.getURL("js/util-dom.js"));
+  const { resetIcon, fadeIconViaWorker, unreadIconViaWorker, getFaviconUrl } = await import(chrome.runtime.getURL("js/util-dom.js"));
 
   // Visibility state
   VARS.visibilityState = document.visibilityState;
@@ -22,26 +21,6 @@ let VARS = {
     VARS.visibilityState = document.visibilityState;
     VARS.hidden = document.hidden;
   }, false);
-
-  async function resetIcon() {
-    setFavicon(favIconUrl);
-  }
-
-  async function fadeIconViaWorker(favIconUrl, opacity) {
-    if (await isSvg(favIconUrl)) {
-      favIconUrl = await fixSvg(favIconUrl);
-    }
-    const newIconUrl = await chrome.runtime.sendMessage({ action: "FADE_ICON", favIconUrl, opacity });
-    setFavicon(newIconUrl);
-  }
-
-  async function unreadIconViaWorker(favIconUrl, opacity) {
-    if (await isSvg(favIconUrl)) {
-      favIconUrl = await fixSvg(favIconUrl);
-    }
-    const newIconUrl = await chrome.runtime.sendMessage({ action: "UNREAD_ICON", favIconUrl, opacity });
-    setFavicon(newIconUrl);
-  }
 
   async function handleVisibilityChange() {
     console.log("handleVisibilityChange() => document.visibilityState: ", document.visibilityState);

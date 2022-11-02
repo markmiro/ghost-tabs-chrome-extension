@@ -1,10 +1,36 @@
-import { fadeIcon as fadeIconBase, unreadIcon as unreadIconBase, isInWorker, isSvg, isFavIconUntouched, sleep } from './util.js';
+import { fadeIcon as fadeIconBase, unreadIcon as unreadIconBase, isInWorker, isFavIconUntouched, sleep, getUrlExtension, hasProperIconExtension } from './util.js';
 
 if (isInWorker()) throw new Error("`util-dom.js` is not available in web workers.");
 
+async function isSvg(url) {
+  if (isSvg.cache[url]) {
+    return isSvg.cache[url];
+  }
+  if (getUrlExtension(url) === '.svg') {
+    return true;
+  }
+  if (hasProperIconExtension(url)) {
+    return false;
+  }
+
+  // Usually, just looking at the extension is enough, but for sites like linkedin.com we just load the icon
+  // What linkedin.com does:
+  // <link rel="icon" type="image/svg+xml" href="https://static-exp1.licdn.com/sc/h/akt4ae504epesldzj74dzred8" id="favicon-svg">
+  // On the homepage it even looks something like this
+  // <link rel="icon" href="https://static-exp1.licdn.com/sc/h/akt4ae504epesldzj74dzred8">
+
+  const response = await fetch(url);
+  const blob = await response.blob();
+  const bool = blob.type.includes('svg');
+  isSvg.cache[url] = bool;
+  return bool;
+}
+isSvg.cache = {};
+
+
 // https://levelup.gitconnected.com/draw-an-svg-to-canvas-and-download-it-as-image-in-javascript-f7f7713cf81f
 // Can't fix the SVG in background script because Image element isn't available in web workers.
-export function fixSvg(favIconUrl) {
+function fixSvg(favIconUrl) {
   const width = 32;
   const height = 32;
   return new Promise((resolve) => {
@@ -76,7 +102,7 @@ export async function getFaviconUrl() {
 }
 
 // https://stackoverflow.com/a/260876
-export function setFavicon(href) {
+function setFavicon(href) {
   // Remove existing favicons
   // ---
   // Chrome will choose the correct icon to display in the tab based on a set of criteria. I could
@@ -117,4 +143,24 @@ export function setFavicon(href) {
 
   // TODO: Consider removing dynamically added links too
   // https://github.com/Elliot67/env-specific-favicon/blob/main/src/contentScripts/index.ts#L53
+}
+
+export async function resetIcon() {
+  setFavicon(favIconUrl);
+}
+
+export async function fadeIconViaWorker(favIconUrl, opacity) {
+  if (await isSvg(favIconUrl)) {
+    favIconUrl = await fixSvg(favIconUrl);
+  }
+  const newIconUrl = await chrome.runtime.sendMessage({ action: "FADE_ICON", favIconUrl, opacity });
+  setFavicon(newIconUrl);
+}
+
+export async function unreadIconViaWorker(favIconUrl, opacity) {
+  if (await isSvg(favIconUrl)) {
+    favIconUrl = await fixSvg(favIconUrl);
+  }
+  const newIconUrl = await chrome.runtime.sendMessage({ action: "UNREAD_ICON", favIconUrl, opacity });
+  setFavicon(newIconUrl);
 }

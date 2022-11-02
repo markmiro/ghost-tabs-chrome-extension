@@ -25,7 +25,7 @@ export function blobToDataUrl(blob) {
   });
 }
 
-export async function urlToBlob(url) {
+async function urlToBlob(url) {
   // https://trezy.com/blog/loading-images-with-web-workers
   const response = await fetch(url, { mode: "no-cors" });
   // Once the file has been fetched, we'll convert it to a `Blob`
@@ -34,11 +34,27 @@ export async function urlToBlob(url) {
   return blob;
 }
 
-export async function isSvg(url) {
-  return url && url.toLowerCase().endsWith('.svg');
+export function getUrlExtension(url) {
+  // Note: outlook.live.com and microsoft.com do something like this: `.ico?v=4`
+  const regex = /(\.[a-z]{1,5})(\?\w+=\w+)?$/i;
+  const matched = url?.match(regex);
+  if (!matched) return;
+  // Get the right regex capture group
+  const [_wholeMatch, extension, _queryString] = matched;
+  return extension.toLowerCase();
+}
+
+export function hasProperIconExtension(url) {
+  // In most situations, we can just do some REGEX to determine the icon type from the file
+  const iconExtensions = ['.ico', '.png', '.jpg', '.jpeg', '.svg'];
+  const urlExtensionMatch = getUrlExtension(url);
+  return iconExtensions.includes(urlExtensionMatch);
+}
+
+async function isSvg(url) {
   // NOTE: calling `urlToBlob` from a content script fails.
-  // let fileBlob = await urlToBlob(url);
-  // return await fileBlob.type.includes("svg"); // image/svg+xml
+  let fileBlob = await urlToBlob(url);
+  return await fileBlob.type.includes("svg"); // image/svg+xml
 }
 
 function isDarkMode() {
@@ -66,7 +82,7 @@ export async function fadeIcon(url, amount = 0.5) {
 
   if (isInWorker() && await isSvg(url)) {
     // https://bugs.chromium.org/p/chromium/issues/detail?id=606317
-    throw new Error(fileBlob.type + ' is not supported.');
+    throw new Error('SVG is not supported.');
   }
 
   let favIconUrl = await getDefaultIconUrl();
@@ -126,7 +142,7 @@ export async function fadeIcon(url, amount = 0.5) {
 export async function unreadIcon(url) {
   if (isInWorker() && await isSvg(url)) {
     // https://bugs.chromium.org/p/chromium/issues/detail?id=606317
-    throw new Error(fileBlob.type + ' is not supported.');
+    throw new Error('SVG is not supported.');
   }
 
   let favIconUrl = await getDefaultIconUrl();
