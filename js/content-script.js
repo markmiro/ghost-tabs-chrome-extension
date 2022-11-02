@@ -12,8 +12,8 @@ let VARS = {
 };
 
 (async () => {
-  const { sleep, isSvg } = await import(chrome.runtime.getURL("js/util.js"));
-  const { fixSvg, setFavicon, getFaviconLinks } = await import(chrome.runtime.getURL("js/util-dom.js"));
+  const { isSvg } = await import(chrome.runtime.getURL("js/util.js"));
+  const { fixSvg, setFavicon, getFaviconUrl } = await import(chrome.runtime.getURL("js/util-dom.js"));
 
   // Visibility state
   VARS.visibilityState = document.visibilityState;
@@ -22,44 +22,6 @@ let VARS = {
     VARS.visibilityState = document.visibilityState;
     VARS.hidden = document.hidden;
   }, false);
-
-  // In theory, data urls can be used for favicons, but in practice, I haven't seen it.
-  // If this starts to be more common, I'll have to resort to a much more complicated solution
-  // that involves tracking data urls that have been used.
-  function isFavIconUntouched(favIconUrl) {
-    return !favIconUrl.startsWith('data:');
-  }
-
-  async function getFaviconUrl() {
-    // Strategy:
-    // • If there is no link icon, don't try to get root favicon.ico
-    //   • If no root favicon.ico, get tht 
-    // • If there are link icons, keep querying until Chrome tells us which icon is actually chosen.
-
-    const links = getFaviconLinks();
-    if (!links || links.length === 0) {
-      let response = await fetch('/favicon.ico');
-      if (response.ok) {
-        return response.url;
-      } else {
-        return undefined;
-      }
-    }
-
-    // Loop until we get a url that doesn't start with `data:`
-    for (let tries = 0; tries <= 3; tries++) {
-      console.log('try to find the correct icon...');
-      const urlCandidate = await chrome.runtime.sendMessage({ action: "GET_FAVICONURL" });
-      if (urlCandidate && isFavIconUntouched(urlCandidate)) {
-        return urlCandidate;
-      }
-      console.log('response for GET_FAVICONURL', urlCandidate);
-      // Wait because we don't want to try again right away
-      await sleep(tries * 100);
-    }
-
-    return undefined;
-  }
 
   async function resetIcon() {
     setFavicon(favIconUrl);

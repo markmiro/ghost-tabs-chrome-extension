@@ -1,4 +1,4 @@
-import { fadeIcon as fadeIconBase, unreadIcon as unreadIconBase, isInWorker, isSvg } from './util.js';
+import { fadeIcon as fadeIconBase, unreadIcon as unreadIconBase, isInWorker, isSvg, isFavIconUntouched, sleep } from './util.js';
 
 if (isInWorker()) throw new Error("`util-dom.js` is not available in web workers.");
 
@@ -42,6 +42,37 @@ export async function unreadIcon(url, amount) {
 
 export function getFaviconLinks() {
   return document.querySelectorAll("link[rel~='icon']");
+}
+
+export async function getFaviconUrl() {
+  // Strategy:
+  // • If there is no link icon, don't try to get root favicon.ico
+  //   • If no root favicon.ico, get tht 
+  // • If there are link icons, keep querying until Chrome tells us which icon is actually chosen.
+
+  const links = getFaviconLinks();
+  if (!links || links.length === 0) {
+    let response = await fetch('/favicon.ico');
+    if (response.ok) {
+      return response.url;
+    } else {
+      return undefined;
+    }
+  }
+
+  // Loop until we get a url that doesn't start with `data:`
+  for (let tries = 0; tries <= 3; tries++) {
+    console.log('try to find the correct icon...');
+    const urlCandidate = await chrome.runtime.sendMessage({ action: "GET_FAVICONURL" });
+    if (urlCandidate && isFavIconUntouched(urlCandidate)) {
+      return urlCandidate;
+    }
+    console.log('response for GET_FAVICONURL', urlCandidate);
+    // Wait because we don't want to try again right away
+    await sleep(tries * 100);
+  }
+
+  return undefined;
 }
 
 // https://stackoverflow.com/a/260876

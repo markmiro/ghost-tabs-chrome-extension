@@ -4,6 +4,13 @@ export function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// In theory, data urls can be used for favicons, but in practice, I haven't seen it.
+// If this starts to be more common, I'll have to resort to a much more complicated solution
+// that involves tracking data urls that have been used.
+export function isFavIconUntouched(favIconUrl) {
+  return !favIconUrl.startsWith('data:');
+}
+
 export function isInWorker() {
   return typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
 }
