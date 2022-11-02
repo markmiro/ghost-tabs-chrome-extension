@@ -26,6 +26,7 @@ export function blobToDataUrl(blob) {
 }
 
 async function urlToBlob(url) {
+  if (!url) return;
   // https://trezy.com/blog/loading-images-with-web-workers
   const response = await fetch(url, { mode: "no-cors" });
   // Once the file has been fetched, we'll convert it to a `Blob`
@@ -52,6 +53,7 @@ export function hasProperIconExtension(url) {
 }
 
 async function isSvg(url) {
+  if (!url) return false;
   // NOTE: calling `urlToBlob` from a content script fails.
   let fileBlob = await urlToBlob(url);
   return await fileBlob.type.includes("svg"); // image/svg+xml

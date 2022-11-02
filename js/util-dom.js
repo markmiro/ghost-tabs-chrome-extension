@@ -3,6 +3,8 @@ import { fadeIcon as fadeIconBase, unreadIcon as unreadIconBase, isInWorker, isF
 if (isInWorker()) throw new Error("`util-dom.js` is not available in web workers.");
 
 async function isSvg(url) {
+  if (!url) return false;
+
   if (isSvg.cache[url]) {
     return isSvg.cache[url];
   }
