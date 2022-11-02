@@ -1,5 +1,10 @@
 body {
-  width: 320px;
+  /* https://baymard.com/blog/line-length-readability should be 50-70 chars per line */
+  /* 
+    Better to size body with chars than pixels so UI scales with browser font size:
+    chrome://settings/?search=font+size
+   */
+  width: 48ch;
   cursor: default;
 }
 
