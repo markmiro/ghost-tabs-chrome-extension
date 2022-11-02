@@ -1,5 +1,20 @@
 TODO:
 
+- Split up code based on criteria
+  - background
+  - content-script
+  - popup? (not sure if this code should be included with content-scripts as part of a "dom" group)
+  - shared
+- Inject content scripts programatically
+  https://developer.chrome.com/docs/extensions/mv3/content_scripts/#functionality
+  - This could make it easier to:
+    - Update the extension
+    - Avoid injecting content scripts into pinned tabs.
+- favIconUrl is empty string when loading (https://developer.chrome.com/docs/extensions/reference/tabs/#property-Tab-favIconUrl)
+- handle discarded tabs? Some tabs might be `autoDiscardable`. (https://developer.chrome.com/docs/extensions/reference/tabs/#property-Tab-discarded)
+- Don't load content script on pinned tabs
+- Outlook and Microsoft use this kind of pattern for favicons `.ico?v=4`
+
 - [ ] Put all this in the content script
   - Request default
   - Fading and unfading
