@@ -58,8 +58,9 @@ Features?
 Resources:
 
 - [Publish Chrome extension via: Chrome Developer Dashboard](https://chrome.google.com/webstore/devconsole)
-- https://stackoverflow.com/a/45974139
-- https://groups.google.com/a/chromium.org/g/chromium-extensions/c/qS1rVpQVl8o
+- [Changing a websites favicon with a Chrome extension?](https://stackoverflow.com/a/45974139)
+- [The difference between Tab.faviconUrl and favicon API
+  ](https://groups.google.com/a/chromium.org/g/chromium-extensions/c/qS1rVpQVl8o)
 - [host permissions](https://developer.chrome.com/docs/extensions/mv3/declare_permissions/#host-permissions)
 - [content script security](https://developer.chrome.com/docs/extensions/mv3/messaging/#content-scripts-are-less-trustworthy)
 - [match patterns](https://developer.chrome.com/docs/extensions/mv3/match_patterns/)
@@ -75,6 +76,7 @@ Resources:
 - [Why not `chrome://favicon/...` — stackoverflow.com](https://stackoverflow.com/questions/10665321/reliably-getting-favicons-in-chrome-extensions-chrome-favicon)
 - [Process SVG favicons](https://levelup.gitconnected.com/draw-an-svg-to-canvas-and-download-it-as-image-in-javascript-f7f7713cf81f)
 - [`chrome.windows.create()` creates inactive tabs that report that they're visible](https://bugs.chromium.org/p/chromium/issues/detail?id=1379232)
+- [SVG favicons in action (+ how to make them auto-update in dark mode)](https://css-tricks.com/svg-favicons-in-action/)
 
 Security Resources (content security policy — CSP, cross origin request — CORS):
 
@@ -121,6 +123,8 @@ A few possible solutions to getting the "original" favicon url consistently:
 - Store original favicon url on first load in local storage (via content script)
   - CON: How do I update the favicon if it gets updated? Actually, I can maybe just use sessions storage
   - CON: What if the data URL gets loaded? I might be able to keep calling `GET_BASIC_DATA` until I get a non-data URL.
+
+Pinned tabs: should not be modified. It doesn't make sense that a pinned tab might go stale, or be "unread". Although, it's possible for a pinned tab to have some state worth displaying in the future (EX: resource usage).
 
 ---
 
