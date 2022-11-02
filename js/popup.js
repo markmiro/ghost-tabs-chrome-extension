@@ -18,9 +18,12 @@ if (DEBUG) {
 
   chrome.tabs.query({ currentWindow: true, active: true }, async (tabs) => {
     const tab = tabs?.[0];
+    if (!tab) return;
     const match = badSites.find(url => tab.url.startsWith(url));
-    if (tab && match) {
+    if (match) {
       document.getElementById('js-page-not-supported').innerHTML = `<b class="db pa3">⚠️ Page isn't supported: ${match}</b><hr />`;
+    } else if (tab.pinned) {
+      document.getElementById('js-page-not-supported').innerHTML = `<b class="db pa3">⚠️ Page isn't supported because it's pinned</b><hr />`;
     }
   });
 }
