@@ -58,6 +58,9 @@ export async function getDefaultIconUrl() {
   return defaultIconUrl;
 }
 
+// Takes icon loading from ~50ms to ~20ms, and sometimes makes it 6x faster (ebay.com icon)
+const bitmapCache = {};
+
 export async function fadeIcon(url, amount = 0.5) {
   if (amount > 1 || amount < 0) console.error('Only accepts numbers between 0 and 1.');
 
@@ -69,9 +72,15 @@ export async function fadeIcon(url, amount = 0.5) {
   let favIconUrl = await getDefaultIconUrl();
   if (url) favIconUrl = url;
 
-  let fileBlob = await urlToBlob(favIconUrl);
-  const imageBitmap = await createImageBitmap(fileBlob);
 
+  let imageBitmap;
+  if (bitmapCache[url]) {
+    imageBitmap = bitmapCache[url];
+  } else {
+    let fileBlob = await urlToBlob(favIconUrl);
+    imageBitmap = await createImageBitmap(fileBlob);
+    bitmapCache[url] = imageBitmap;
+  }
   const canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
   const ctx = canvas.getContext("2d");
   const minOpacity = 0.25;
