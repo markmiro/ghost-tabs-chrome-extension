@@ -28,7 +28,7 @@ export function blobToDataUrl(blob) {
 async function urlToBlob(url) {
   if (!url) return;
   // https://trezy.com/blog/loading-images-with-web-workers
-  const response = await fetch(url, { mode: "no-cors" });
+  const response = await fetch(url);
   // Once the file has been fetched, we'll convert it to a `Blob`
   const blob = await response.blob();
   if (blob.size === 0) throw new Error('Empty blob.');
