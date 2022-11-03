@@ -14,6 +14,10 @@ TODO:
 - handle discarded tabs? Some tabs might be `autoDiscardable`. (https://developer.chrome.com/docs/extensions/reference/tabs/#property-Tab-discarded)
 - Don't load content script on pinned tabs
 - Outlook and Microsoft use this kind of pattern for favicons `.ico?v=4`
+- Add cache of favicons for faster loading
+- Show CSP error in popup.js by sending CSP error to tab, and then displaying it back later.
+
+  - Maybe show a message asking if user wants to enable working on more tabs, but using more permissions
 
 - [ ] Put all this in the content script
   - Request default
@@ -73,6 +77,7 @@ Features?
 Resources:
 
 - [Publish Chrome extension via: Chrome Developer Dashboard](https://chrome.google.com/webstore/devconsole)
+- [Chrome Extension listing images, icons, etc](https://developer.chrome.com/docs/webstore/images)
 - [Changing a websites favicon with a Chrome extension?](https://stackoverflow.com/a/45974139)
 - [The difference between Tab.faviconUrl and favicon API
   ](https://groups.google.com/a/chromium.org/g/chromium-extensions/c/qS1rVpQVl8o)

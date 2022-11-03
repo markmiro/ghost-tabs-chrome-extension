@@ -11,6 +11,12 @@ export function isFavIconUntouched(favIconUrl) {
   return !favIconUrl.startsWith('data:');
 }
 
+export function freshness(timeMs, halfLifeMs) {
+  // https://en.wikipedia.org/wiki/Exponential_decay#Half-life
+  // N(t) = N0 * 2 ^ (-t / halfT)
+  return Math.pow(2, -timeMs / halfLifeMs);
+}
+
 export function isInWorker() {
   return typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
 }
@@ -61,7 +67,7 @@ async function isSvg(url) {
 
 function isDarkMode() {
   // TODO:support dark mode if this module is imported in a background service worker
-  console.log('Need to somehow get darkmode support here');
+  // console.log('Need to somehow get darkmode support here');
   if (isInWorker()) {
     return false;
   }
@@ -103,10 +109,8 @@ export async function fadeIcon(url, amount = 0.5) {
   }
   const canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
   const ctx = canvas.getContext("2d");
-  const minOpacity = 0.25;
-  const adjustedAmount = amount * (1 - minOpacity) + minOpacity;
-  ctx.globalAlpha = adjustedAmount;
-  ctx.filter = `grayscale(${(1 - adjustedAmount) * 100}%)`;
+  ctx.globalAlpha = amount;
+  ctx.filter = `grayscale(${(1 - amount) * 100}%)`;
   ctx.drawImage(imageBitmap, 0, 0);
 
   // Freshness badge

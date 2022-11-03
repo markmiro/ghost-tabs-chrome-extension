@@ -10,9 +10,8 @@
     <meta name="color-scheme" content="light dark" />
   </head>
   <body>
+    <div id="js-page-not-supported"></div>
     <form id="js-options-form" class="flex flex-column sans-serif">
-      <div id="js-page-not-supported"></div>
-
       <a href="popup-debug.html" id="js-debug-link" class="pa2 ba dn"
         >🐛 Debug view</a
       >
@@ -44,7 +43,112 @@
       <hr />
 
       <div class="pa3">
-        <button id="js-reset-icons">Reset icons</button>
+        <label class="flex items-center" style="gap: 0.5ch">
+          <input id="js-enable-fading" name="enableFading" type="checkbox" />
+          Enable favicon fading
+        </label>
+      </div>
+
+      <div id="js-fading-options" class="ph3">
+        <div class="pb3">
+          <label>
+            <div class="flex justify-between items-center">
+              <span>Tab freshness half-life:</span>
+              <b id="fadeHalfLifeTitle"></b>
+            </div>
+            <input
+              name="fadeHalfLife"
+              class="w-100"
+              type="range"
+              min="0"
+              max="8"
+              step="0"
+              value="0"
+            />
+            <small class="flex justify-between">
+              <div class="flex-shrink-0">3 seconds</div>
+              <div class="flex-shrink-0">16 hours</div>
+            </small>
+          </label>
+          <small class="db mt1 o-60">
+            Fading calculated using an
+            <a
+              href="https://en.wikipedia.org/wiki/Exponential_decay#Half-life"
+              target="_blank"
+              >exponential decay</a
+            >
+            for the
+            <a
+              href="https://en.wikipedia.org/wiki/Forgetting_curve"
+              target="_blank"
+            >
+              forgetting curve </a
+            >. Set to the lowest value to have a sped-up version.
+          </small>
+        </div>
+
+        <div class="pb3">
+          <label>
+            <div class="flex justify-between items-center">
+              <span>Minimum favicon opacity:</span>
+              <b id="minFavIconOpacityTitle"></b>
+            </div>
+            <input
+              name="minFavIconOpacity"
+              class="w-100"
+              type="range"
+              min="0"
+              max="4"
+              step="1"
+              value="3"
+            />
+            <small class="flex justify-between">
+              <div class="flex-shrink-0">0%</div>
+              <div class="flex-shrink-0">50%</div>
+            </small>
+          </label>
+          <small class="db mt1 o-60">
+            Icons will fade down to this opacity and will not fade out any
+            further. If you set it to zero, icons will disapear.
+          </small>
+        </div>
+
+        <div class="pb3">
+          <label>
+            <div class="flex justify-between items-center">
+              <span>Time to reset freshness back to 100%:</span>
+              <b id="fadeTimeToResetTitle"></b>
+            </div>
+            <input
+              name="fadeTimeToReset"
+              class="w-100"
+              type="range"
+              min="0"
+              max="4"
+              step="1"
+              value="0"
+            />
+            <small class="flex justify-between">
+              <div class="flex-shrink-0">0 seconds (instant)</div>
+              <div class="flex-shrink-0">5 seconds</div>
+            </small>
+          </label>
+          <small class="db mt1 o-60">
+            The faster the speed, the quicker they get to their min fade.
+          </small>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="pa3">
+        <button id="js-reset-icons">
+          ↩️ Revert existing icons back to original state
+        </button>
+        <small class="db mt1 o-60">
+          Stop freshness calculations on all existing tabs, and reset each icon
+          back to the original state.
+        </small>
       </div>
     </form>
     <script src="js/popup.js" type="module"></script>

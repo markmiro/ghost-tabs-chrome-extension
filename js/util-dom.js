@@ -89,15 +89,15 @@ export async function getFaviconUrl() {
   }
 
   // Loop until we get a url that doesn't start with `data:`
-  for (let tries = 0; tries <= 3; tries++) {
+  for (let tries = 0; tries <= 5; tries++) {
     console.log('try to find the correct icon...');
     const urlCandidate = await chrome.runtime.sendMessage({ action: "GET_FAVICONURL" });
+    console.log('response for GET_FAVICONURL', urlCandidate);
     if (urlCandidate && isFavIconUntouched(urlCandidate)) {
       return urlCandidate;
     }
-    console.log('response for GET_FAVICONURL', urlCandidate);
     // Wait because we don't want to try again right away
-    await sleep(tries * 100);
+    await sleep(tries * 200);
   }
 
   return undefined;

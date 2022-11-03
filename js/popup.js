@@ -1,4 +1,5 @@
 import { DEBUG } from './util.js';
+import { fadeHalfLife, fadeTimeToReset, minFavIconOpacity } from './fade-option-steps.js';
 
 if (DEBUG) {
   document.getElementById('js-debug-link').classList.remove('dn');
@@ -31,21 +32,78 @@ if (DEBUG) {
   });
 }
 
+// ---
+
 {
-  const $optionsForm = document.getElementById('js-options-form');
+
   const options = {};
+
+  function updateFromOptions(options) {
+    console.log('updateFromOptions', { options });
+    if (options.enableFading) {
+      document.getElementById('js-fading-options').classList.remove('dn');
+    } else {
+      document.getElementById('js-fading-options').classList.add('dn');
+    }
+    fadeHalfLife.updateValueTitle(options.fadeHalfLife);
+    minFavIconOpacity.updateValueTitle(options.minFavIconOpacity);
+    fadeTimeToReset.updateValueTitle(options.fadeTimeToReset);
+  }
+
+  const $optionsForm = document.getElementById('js-options-form');
 
   // Prevent submission when clicking random buttons
   $optionsForm.addEventListener('submit', e => e.preventDefault());
 
   chrome.storage.local.get('options', (data) => {
     Object.assign(options, data.options);
-    $optionsForm.showUnreadBadge.checked = Boolean(options.showUnreadBadge);
+    console.log("chrome.storage.local.get('options')", { options });
+    $optionsForm.showUnreadBadge.checked = options.showUnreadBadge;
+    $optionsForm.enableFading.checked = options.enableFading;
+    $optionsForm.fadeHalfLife.value = fadeHalfLife.valueToStep(options.fadeHalfLife);
+    $optionsForm.minFavIconOpacity.value = minFavIconOpacity.valueToStep(options.minFavIconOpacity);
+    $optionsForm.fadeTimeToReset.value = fadeTimeToReset.valueToStep(options.fadeTimeToReset);
+    updateFromOptions(options);
+  });
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes.options?.newValue) {
+      Object.assign(options, changes.options.newValue);
+      updateFromOptions(options);
+    }
   });
 
   $optionsForm.showUnreadBadge.addEventListener('change', (event) => {
     options.showUnreadBadge = event.target.checked;
     chrome.storage.local.set({ options });
+    updateFromOptions(options);
+  });
+
+  $optionsForm.enableFading.addEventListener('change', (event) => {
+    options.enableFading = event.target.checked;
+    chrome.storage.local.set({ options });
+    updateFromOptions(options);
+  });
+
+  $optionsForm.fadeHalfLife.addEventListener('input', e => {
+    const step = parseInt(e.target.value);
+    options.fadeHalfLife = fadeHalfLife.stepValue(step);
+    chrome.storage.local.set({ options });
+    updateFromOptions(options);
+  });
+
+  $optionsForm.minFavIconOpacity.addEventListener('input', e => {
+    const step = parseInt(e.target.value);
+    options.minFavIconOpacity = minFavIconOpacity.stepValue(step);
+    chrome.storage.local.set({ options });
+    updateFromOptions(options);
+  });
+
+  $optionsForm.fadeTimeToReset.addEventListener('input', e => {
+    const step = parseInt(e.target.value);
+    options.fadeTimeToReset = fadeTimeToReset.stepValue(step);
+    chrome.storage.local.set({ options });
+    updateFromOptions(options);
   });
 }
 
