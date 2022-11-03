@@ -121,30 +121,40 @@ document.getElementById("js-reload-all").onclick = async () => {
   });
 };
 
+const commonCreateData = {
+  focused: true,
+  // Chrome Web Store Listing screenshot size
+  // https://developer.chrome.com/docs/webstore/images/#:~:text=1280x800
+  width: 1280,
+  height: 800,
+  top: 0,
+  left: 0,
+}
+
 document.getElementById("js-open-test-sites").onclick = async () => {
   chrome.windows.create({
-    focused: true,
+    ...commonCreateData,
     url: TEST_PAGES,
   });
 };
 
 document.getElementById("js-open-popular-sites-some").onclick = async () => {
   chrome.windows.create({
-    focused: true,
+    ...commonCreateData,
     url: POPULAR_SITES.slice(0, 5),
   });
 };
 
 document.getElementById("js-open-popular-sites").onclick = async () => {
   chrome.windows.create({
-    focused: true,
+    ...commonCreateData,
     url: POPULAR_SITES,
   });
 };
 
 document.getElementById("js-open-csp-sites").onclick = async () => {
   chrome.windows.create({
-    focused: true,
+    ...commonCreateData,
     url: CSP_SITES,
   });
 };
