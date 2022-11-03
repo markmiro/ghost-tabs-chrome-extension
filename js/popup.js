@@ -13,7 +13,8 @@ if (DEBUG) {
 {
   const chromePages = [
     'https://chrome.google.com/webstore',
-    'chrome://'
+    'chrome://',
+    'chrome-extension://',
   ]
 
   chrome.tabs.query({ currentWindow: true, active: true }, async (tabs) => {
