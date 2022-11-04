@@ -107,10 +107,21 @@ if (DEBUG) {
   });
 }
 
-document.getElementById('js-unread-current-tab').addEventListener('click', async () => {
-  const tab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
-  chrome.tabs.sendMessage(tab.id, {
-    action: "MARK_UNREAD",
+document.getElementById('js-unread-selected-tabs').addEventListener('click', async () => {
+  const tabs = (await chrome.tabs.query({ currentWindow: true, highlighted: true }));
+  tabs.forEach(tab => {
+    chrome.tabs.sendMessage(tab.id, {
+      action: "MARK_UNREAD",
+    });
+  });
+});
+
+document.getElementById('js-read-selected-tabs').addEventListener('click', async () => {
+  const tabs = (await chrome.tabs.query({ currentWindow: true, highlighted: true }));
+  tabs.forEach(tab => {
+    chrome.tabs.sendMessage(tab.id, {
+      action: "MARK_READ",
+    });
   });
 });
 

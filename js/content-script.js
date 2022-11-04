@@ -152,6 +152,10 @@ let unread = document.visibilityState === "hidden";
     } else if (request.action === 'MARK_UNREAD') {
       unread = true;
       unreadIconViaWorker(favIconUrl);
+    } else if (request.action === 'MARK_READ') {
+      unread = false;
+      timeHiddenTs = Date.now();
+      updateFromOptions();
     } else if (request.action === 'PRINT_VARS') {
       const timeHiddenMs = timeHiddenTs ? Date.now() - timeHiddenTs : 0;
       const vars = {
