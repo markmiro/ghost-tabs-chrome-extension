@@ -18,16 +18,23 @@ if (DEBUG) {
     'chrome-extension://',
   ]
 
+  function disableElements() {
+    const elements = [...document.getElementsByClassName('js-tab-control')];
+    if (elements) {
+      elements.forEach(el => el.setAttribute('disabled', ''));
+    }
+  }
+
   chrome.tabs.query({ currentWindow: true, active: true }, async (tabs) => {
     const tab = tabs?.[0];
     if (!tab) return;
     const match = chromePages.find(url => tab.url.startsWith(url));
     if (match) {
       document.getElementById('js-page-not-supported').innerHTML = `<b class="db pa3 bg-light-yellow black">⚠️ Chrome pages and the Chrome Web Store aren't supported.</b><hr />`;
-      document.getElementById('js-options-form').setAttribute('disabled', '');
+      disableElements();
     } else if (tab.pinned) {
       document.getElementById('js-page-not-supported').innerHTML = `<b class="db pa3 bg-light-yellow black">⚠️ Pinned tabs aren't supported</b><hr />`;
-      document.getElementById('js-options-form').setAttribute('disabled', '');
+      disableElements();
     }
   });
 }
