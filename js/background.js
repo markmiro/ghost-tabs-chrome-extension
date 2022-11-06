@@ -28,15 +28,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-chrome.runtime.onInstalled.addListener(() => {
-  const options = {
-    showUnreadBadge: true,
-    enableFading: true,
-    fadeHalfLife: fadeHalfLife.stepValue(4),
-    minFavIconOpacity: minFavIconOpacity.stepValue(2),
-    fadeTimeToReset: fadeTimeToReset.stepValue(2),
+const defaultOptions = {
+  showUnreadBadge: true,
+  enableFading: true,
+  fadeHalfLife: fadeHalfLife.stepValue(4),
+  minFavIconOpacity: minFavIconOpacity.stepValue(2),
+  fadeTimeToReset: fadeTimeToReset.stepValue(2),
+}
+
+chrome.runtime.onInstalled.addListener(async () => {
+  const data = await chrome.storage.local.get('options');
+  console.log("chrome.storage.local.get('options')", data);
+  if (!("options" in data)) {
+    console.log('set options to default', defaultOptions);
+    // Await here to to ensure we set the options before they're read.
+    await chrome.storage.local.set({ options: defaultOptions });
   }
-  chrome.storage.local.set({ options });
   chrome.tabs.create({
     active: true,
     url: chrome.runtime.getURL('on-installed.html')
