@@ -1,7 +1,6 @@
 console.log("INSTALLED ghost tabs content script!");
 
 const options = {};
-let IS_DATA_URL_BLOCKED = false;
 let favIconUrl;
 let tabFreshness = 1;
 let timeoutId;
@@ -22,6 +21,18 @@ document.addEventListener("visibilitychange", () => {
 }, false);
 
 let unread = document.visibilityState === "hidden";
+
+let IS_DATA_URL_BLOCKED = false;
+// https://stackoverflow.com/a/61901020
+// https://developer.mozilla.org/en-US/docs/Web/API/SecurityPolicyViolationEvent
+document.addEventListener("securitypolicyviolation", (e) => {
+  console.log('CSP ERROR FROM CONTENT SCRIPT:: event: ', e);
+  // Checking all this to decrease the chance that it was triggered by something else
+  if (e.sourceFile === "chrome-extension" && e.blockedURI === 'data' && e.violatedDirective === 'img-src') {
+    IS_DATA_URL_BLOCKED = true;
+    // TODO: send this data up to the popup so user can see why this tab doesn't get faded.
+  }
+});
 
 (async () => {
   const { freshness } = await import(chrome.runtime.getURL("js/util.js"));
