@@ -75,7 +75,7 @@ export function getFaviconLinks() {
 export async function getFaviconUrl() {
   // Strategy:
   // • If there is no link icon, don't try to get root favicon.ico
-  //   • If no root favicon.ico, get tht 
+  //   • If no root favicon.ico, get that 
   // • If there are link icons, keep querying until Chrome tells us which icon is actually chosen.
 
   const links = getFaviconLinks();
@@ -103,8 +103,7 @@ export async function getFaviconUrl() {
   return undefined;
 }
 
-// https://stackoverflow.com/a/260876
-function setFavicon(href) {
+export const existingFavicons = {
   // Remove existing favicons
   // ---
   // Chrome will choose the correct icon to display in the tab based on a set of criteria. I could
@@ -121,16 +120,40 @@ function setFavicon(href) {
   //
   // Messing with the links should be find since it's all in the head, and most websites don't change
   // content up there dynamically.
-  const allFavicons = getFaviconLinks();
-  allFavicons.forEach((favicon) => favicon.remove());
+  clear() {
+    const allFavicons = getFaviconLinks();
+    allFavicons.forEach((favicon) => {
+      favicon.setAttribute('data-gtce-href', favicon.href);
+      favicon.setAttribute('href', '');
+      // favicon.remove();
+    });
+  },
+  unclear() {
+    const allFavicons = document.querySelectorAll("link[data-gtce-href]");
+    allFavicons.forEach((favicon) => {
+      favicon.setAttribute('href', favicon.getAttribute('data-gtce-href'));
+      favicon.removeAttribute('data-gtce-href');
+    });
+    document.head.removeChild(document.getElementById('gtce-icon'));
+  }
+}
 
-  // Create a new link element
-  let link = document.createElement("link");
-  link.rel = "icon";
-  document.getElementsByTagName("head")[0].appendChild(link);
+// https://stackoverflow.com/a/260876
+function setFavicon(href) {
+  existingFavicons.clear();
 
-  link.type = "image/png";
-  link.href = href;
+  const el = document.getElementById('gtce-icon');
+  if (el) {
+    el.href = href;
+  } else {
+    // Create a new link element
+    let link = document.createElement("link");
+    link.rel = "icon";
+    link.id = "gtce-icon";
+    document.getElementsByTagName("head")[0].appendChild(link);
+    link.type = "image/png";
+    link.href = href;
+  }
 
   // TODO: Consider removing dynamically added links too
   // https://github.com/Elliot67/env-specific-favicon/blob/main/src/contentScripts/index.ts#L53
