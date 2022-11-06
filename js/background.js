@@ -42,6 +42,13 @@ async function injectContentScript() {
   }
 }
 
+function openOnInstallPage() {
+  chrome.tabs.create({
+    active: true,
+    url: chrome.runtime.getURL('on-installed.html')
+  });
+}
+
 const defaultOptions = {
   showUnreadBadge: true,
   enableFading: true,
@@ -58,10 +65,8 @@ chrome.runtime.onInstalled.addListener(async () => {
     // Await here to to ensure we set the options before they're read.
     await chrome.storage.local.set({ options: defaultOptions });
   }
-  chrome.tabs.create({
-    active: true,
-    url: chrome.runtime.getURL('on-installed.html')
-  });
+
+  // openOnInstallPage();
 
   injectContentScript();
 });
