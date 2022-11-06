@@ -28,6 +28,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
+// Requires these permissions in the manifest:
+// "host_permissions": ["http://*/*", "https://*/*"]
+// https://stackoverflow.com/questions/10994324/chrome-extension-content-script-re-injection-after-upgrade-or-install
+async function injectContentScript() {
+  for (const cs of chrome.runtime.getManifest().content_scripts) {
+    for (const tab of await chrome.tabs.query({ url: cs.matches })) {
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: cs.js,
+      });
+    }
+  }
+}
+
 const defaultOptions = {
   showUnreadBadge: true,
   enableFading: true,
@@ -48,4 +62,6 @@ chrome.runtime.onInstalled.addListener(async () => {
     active: true,
     url: chrome.runtime.getURL('on-installed.html')
   });
+
+  injectContentScript();
 });
