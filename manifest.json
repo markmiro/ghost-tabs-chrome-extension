@@ -28,8 +28,8 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["js/util.js", "js/util-dom.js"],
-      "matches": ["http://*/*", "https://*/*"]
+      "matches": ["http://*/*", "https://*/*"],
+      "resources": ["js/util.js", "js/util-dom.js"]
     }
   ]
 }
