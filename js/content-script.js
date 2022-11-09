@@ -9,15 +9,15 @@ let timeHiddenTs = undefined;
 const MINUTES = 5;
 
 // Visibility state
-let VARS = {
+let DEBUG_VARS = {
   visibilityState: undefined,
   hidden: undefined,
 };
-VARS.visibilityState = document.visibilityState;
-VARS.hidden = document.hidden;
+DEBUG_VARS.visibilityState = document.visibilityState;
+DEBUG_VARS.hidden = document.hidden;
 document.addEventListener("visibilitychange", () => {
-  VARS.visibilityState = document.visibilityState;
-  VARS.hidden = document.hidden;
+  DEBUG_VARS.visibilityState = document.visibilityState;
+  DEBUG_VARS.hidden = document.hidden;
 }, false);
 
 let unread = document.visibilityState === "hidden";
@@ -182,7 +182,7 @@ document.addEventListener("securitypolicyviolation", (e) => {
         timeHiddenMs,
         timeHiddenSeconds: timeHiddenMs / 1000,
         timeHiddenMinutes: timeHiddenMs / 60 / 1000,
-        VARS
+        DEBUG_VARS
       };
       console.log(vars);
       sendResponse(vars);
