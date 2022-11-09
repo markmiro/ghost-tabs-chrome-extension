@@ -5,6 +5,11 @@ import { fadeHalfLife, fadeTimeToReset, minFavIconOpacity } from './fade-option-
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (!request) return;
 
+  if (request.action === "PING") {
+    sendResponse((new Date()).toISOString());
+    return;
+  }
+
   // Ideally, pinned tabs shouldn't even get a content script. If so, these tabs wouldn't be sending messages to the background
   // page. In the meantime, we ignore messages from pinned tabs.
   if (sender?.tab?.pinned) return;

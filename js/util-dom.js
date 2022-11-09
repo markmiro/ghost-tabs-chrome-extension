@@ -72,7 +72,34 @@ export function getFaviconLinks() {
   return document.querySelectorAll("link[rel~='icon']");
 }
 
+// Used for when we know which favicon URL is primary, but we got that `favIconUrl` from the `chrome.tabs` API
+function setPrimary(favIconUrl) {
+  const baseUrl = document.location.origin;
+  const favIconUrlObj = new URL(favIconUrl, baseUrl);
+  const links = getFaviconLinks();
+  for (const $el of links) {
+    let linkHref;
+    if ($el.hasAttribute('data-gtce-href')) {
+      linkHref = $el.getAttribute('data-gtce-href');
+    } else if ($el.hasAttribute('href')) {
+      linkHref = $el.getAttribute('href');
+    }
+    const linkUrlObj = new URL(linkHref, baseUrl);
+    // We have to convert to `URL` objects because the original href strings won't match if one
+    // of them is a relative path and the other is absolute.
+    if (favIconUrlObj.href === linkUrlObj.href) {
+      $el.setAttribute('data-gtce-primary', 'true');
+      break;
+    }
+  }
+}
+
 export async function getFaviconUrl() {
+  // const primaryLink = document.querySelector(`link[data-gtce-primary]`);
+  // if (primaryLink) {
+
+  // }
+
   // Strategy:
   // • If there is no link icon, don't try to get root favicon.ico
   //   • If no root favicon.ico, get that 
@@ -89,11 +116,12 @@ export async function getFaviconUrl() {
   }
 
   // Loop until we get a url that doesn't start with `data:`
-  for (let tries = 0; tries <= 5; tries++) {
+  for (let tries = 0; tries <= 10; tries++) {
     console.log('try to find the correct icon...');
     const urlCandidate = await chrome.runtime.sendMessage({ action: "GET_FAVICONURL" });
     console.log('response for GET_FAVICONURL', urlCandidate);
     if (urlCandidate && isFavIconUntouched(urlCandidate)) {
+      setPrimary(urlCandidate);
       return urlCandidate;
     }
     // Wait because we don't want to try again right away
@@ -121,20 +149,24 @@ export const existingFavicons = {
   // Messing with the links should be find since it's all in the head, and most websites don't change
   // content up there dynamically.
   clear() {
-    const allFavicons = getFaviconLinks();
-    allFavicons.forEach((favicon) => {
-      favicon.setAttribute('data-gtce-href', favicon.href);
-      favicon.setAttribute('href', '');
-      // favicon.remove();
-    });
+    const allFavIcons = getFaviconLinks();
+    for (const favicon of allFavIcons) {
+      if (!favicon.getAttribute('data-gtce-href')) {
+        favicon.setAttribute('data-gtce-href', favicon.getAttribute('href'));
+        favicon.setAttribute('href', '');
+      }
+    }
   },
   unclear() {
-    const allFavicons = document.querySelectorAll("link[data-gtce-href]");
-    allFavicons.forEach((favicon) => {
+    const allFavIcons = document.querySelectorAll("link[data-gtce-href]");
+    for (const favicon of allFavIcons) {
       favicon.setAttribute('href', favicon.getAttribute('data-gtce-href'));
       favicon.removeAttribute('data-gtce-href');
-    });
-    document.head.removeChild(document.getElementById('gtce-icon'));
+      favicon.removeAttribute('data-gtce-primary');
+    }
+    if (document.getElementById('gtce-icon')) {
+      document.head.removeChild(document.getElementById('gtce-icon'));
+    }
   }
 }
 
@@ -159,8 +191,16 @@ function setFavicon(href) {
   // https://github.com/Elliot67/env-specific-favicon/blob/main/src/contentScripts/index.ts#L53
 }
 
-export async function resetIcon() {
+export async function resetIcon(favIconUrl) {
   setFavicon(favIconUrl);
+  // Reverting the DOM to the original state causes the favicon to go back to a modified state.
+  // Approaches I've tried:
+  // - Adding a version query string to the original DOM hrefs doesn't help (https://stackoverflow.com/a/7116701).
+  // - Trigger update via changing the data url, and then reverting all DOM changes doesn't work either
+  // - Doing a `setTimeout` to revert the DOM changes causes the modified favicon to reappear after DOM changes are reverted.
+  //   I assumed that the setTimeout would fix batching issues, but that doesn't appear to be the case.
+  //   `setTimeout(existingFavicons.unclear, 1000);`
+  // The only way to revert the favicon back to "normal" in a consisten way is to update to a data URL that corresponds to the original favicon url
 }
 
 export async function fadeIconViaWorker(favIconUrl, opacity) {
