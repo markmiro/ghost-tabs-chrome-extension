@@ -191,7 +191,7 @@ function setFavicon(href) {
   // https://github.com/Elliot67/env-specific-favicon/blob/main/src/contentScripts/index.ts#L53
 }
 
-export async function resetIcon(favIconUrl) {
+export function resetIcon(favIconUrl) {
   setFavicon(favIconUrl);
   // Reverting the DOM to the original state causes the favicon to go back to a modified state.
   // Approaches I've tried:

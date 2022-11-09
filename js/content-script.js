@@ -88,7 +88,7 @@ document.addEventListener("securitypolicyviolation", (e) => {
       if (unread) {
         unreadIconViaWorker(favIconUrl);
       } else {
-        resetIcon();
+        resetIcon(favIconUrl);
       }
     }
 
@@ -97,7 +97,7 @@ document.addEventListener("securitypolicyviolation", (e) => {
     }
 
     if (!options.showUnreadBadge && !options.enableFading) {
-      resetIcon();
+      resetIcon(favIconUrl);
     }
   }
 
@@ -147,7 +147,7 @@ document.addEventListener("securitypolicyviolation", (e) => {
       console.log('ACTION: UNFADE', favIconUrl);
       tabFreshness = 1;
       timeHiddenTs = undefined;
-      resetIcon();
+      resetIcon(favIconUrl);
     } else if (request.action === "PLAY_FADE") {
       clearInterval(intervalId);
       intervalId = setInterval(() => {
@@ -159,7 +159,7 @@ document.addEventListener("securitypolicyviolation", (e) => {
       // https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
     } else if (request.action === 'STOP') {
       stop();
-      resetIcon();
+      resetIcon(favIconUrl);
     } else if (request.action === 'MARK_UNREAD') {
       unread = true;
       unreadIconViaWorker(favIconUrl);
