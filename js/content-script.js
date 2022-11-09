@@ -50,9 +50,14 @@ document.addEventListener("securitypolicyviolation", (e) => {
     intervalId = setInterval(updateFromOptions, intervalLengthMs);
   }
 
-  function stop() {
+  function unfade() {
     tabFreshness = 1;
     timeHiddenTs = undefined;
+    resetIcon(favIconUrl);
+  }
+
+  function stop() {
+    unfade();
   }
 
   async function updateFromOptions() {
@@ -139,35 +144,34 @@ document.addEventListener("securitypolicyviolation", (e) => {
   }
 
   chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
-    if (request.action === "FADE") {
-      console.log('ACTION: FADE', favIconUrl);
-      tabFreshness *= 0.5;
-      fadeIconViaWorker(favIconUrl, tabFreshness);
-    } else if (request.action === 'UNFADE') {
-      console.log('ACTION: UNFADE', favIconUrl);
-      tabFreshness = 1;
-      timeHiddenTs = undefined;
-      resetIcon(favIconUrl);
-    } else if (request.action === "PLAY_FADE") {
-      clearInterval(intervalId);
-      intervalId = setInterval(() => {
-        tabFreshness *= 0.95;
-        fadeIconViaWorker(favIconUrl, tabFreshness);
-      }, 200);
-    } else if (request.action === 'START') {
-      clearInterval(intervalId);
-      // https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
-    } else if (request.action === 'STOP') {
-      stop();
-      resetIcon(favIconUrl);
-    } else if (request.action === 'MARK_UNREAD') {
+    if (request.action === 'MARK_UNREAD') {
       unread = true;
       unreadIconViaWorker(favIconUrl);
     } else if (request.action === 'MARK_READ') {
       unread = false;
       timeHiddenTs = Date.now();
-      updateFromOptions();
-    } else if (request.action === 'PRINT_VARS') {
+    }
+
+    // DEBUG
+    else if (request.action === "DEBUG.FADE") {
+      console.log('ACTION: FADE', favIconUrl);
+      tabFreshness *= 0.5;
+      fadeIconViaWorker(favIconUrl, tabFreshness);
+    } else if (request.action === 'DEBUG.UNFADE') {
+      console.log('ACTION: UNFADE', favIconUrl);
+      unfade();
+    } else if (request.action === "DEBUG.PLAY_FADE") {
+      clearInterval(intervalId);
+      intervalId = setInterval(() => {
+        tabFreshness *= 0.95;
+        fadeIconViaWorker(favIconUrl, tabFreshness);
+      }, 200);
+    } else if (request.action === 'DEBUG.START') {
+      clearInterval(intervalId);
+      // https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
+    } else if (request.action === 'DEBUG.STOP') {
+      stop();
+    } else if (request.action === 'DEBUG.PRINT_VARS') {
       const timeHiddenMs = timeHiddenTs ? Date.now() - timeHiddenTs : 0;
       const vars = {
         options,

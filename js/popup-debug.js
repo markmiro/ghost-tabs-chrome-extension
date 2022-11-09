@@ -5,14 +5,14 @@ import { CSP_SITES, POPULAR_SITES, TEST_PAGES } from './util-debug.js';
 document.getElementById('js-start').addEventListener('click', async () => {
   const tabs = await chrome.tabs.query({ pinned: false, windowType: 'normal' });
   tabs.forEach(async (tab) => {
-    chrome.tabs.sendMessage(tab.id, { action: "START" });
+    chrome.tabs.sendMessage(tab.id, { action: "DEBUG.START" });
   });
 });
 
 document.getElementById('js-stop').addEventListener('click', async () => {
   const tabs = await chrome.tabs.query({ pinned: false, windowType: 'normal' });
   tabs.forEach(async (tab) => {
-    chrome.tabs.sendMessage(tab.id, { action: "STOP" });
+    chrome.tabs.sendMessage(tab.id, { action: "DEBUG.STOP" });
   });
 });
 
@@ -41,7 +41,7 @@ chrome.tabs.query({ currentWindow: true, pinned: false, windowType: 'normal' }, 
 
 document.getElementById('js-print-vars-all').addEventListener('click', async () => {
   const tabs = await chrome.tabs.query({ currentWindow: true });
-  const allTabVars = tabs.map(tab => chrome.tabs.sendMessage(tab.id, { action: "PRINT_VARS" }));
+  const allTabVars = tabs.map(tab => chrome.tabs.sendMessage(tab.id, { action: "DEBUG.PRINT_VARS" }));
 
   let all = '';
   let i = 0;
@@ -55,7 +55,7 @@ document.getElementById('js-print-vars-all').addEventListener('click', async () 
 document.getElementById('js-print-vars-current-tab').addEventListener('click', async () => {
   const tab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
   chrome.tabs.sendMessage(tab.id, {
-    action: "PRINT_VARS",
+    action: "DEBUG.PRINT_VARS",
   });
 });
 
@@ -69,14 +69,14 @@ document.getElementById('js-unread-current-tab').addEventListener('click', async
 document.getElementById('js-fade-current-tab').addEventListener('click', async () => {
   const tab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
   chrome.tabs.sendMessage(tab.id, {
-    action: "FADE",
+    action: "DEBUG.FADE",
   });
 });
 
 document.getElementById('js-unfade-current-tab').addEventListener('click', async () => {
   const tab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
   chrome.tabs.sendMessage(tab.id, {
-    action: "UNFADE",
+    action: "DEBUG.UNFADE",
   });
 })
 
@@ -86,14 +86,14 @@ document.getElementById('js-fade-all').addEventListener('click', async () => {
   console.log(tabs);
   tabs.forEach(async (tab) => {
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
-    chrome.tabs.sendMessage(tab.id, { action: "FADE" });
+    chrome.tabs.sendMessage(tab.id, { action: "DEBUG.FADE" });
   });
 });
 
 document.getElementById('js-play-fade-all').addEventListener('click', async () => {
   const tabs = await chrome.tabs.query({ currentWindow: true, pinned: false });
   tabs.forEach(async (tab) => {
-    chrome.tabs.sendMessage(tab.id, { action: "PLAY_FADE" });
+    chrome.tabs.sendMessage(tab.id, { action: "DEBUG.PLAY_FADE" });
   });
 });
 
@@ -104,7 +104,7 @@ document.getElementById('js-unfade-all').addEventListener('click', async () => {
   console.log(tabs);
   tabs.forEach(async (tab) => {
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
-    chrome.tabs.sendMessage(tab.id, { action: "UNFADE" });
+    chrome.tabs.sendMessage(tab.id, { action: "DEBUG.UNFADE" });
   });
 });
 
@@ -115,7 +115,7 @@ document.getElementById('js-random-fade').addEventListener('click', async () => 
   console.log(tabs);
   tabs.forEach(async (tab) => {
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage
-    chrome.tabs.sendMessage(tab.id, { action: Math.random() > 0.5 ? "FADE" : "UNFADE" });
+    chrome.tabs.sendMessage(tab.id, { action: Math.random() > 0.5 ? "DEBUG.FADE" : "DEBUG.UNFADE" });
   });
 });
 
