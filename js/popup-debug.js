@@ -1,4 +1,4 @@
-import { getDefaultIconUrl } from './util.js';
+import { getDefaultIconUrl, injectContentScript } from './util.js';
 import { fadeIcon } from './util-dom.js';
 import { CSP_SITES, POPULAR_SITES, TEST_PAGES } from './util-debug.js';
 
@@ -163,3 +163,5 @@ document.getElementById("js-open-csp-sites").onclick = async () => {
     url: CSP_SITES,
   });
 };
+
+document.getElementById('js-inject-content-script').onclick = injectContentScript;

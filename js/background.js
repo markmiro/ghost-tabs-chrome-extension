@@ -1,5 +1,5 @@
 // import "./background-headers.js";
-import { fadeIcon, unreadIcon } from './util.js';
+import { injectContentScript, fadeIcon, unreadIcon } from './util.js';
 import { fadeHalfLife, fadeTimeToReset, minFavIconOpacity } from './fade-option-steps.js';
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -32,20 +32,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 });
-
-// Requires these permissions in the manifest:
-// "host_permissions": ["http://*/*", "https://*/*"]
-// https://stackoverflow.com/questions/10994324/chrome-extension-content-script-re-injection-after-upgrade-or-install
-async function injectContentScript() {
-  for (const cs of chrome.runtime.getManifest().content_scripts) {
-    for (const tab of await chrome.tabs.query({ url: cs.matches })) {
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: cs.js,
-      });
-    }
-  }
-}
 
 function openOnInstallPage() {
   chrome.tabs.create({
