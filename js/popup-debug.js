@@ -67,16 +67,21 @@ document.getElementById('js-unread-current-tab').addEventListener('click', async
 });
 
 document.getElementById('js-fade-current-tab').addEventListener('click', async () => {
-  console.log("clicked");
   const tab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
   chrome.tabs.sendMessage(tab.id, {
     action: "FADE",
+  });
+});
+
+document.getElementById('js-unfade-current-tab').addEventListener('click', async () => {
+  const tab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
+  chrome.tabs.sendMessage(tab.id, {
+    action: "UNFADE",
   });
 })
 
 document.getElementById('js-fade-all').addEventListener('click', async () => {
   // debugger;
-  console.log("clicked");
   const tabs = await chrome.tabs.query({ currentWindow: true, pinned: false });
   console.log(tabs);
   tabs.forEach(async (tab) => {
