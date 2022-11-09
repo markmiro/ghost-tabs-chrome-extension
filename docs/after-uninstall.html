@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="stylesheet" href="../css/tachyons.css" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="icon" href="../img/generated/ghost-extension-icon-32.png" />
+    <title>Ghost Tabs Uninstall: ✋ You're not done yet!</title>
+  </head>
+  <body class="pa2 sans-serif lh-copy">
+    <div class="measure-wide center">
+      <h1>Ghost Tabs Uninstall</h1>
+      <p>NOTE: Your tab favicons will eventually return back to normal.</p>
+      <p>There are a couple ways to speed this up:</p>
+      <ol>
+        <li>Reload all your tabs manually.</li>
+        <li>
+          Install the extension again, Click "Turn Off" from the popup, and
+          uninstall it again.
+          <img
+            srcset="img/ghost-tabs-uninstall-disable@2x.png 2x"
+            class="db mt1"
+          />
+        </li>
+      </ol>
+      <p>
+        <dt class="b">
+          Why don't my favicons go back to normal after I uninstall?
+        </dt>
+        <dd>
+          Chrome doesn't have a way for these scripts to detect the exact moment
+          of uninstall. This extension injects code into each page. This code
+          will eventually determine that it can't reach the extension, and will
+          disable itself on existing pages (future pages won't get code
+          injected, so nothing needs to be done for them).
+        </dd>
+      </p>
+    </div>
+  </body>
+</html>
