@@ -1,3 +1,5 @@
+# Ghost Tabs Chrome Extension
+
 URLS:
 
 - https://github.com/markmiro/ghost-tabs-chrome-extension/actions/workflows/pages/pages-build-deployment
