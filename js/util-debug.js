@@ -50,3 +50,101 @@ export const POPULAR_SITES = [
   "https://msn.com",
   "https://booking.com",
 ];
+
+export const DEMO_SITES = [
+  {
+    url: "https://www.google.com/search?q=something",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://www.google.com/search?q=new+youtube+ui",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://www.youtube.com/",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://www.youtube.com/feed/library",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://twitter.com/",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://twitter.com/explore/tabs/trending",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://twitter.com/settings/account/personalization",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://en.wikipedia.org/wiki/Discovery_of_the_tomb_of_Tutankhamun",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://en.wikipedia.org/wiki/Tomb_of_Tutankhamun",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://en.wikipedia.org/wiki/Valley_of_the_Kings",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://en.wikipedia.org/wiki/Egyptology",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://en.wikipedia.org/wiki/Howard_Carter",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://en.wikipedia.org/wiki/Ancient_Egypt",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://www.amazon.com/",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://www.amazon.com/gp/css/homepage.html?ref_=nav_AccountFlyout_ya",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://www.amazon.com/gp/yourstore?ref_=nav_AccountFlyout_recs",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://www.amazon.com/gp/yourstore?ref_=nav_AccountFlyout_recs",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://www.amazon.com/gp/history?ref_=nav_AccountFlyout_browsinghistory",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+  {
+    url: "https://www.netflix.com/",
+    timeHiddenMs: 5000,
+    unread: true,
+  },
+];
