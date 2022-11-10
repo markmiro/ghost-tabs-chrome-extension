@@ -1,15 +1,10 @@
-import { DEBUG } from './util.js';
 import { fadeHalfLife, fadeTimeToReset, minFavIconOpacity } from './fade-option-steps.js';
 
-if (DEBUG) {
-  document.getElementById('js-debug-link').classList.remove('dn');
-} else {
-  document.addEventListener('keypress', e => {
-    if (e.key === 'k') {
-      window.location.assign(chrome.runtime.getURL('popup-debug.html'));
-    }
-  })
-}
+document.addEventListener('keypress', e => {
+  if (e.key === 'k') {
+    window.location.assign(chrome.runtime.getURL('popup-debug.html'));
+  }
+});
 
 {
   const chromePages = [

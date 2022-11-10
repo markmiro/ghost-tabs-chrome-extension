@@ -14,40 +14,49 @@
     <a href="popup.html" class="db pa2 ba">← Back</a>
     <div class="flex flex-column sans-serif pa3" style="gap: 1em">
       <div class="flex flex-column" style="gap: 0.5em">
-        <button id="js-start">🎬 Start</button>
-        <button id="js-stop">✋ Stop</button>
+        <div class="gtce-grid-2-col">
+          <button id="js-start">🎬 Start</button>
+          <button id="js-stop">✋ Stop</button>
+        </div>
 
-        <button id="js-open-test-sites">
-          ⭐️🧪 Open window with test pages
-        </button>
-        <button id="js-open-csp-sites">
-          ⭐️🧪⛔️ Open window with CSP sites
-        </button>
-        <button id="js-open-popular-sites-some">
-          ⭐️ Open window with 5 popular sites
-        </button>
-        <button id="js-open-popular-sites">
-          ⭐️⭐️⭐️ Open window with lots of popular sites
-        </button>
-        <button id="js-print-options">🖨️ Print options</button>
+        <h3 class="mv1">Open window</h3>
+        <div class="gtce-grid-2-col">
+          <button id="js-open-test-sites">
+            🧪 Test pages
+          </button>
+          <button id="js-open-csp-sites">
+            🧪⛔️ CSP sites
+          </button>
+          <button id="js-open-popular-sites-some">
+            ⭐️ 5 popular sites
+          </button>
+          <button id="js-open-popular-sites">
+            ⭐️⭐️⭐️ All popular sites
+          </button>
+        </div>
 
         <h3 class="mv1">Current tab</h3>
-        <button id="js-fade-current-tab">👻 Fade step</button>
-        <button id="js-unfade-current-tab">🧟 Unfade</button>
-        <button id="js-unread-current-tab">🔵 Mark unread</button>
-        <button id="js-print-vars-current-tab">🖨️ Print vars</button>
+        <div class="gtce-grid-2-col">
+          <button id="js-fade-current-tab">👻 Fade step</button>
+          <button id="js-unfade-current-tab">🧟 Unfade</button>
+          <button id="js-unread-current-tab">🔵 Mark unread</button>
+          <button id="js-print-vars-current-tab">🖨️ Print vars</button>
+        </div>
 
         <h3 class="mv1">All tabs in window</h3>
-        <button id="js-inject-content-script">💉 Inject content script</button>
-        <button id="js-reload-all">🔄 Reload</button>
-        <button id="js-fade-all">👻👻👻 Fade step</button>
-        <button id="js-play-fade-all">👻👻👻 ▶️ Fade</button>
-        <button id="js-unfade-all">🧟🧟🧟 Unfade</button>
-        <button id="js-random-fade">👻/🧟 Random fade</button>
-        <button id="js-print-vars-all">🖨️ Print vars</button>
-      </div>
-      <div>
-        <b>Tab data</b>
+        <div class="gtce-grid-2-col">
+          <button id="js-inject-content-script">💉 Inject content script</button>
+          <button id="js-reload-all">🔄 Reload</button>
+          <button id="js-fade-all">👻👻👻 Fade step</button>
+          <button id="js-play-fade-all">👻👻👻 ▶️ Fade</button>
+          <button id="js-unfade-all">🧟🧟🧟 Unfade</button>
+          <button id="js-random-fade">👻/🧟 Random fade</button>
+        </div>
+        
+        <h3 class="mv1">Tab data</h3>
+        <button id="js-print-icons">Tab icons</button>
+        <button id="js-print-options" class="code">chrome.storage.local.get('options')</button>
+        <button id="js-print-vars-all">All page vars</button>
         <div id="js-tab-data" style="overflow: auto"></div>
       </div>
     <!--  -->

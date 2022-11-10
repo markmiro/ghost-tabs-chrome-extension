@@ -37,3 +37,9 @@ a:any-link {
   opacity: 0.5;
   pointer-events: none;
 }
+
+.gtce-grid-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5em;
+}

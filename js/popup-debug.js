@@ -16,7 +16,8 @@ document.getElementById('js-stop').addEventListener('click', async () => {
   });
 });
 
-chrome.tabs.query({ currentWindow: true, pinned: false, windowType: 'normal' }, async tabs => {
+document.getElementById('js-print-icons').onclick = async () => {
+  const tabs = await chrome.tabs.query({ currentWindow: true, pinned: false, windowType: 'normal' });
   const defaultIconUrl = await getDefaultIconUrl();
   const fadedIconUrls = tabs.map(tab => fadeIcon(tab.favIconUrl, 0.5));
 
@@ -27,17 +28,18 @@ chrome.tabs.query({ currentWindow: true, pinned: false, windowType: 'normal' }, 
     const favIconUrl = tabs[i].favIconUrl;
     const indexOfDot = favIconUrl?.lastIndexOf(".");
     all += `
-      <div>
-        <img src="${favIconUrl || defaultIconUrl}" width="16px" height="16px" />
-        <img src="${fadedUrl}" width="16px" height="16px" />
-        ${favIconUrl && (favIconUrl.startsWith('data:') ? '<span class="o-20">data...</div>' : favIconUrl.slice(indexOfDot))}
-      </div>
-    `;
+        <div>
+          <img src="${favIconUrl || defaultIconUrl}" width="16px" height="16px" />
+          <img src="${fadedUrl}" width="16px" height="16px" />
+          ${favIconUrl && (favIconUrl.startsWith('data:') ? '<span class="o-20">data...</div>' : favIconUrl.slice(indexOfDot))}
+        </div>
+      `;
     i++;
   }
 
   document.getElementById('js-tab-data').innerHTML = `<div class="flex flex-column">${all}</div>`;
-});
+
+}
 
 document.getElementById('js-print-vars-all').addEventListener('click', async () => {
   const tabs = await chrome.tabs.query({ currentWindow: true });
