@@ -1,5 +1,10 @@
-Figma file:
-https://www.figma.com/file/bPOvMo5H7IF9OdFE9xAF2Z/tab-ghost-extension
+Figma files:
+
+Extension icon:
+https://www.figma.com/file/bPOvMo5H7IF9OdFE9xAF2Z/tab-ghost-extension?node-id=87%3A771
+
+Default favicon:
+https://www.figma.com/file/bPOvMo5H7IF9OdFE9xAF2Z/tab-ghost-extension?node-id=0%3A1
 
 To export:
 
