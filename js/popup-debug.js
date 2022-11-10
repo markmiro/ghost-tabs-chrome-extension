@@ -59,6 +59,11 @@ document.getElementById('js-print-vars-current-tab').addEventListener('click', a
   });
 });
 
+document.getElementById('js-print-options').addEventListener('click', async () => {
+  const data = await chrome.storage.local.get('options');
+  document.getElementById('js-tab-data').innerHTML = `<pre>${JSON.stringify(data, null, '  ')}</pre>`;
+});
+
 document.getElementById('js-unread-current-tab').addEventListener('click', async () => {
   const tab = (await chrome.tabs.query({ currentWindow: true, active: true }))[0];
   chrome.tabs.sendMessage(tab.id, {
