@@ -1,6 +1,6 @@
-import { getDefaultIconUrl, injectContentScript } from "./util.js";
-import { fadeIcon } from "./util-dom.js";
-import { CSP_SITES, POPULAR_SITES, TEST_PAGES } from "./util-debug.js";
+import { getDefaultIconUrl, injectContentScript } from "./helpers/util.js";
+import { fadeIcon } from "./helpers/util-dom.js";
+import { CSP_SITES, POPULAR_SITES, TEST_PAGES } from "./helpers/util-debug.js";
 
 document.getElementById("js-start").addEventListener("click", async () => {
   const tabs = await chrome.tabs.query({ pinned: false, windowType: "normal" });

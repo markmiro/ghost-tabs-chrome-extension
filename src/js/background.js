@@ -1,10 +1,10 @@
 // import "./background-headers.js";
-import { injectContentScript, fadeIcon, unreadIcon } from "./util.js";
+import { injectContentScript, fadeIcon, unreadIcon } from "./helpers/util.js";
 import {
   fadeHalfLife,
   fadeTimeToReset,
   minFavIconOpacity,
-} from "./fade-option-steps.js";
+} from "./helpers/fade-option-steps.js";
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (!request) return;

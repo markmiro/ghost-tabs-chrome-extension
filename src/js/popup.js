@@ -2,7 +2,7 @@ import {
   fadeHalfLife,
   fadeTimeToReset,
   minFavIconOpacity,
-} from "./fade-option-steps.js";
+} from "./helpers/fade-option-steps.js";
 
 document.addEventListener("keypress", (e) => {
   if (e.key === "k") {

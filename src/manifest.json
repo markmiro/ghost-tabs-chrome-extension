@@ -30,7 +30,7 @@
   "web_accessible_resources": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "resources": ["js/util.js", "js/util-dom.js"]
+      "resources": ["js/helpers/util.js", "js/helpers/util-dom.js"]
     }
   ]
 }

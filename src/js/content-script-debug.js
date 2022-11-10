@@ -3,7 +3,7 @@ let extensionInvalidated = false;
 
 (async () => {
   const { fadeIconViaWorker, getFaviconUrl, resetIcon } = await import(
-    chrome.runtime.getURL("js/util-dom.js")
+    chrome.runtime.getURL("js/helpers/util-dom.js")
   );
 
   const favIconUrl = await getFaviconUrl();

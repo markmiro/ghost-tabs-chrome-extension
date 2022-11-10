@@ -43,9 +43,11 @@ document.addEventListener("securitypolicyviolation", (e) => {
 });
 
 (async () => {
-  const { freshness } = await import(chrome.runtime.getURL("js/util.js"));
+  const { freshness } = await import(
+    chrome.runtime.getURL("js/helpers/util.js")
+  );
   const { resetIcon, fadeIconViaWorker, unreadIconViaWorker, getFaviconUrl } =
-    await import(chrome.runtime.getURL("js/util-dom.js"));
+    await import(chrome.runtime.getURL("js/helpers/util-dom.js"));
 
   favIconUrl = await getFaviconUrl();
 
