@@ -180,7 +180,7 @@ document.addEventListener("securitypolicyviolation", (e) => {
       fadeIconViaWorker(favIconUrl, tabFreshness);
     } else if (request.action === 'DEBUG.UNFADE') {
       console.log('ACTION: UNFADE', favIconUrl);
-      unfade();
+      resetIcon(favIconUrl);
     } else if (request.action === "DEBUG.PLAY_FADE") {
       clearInterval(intervalId);
       intervalId = setInterval(() => {
