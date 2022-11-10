@@ -1,12 +1,12 @@
 console.log("INSTALLED ghost tabs content script!");
 
-const options = {};
+let options = {};
 let favIconUrl;
 let tabFreshness = 1;
 let timeoutId;
 let intervalId;
 let timeHiddenTs = undefined;
-const MINUTES = 5;
+let MINUTES = 5;
 
 // Visibility state
 let DEBUG_VARS = {
@@ -50,18 +50,25 @@ document.addEventListener("securitypolicyviolation", (e) => {
     intervalId = setInterval(updateFromOptions, intervalLengthMs);
   }
 
-  function unfade() {
+  function resetState() {
     tabFreshness = 1;
     timeHiddenTs = undefined;
-    resetIcon(favIconUrl);
   }
 
   function stop() {
-    unfade();
+    resetState();
+    resetIcon(favIconUrl);
+    clearInterval(intervalId);
+    clearTimeout(timeoutId);
   }
 
   async function updateFromOptions() {
     const opacity = Math.max(options.minFavIconOpacity, tabFreshness);
+
+    if (!options.enabled || IS_DATA_URL_BLOCKED) {
+      stop();
+      return;
+    }
 
     if (tabFreshness < options.minFavIconOpacity) {
       // Stop doing interval after we've reached the bottom
@@ -119,9 +126,23 @@ document.addEventListener("securitypolicyviolation", (e) => {
       }
     });
 
-    document.addEventListener("visibilitychange", () => {
+    document.addEventListener("visibilitychange", async () => {
       clearInterval(intervalId);
       clearTimeout(timeoutId);
+
+      let currErr = false;
+      try {
+        const timestamp = await chrome.runtime.sendMessage({ action: "PING" });
+        if (!timestamp) {
+          currErr = new Error("PING response is missing a timestamp.");
+        }
+      } catch (err) {
+        currErr = err;
+      }
+      if (currErr || !options.enabled || IS_DATA_URL_BLOCKED) {
+        stop();
+        return;
+      }
 
       if (document.visibilityState === 'visible') {
         // TODO: make another option for unread reset time
@@ -167,8 +188,7 @@ document.addEventListener("securitypolicyviolation", (e) => {
         fadeIconViaWorker(favIconUrl, tabFreshness);
       }, 200);
     } else if (request.action === 'DEBUG.START') {
-      clearInterval(intervalId);
-      // https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
+      updateFromOptions();
     } else if (request.action === 'DEBUG.STOP') {
       stop();
     } else if (request.action === 'DEBUG.PRINT_VARS') {

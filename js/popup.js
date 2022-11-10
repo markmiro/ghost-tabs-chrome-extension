@@ -41,7 +41,6 @@ if (DEBUG) {
 // ---
 
 {
-
   const options = {};
 
   function updateFromOptions(options) {
@@ -54,6 +53,13 @@ if (DEBUG) {
     fadeHalfLife.updateValueTitle(options.fadeHalfLife);
     minFavIconOpacity.updateValueTitle(options.minFavIconOpacity);
     fadeTimeToReset.updateValueTitle(options.fadeTimeToReset);
+    if (options.enabled) {
+      document.getElementById('js-options-form').removeAttribute('disabled');
+      document.getElementById('js-enable-extension').classList.add('dn');
+    } else {
+      document.getElementById('js-options-form').setAttribute('disabled', true);
+      document.getElementById('js-enable-extension').classList.remove('dn');
+    }
   }
 
   const $optionsForm = document.getElementById('js-options-form');
@@ -62,6 +68,10 @@ if (DEBUG) {
   $optionsForm.addEventListener('submit', e => e.preventDefault());
 
   chrome.storage.local.get('options', (data) => {
+    // if (!data.options.enabled) {
+    //   document.location = 'popup-disabled.html';
+    //   return;
+    // }
     Object.assign(options, data.options);
     console.log("chrome.storage.local.get('options')", { options });
     $optionsForm.showUnreadBadge.checked = options.showUnreadBadge;
@@ -111,6 +121,19 @@ if (DEBUG) {
     chrome.storage.local.set({ options });
     updateFromOptions(options);
   });
+
+  async function setEnabled(isEnabled) {
+    options.enabled = isEnabled;
+    await chrome.storage.local.set({ options });
+    updateFromOptions(options);
+  }
+
+  document.getElementById('js-enable-extension').addEventListener('click', () => setEnabled(true));
+  document.getElementById('js-disable-extension').addEventListener('click', () => {
+    if (window.confirm('Are you sure you want to reset the extension?')) {
+      setEnabled(false);
+    }
+  });
 }
 
 document.getElementById('js-unread-selected-tabs').addEventListener('click', async () => {
@@ -129,11 +152,4 @@ document.getElementById('js-read-selected-tabs').addEventListener('click', async
       action: "MARK_READ",
     });
   });
-});
-
-document.getElementById('js-reset-icons').addEventListener('click', async () => {
-  const tabs = await chrome.tabs.query({});
-  tabs.forEach(tab =>
-    chrome.tabs.sendMessage(tab.id, { action: "STOP" })
-  );
 });

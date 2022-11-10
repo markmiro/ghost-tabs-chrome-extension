@@ -149,15 +149,26 @@
       <hr />
 
       <div class="pa3">
-        <button id="js-reset-icons">
-          ↩️ Revert existing icons back to original state
-        </button>
+        <button id="js-disable-extension">Turn Off</button>
         <small class="db mt1 o-60">
           Stop freshness calculations on all existing tabs, and reset each icon
           back to the original state.
         </small>
       </div>
     </form>
+    <button
+      id="js-enable-extension"
+      class="dn"
+      style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 200%;
+      "
+    >
+      Turn On
+    </button>
     <script src="js/popup.js" type="module"></script>
   </body>
 </html>

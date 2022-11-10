@@ -41,6 +41,7 @@ function openOnInstallPage() {
 }
 
 const defaultOptions = {
+  enabled: true,
   showUnreadBadge: true,
   enableFading: true,
   fadeHalfLife: fadeHalfLife.stepValue(4),
