@@ -21,15 +21,9 @@
 
         <h3 class="mv1">Open window</h3>
         <div class="gtce-grid-2-col">
-          <button id="js-open-test-sites">
-            🧪 Test pages
-          </button>
-          <button id="js-open-csp-sites">
-            🧪⛔️ CSP sites
-          </button>
-          <button id="js-open-popular-sites-some">
-            ⭐️ 5 popular sites
-          </button>
+          <button id="js-open-test-sites">🧪 Test pages</button>
+          <button id="js-open-csp-sites">🧪⛔️ CSP sites</button>
+          <button id="js-open-popular-sites-some">⭐️ 5 popular sites</button>
           <button id="js-open-popular-sites">
             ⭐️⭐️⭐️ All popular sites
           </button>
@@ -45,20 +39,25 @@
 
         <h3 class="mv1">All tabs in window</h3>
         <div class="gtce-grid-2-col">
-          <button id="js-inject-content-script">💉 Inject content script</button>
+          <button id="js-inject-content-script">
+            💉 Inject content script
+          </button>
           <button id="js-reload-all">🔄 Reload</button>
           <button id="js-fade-all">👻👻👻 Fade step</button>
           <button id="js-play-fade-all">👻👻👻 ▶️ Fade</button>
           <button id="js-unfade-all">🧟🧟🧟 Unfade</button>
           <button id="js-random-fade">👻/🧟 Random fade</button>
         </div>
-        
+
         <h3 class="mv1">Tab data</h3>
         <button id="js-print-icons">Tab icons</button>
-        <button id="js-print-options" class="code">chrome.storage.local.get('options')</button>
+        <button id="js-print-options" class="code">
+          chrome.storage.local.get('options')
+        </button>
         <button id="js-print-vars-all">All page vars</button>
         <div id="js-tab-data" style="overflow: auto"></div>
       </div>
+    </div>
     <!--  -->
     <script src="js/popup-debug.js" type="module"></script>
   </body>
