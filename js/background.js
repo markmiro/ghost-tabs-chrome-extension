@@ -47,6 +47,7 @@ const defaultOptions = {
   fadeHalfLife: fadeHalfLife.stepValue(4),
   minFavIconOpacity: minFavIconOpacity.stepValue(2),
   fadeTimeToReset: fadeTimeToReset.stepValue(2),
+  disabledOrigins: [],
 }
 
 chrome.runtime.onInstalled.addListener(async () => {
@@ -66,5 +67,25 @@ chrome.runtime.onInstalled.addListener(async () => {
 chrome.runtime.onInstalled.addListener(details => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
     chrome.runtime.setUninstallURL('https://markmiro.github.io/ghost-tabs-chrome-extension/docs/after-uninstall');
+  }
+});
+
+chrome.contextMenus.create({
+  id: 'disable-origin',
+  title: "Turn off for this website",
+  contexts: ['all'],
+});
+
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  if (info.menuItemId === 'disable-origin') {
+    const newOrigin = (new URL(tab.url)).origin;
+    console.log(newOrigin);
+    const { options } = await chrome.storage.local.get('options');
+    await chrome.storage.local.set({
+      options: {
+        ...options,
+        disabledOrigins: [...options.disabledOrigins, newOrigin]
+      }
+    });
   }
 });
