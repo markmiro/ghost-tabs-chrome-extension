@@ -207,8 +207,10 @@ export async function fadeIconViaWorker(favIconUrl, opacity) {
   if (await isSvg(favIconUrl)) {
     favIconUrl = await fixSvg(favIconUrl);
   }
-  const newIconUrl = await chrome.runtime.sendMessage({ action: "FADE_ICON", favIconUrl, opacity });
-  setFavicon(newIconUrl);
+  try {
+    const newIconUrl = await chrome.runtime.sendMessage({ action: "FADE_ICON", favIconUrl, opacity });
+    setFavicon(newIconUrl);
+  } catch (err) { console.log(err) }
 }
 
 export async function unreadIconViaWorker(favIconUrl, opacity) {
