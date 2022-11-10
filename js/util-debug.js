@@ -23,10 +23,7 @@ export const TEST_PAGES = [
 
 // Sites that have CSP issues with updating the icon.
 // Require fixing content-security-policy headers.
-export const CSP_SITES = [
-  warningPage,
-  "https://news.ycombinator.com",
-];
+export const CSP_SITES = [warningPage, "https://news.ycombinator.com"];
 
 // https://en.wikipedia.org/wiki/List_of_most_visited_websites
 export const POPULAR_SITES = [

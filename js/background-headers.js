@@ -5,7 +5,7 @@
 //   "host_permissions": ["http://*/*", "https://*/*"],
 // }
 
-console.log('loaded background-headers.js');
+console.log("loaded background-headers.js");
 
 // https://github.com/WithoutHair/Disable-Content-Security-Policy/blob/79206a656c1bedf249adc80aa3d5b32b182e76ae/background.js
 async function allowCSPDataImage(tabId, url, existingValue) {
@@ -53,7 +53,7 @@ async function allowCSPDataImage(tabId, url, existingValue) {
 // Even then, it doesn't seem to work
 chrome.webRequest.onHeadersReceived.addListener(
   (details) => {
-    console.log('headers recieved', details);
+    console.log("headers recieved", details);
     for (let i = 0; i < details.responseHeaders.length; i++) {
       if (
         details.responseHeaders[i].name.toLowerCase() ===

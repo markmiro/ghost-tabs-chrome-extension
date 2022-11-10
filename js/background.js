@@ -1,12 +1,16 @@
 // import "./background-headers.js";
-import { injectContentScript, fadeIcon, unreadIcon } from './util.js';
-import { fadeHalfLife, fadeTimeToReset, minFavIconOpacity } from './fade-option-steps.js';
+import { injectContentScript, fadeIcon, unreadIcon } from "./util.js";
+import {
+  fadeHalfLife,
+  fadeTimeToReset,
+  minFavIconOpacity,
+} from "./fade-option-steps.js";
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (!request) return;
 
   if (request.action === "PING") {
-    sendResponse((new Date()).toISOString());
+    sendResponse(new Date().toISOString());
     return;
   }
 
@@ -14,20 +18,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // page. In the meantime, we ignore messages from pinned tabs.
   if (sender?.tab?.pinned) return;
 
-  if (request.action === 'GET_FAVICONURL') {
+  if (request.action === "GET_FAVICONURL") {
     sendResponse(sender.tab.favIconUrl);
-  } else if (request.action === 'FADE_ICON') {
+  } else if (request.action === "FADE_ICON") {
     // console.log('Got `FADE_ICON` into background.js');
-    console.time('fadeIcon: ' + request.favIconUrl);
-    fadeIcon(request.favIconUrl, request.opacity).then(newIconUrl => {
+    console.time("fadeIcon: " + request.favIconUrl);
+    fadeIcon(request.favIconUrl, request.opacity).then((newIconUrl) => {
       // console.log('Got `newIconUrl` into background.js', newIconUrl);
       // console.log('Response sent:', newIconUrl);
-      console.timeEnd('fadeIcon: ' + request.favIconUrl);
+      console.timeEnd("fadeIcon: " + request.favIconUrl);
       sendResponse(newIconUrl);
     });
     // https://stackoverflow.com/q/44056271
     return true; // Return true to indicate async response;
-  } else if (request.action === 'UNREAD_ICON') {
+  } else if (request.action === "UNREAD_ICON") {
     unreadIcon(request.favIconUrl).then(sendResponse);
     return true;
   }
@@ -36,7 +40,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 function openOnInstallPage() {
   chrome.tabs.create({
     active: true,
-    url: chrome.runtime.getURL('on-installed.html')
+    url: chrome.runtime.getURL("on-installed.html"),
   });
 }
 
@@ -47,13 +51,13 @@ const defaultOptions = {
   fadeHalfLife: fadeHalfLife.stepValue(4),
   minFavIconOpacity: minFavIconOpacity.stepValue(2),
   fadeTimeToReset: fadeTimeToReset.stepValue(2),
-}
+};
 
 chrome.runtime.onInstalled.addListener(async () => {
-  const data = await chrome.storage.local.get('options');
+  const data = await chrome.storage.local.get("options");
   console.log("chrome.storage.local.get('options')", data);
   if (!("options" in data)) {
-    console.log('set options to default', defaultOptions);
+    console.log("set options to default", defaultOptions);
     // Await here to to ensure we set the options before they're read.
     await chrome.storage.local.set({ options: defaultOptions });
   }
@@ -63,8 +67,10 @@ chrome.runtime.onInstalled.addListener(async () => {
   injectContentScript();
 });
 
-chrome.runtime.onInstalled.addListener(details => {
+chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
-    chrome.runtime.setUninstallURL('https://markmiro.github.io/ghost-tabs-chrome-extension/docs/after-uninstall');
+    chrome.runtime.setUninstallURL(
+      "https://markmiro.github.io/ghost-tabs-chrome-extension/docs/after-uninstall"
+    );
   }
 });

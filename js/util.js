@@ -15,14 +15,14 @@ export async function injectContentScript() {
 }
 
 export function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // In theory, data urls can be used for favicons, but in practice, I haven't seen it.
 // If this starts to be more common, I'll have to resort to a much more complicated solution
 // that involves tracking data urls that have been used.
 export function isFavIconUntouched(favIconUrl) {
-  return !favIconUrl.startsWith('data:');
+  return !favIconUrl.startsWith("data:");
 }
 
 export function freshness(timeMs, halfLifeMs) {
@@ -32,7 +32,10 @@ export function freshness(timeMs, halfLifeMs) {
 }
 
 export function isInWorker() {
-  return typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
+  return (
+    typeof WorkerGlobalScope !== "undefined" &&
+    self instanceof WorkerGlobalScope
+  );
 }
 
 // https://github.com/markmiro/hashdrop/blob/03c5a087eeca49c41e0bf9583f9634451e712c10/frontend/src/util/dropUtils.ts
@@ -51,7 +54,7 @@ async function urlToBlob(url) {
   const response = await fetch(url);
   // Once the file has been fetched, we'll convert it to a `Blob`
   const blob = await response.blob();
-  if (blob.size === 0) throw new Error('Empty blob.');
+  if (blob.size === 0) throw new Error("Empty blob.");
   return blob;
 }
 
@@ -67,7 +70,7 @@ export function getUrlExtension(url) {
 
 export function hasProperIconExtension(url) {
   // In most situations, we can just do some REGEX to determine the icon type from the file
-  const iconExtensions = ['.ico', '.png', '.jpg', '.jpeg', '.svg'];
+  const iconExtensions = [".ico", ".png", ".jpg", ".jpeg", ".svg"];
   const urlExtensionMatch = getUrlExtension(url);
   return iconExtensions.includes(urlExtensionMatch);
 }
@@ -86,12 +89,19 @@ function isDarkMode() {
     return false;
   }
   // https://stackoverflow.com/a/57795495
-  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return (
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
 }
 
 export async function getDefaultIconUrl() {
-  const defaultLightIcon = await chrome.runtime.getURL("img/generated/earth-white.png");
-  const defaultDarkIcon = await chrome.runtime.getURL("img/generated/earth-black.png");
+  const defaultLightIcon = await chrome.runtime.getURL(
+    "img/generated/earth-white.png"
+  );
+  const defaultDarkIcon = await chrome.runtime.getURL(
+    "img/generated/earth-black.png"
+  );
   const defaultIconUrl = isDarkMode() ? defaultLightIcon : defaultDarkIcon;
   return defaultIconUrl;
 }
@@ -100,18 +110,18 @@ export async function getDefaultIconUrl() {
 const bitmapCache = {};
 
 export async function fadeIcon(url, amount = 0.5) {
-  if (amount > 1 || amount < 0) console.error('Only accepts numbers between 0 and 1.');
+  if (amount > 1 || amount < 0)
+    console.error("Only accepts numbers between 0 and 1.");
 
-  if (isInWorker() && await isSvg(url)) {
+  if (isInWorker() && (await isSvg(url))) {
     // https://bugs.chromium.org/p/chromium/issues/detail?id=606317
-    throw new Error('SVG is not supported.');
+    throw new Error("SVG is not supported.");
   }
 
   // TODO: move this to content-script since it can then listen to dark mode on the tab and update accordingly.
   // I haven't found a way to detect dark mode in the background.
   let favIconUrl = await getDefaultIconUrl();
   if (url) favIconUrl = url;
-
 
   let imageBitmap;
   if (bitmapCache[url]) {
@@ -162,9 +172,9 @@ export async function fadeIcon(url, amount = 0.5) {
 }
 
 export async function unreadIcon(url) {
-  if (isInWorker() && await isSvg(url)) {
+  if (isInWorker() && (await isSvg(url))) {
     // https://bugs.chromium.org/p/chromium/issues/detail?id=606317
-    throw new Error('SVG is not supported.');
+    throw new Error("SVG is not supported.");
   }
 
   let favIconUrl = await getDefaultIconUrl();
@@ -187,7 +197,13 @@ export async function unreadIcon(url) {
   const scale = imageBitmap.width / 32;
   ctx.lineWidth = 2 * scale;
   const radius = 6;
-  ctx.arc(.5 + radius * scale, .5 + radius * scale, radius * scale, 0, 2 * Math.PI);
+  ctx.arc(
+    0.5 + radius * scale,
+    0.5 + radius * scale,
+    radius * scale,
+    0,
+    2 * Math.PI
+  );
   ctx.fill();
   ctx.stroke();
 
