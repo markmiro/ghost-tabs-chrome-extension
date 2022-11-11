@@ -13,11 +13,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier --write .",
-    "build": "node build.mjs"
+    "build": "node build.mjs & tsc --project ./tsconfig.json",
+    "watch": "node watch.mjs",
+    "watch2": "concurrently --kill-others --names 'COPY, TSC' \"node watch.mjs\" \"tsc --watch --listEmittedFiles --project ./tsconfig.json\"",
+    "build:clean": "rimraf build"
   },
   "devDependencies": {
+    "chokidar": "3.5.3",
+    "concurrently": "7.5.0",
     "cpy": "9.0.1",
-    "prettier": "2.7.1"
+    "globby": "13.1.2",
+    "prettier": "2.7.1",
+    "rimraf": "3.0.2",
+    "typescript": "4.8.4"
   },
   "keywords": [
     "chrome",

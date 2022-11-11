@@ -3,6 +3,7 @@
 - manifest
 - bundle files?
 - typescript
+- css files
 
 - "use strict";
 - Disable fading for specified tabs
