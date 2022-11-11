@@ -3,6 +3,13 @@
   "version": "0.0.1",
   "author": "Mark Miro <contact@markmiro.com> (https://markmiro.com)",
   "private": true,
+  "os": [
+    "darwin"
+  ],
+  "engines": {
+    "node": "v18.12.x",
+    "pnpm": "7.13.x"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier --write .",
