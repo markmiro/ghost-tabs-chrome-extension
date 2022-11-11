@@ -19,6 +19,7 @@ let extensionInvalidated = false;
         "page " + document.visibilityState
       );
     } catch (err) {
+      if (!(err instanceof Error)) throw new Error("Error has no message");
       if (err.message.includes("Extension context invalidated")) {
         extensionInvalidated = true;
         resetIcon(favIconUrl);
