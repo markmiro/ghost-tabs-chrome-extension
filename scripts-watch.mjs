@@ -7,7 +7,7 @@ import tsconfig from "./tsconfig.json" assert { type: "json" };
 // Take the file's full path, remove the file name, remove the source root dir, and add the destination dir
 const destDir = (pathStr) =>
   path.join(
-    tsconfig.compilerOptions.outDir,
+    tsconfig.compilerOptions.outDir + "-watch",
     path.relative(tsconfig.compilerOptions.rootDir, path.dirname(pathStr))
   );
 
