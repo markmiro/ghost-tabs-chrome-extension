@@ -3,10 +3,14 @@
     "target": "esnext",
     "rootDir": "./src",
     "outDir": "./build",
-    "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noImplicitThis": true,
+    "strict": true,
     "alwaysStrict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true, 
     "noFallthroughCasesInSwitch": true
   }
 }
