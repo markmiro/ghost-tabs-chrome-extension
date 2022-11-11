@@ -1,7 +1,7 @@
 import cpy from "cpy";
 import path from "path";
 import chokidar from "chokidar";
-import copyGlobs from "./build-copy-globs.json" assert { type: "json" };
+import copyGlobs from "./scripts-build-copy-globs.json" assert { type: "json" };
 import tsconfig from "./tsconfig.json" assert { type: "json" };
 
 // Take the file's full path, remove the file name, remove the source root dir, and add the destination dir
