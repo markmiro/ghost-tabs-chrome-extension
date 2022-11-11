@@ -14,11 +14,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier --write .",
     "build": "node build.mjs & tsc --project ./tsconfig.json",
-    "watch": "node watch.mjs",
-    "watch2": "concurrently --kill-others --names 'COPY, TSC' \"node watch.mjs\" \"tsc --watch --listEmittedFiles --project ./tsconfig.json\"",
+    "watch": "concurrently --kill-others --names 'COPY, TSC' \"node watch.mjs\" \"tsc --watch --project ./tsconfig.json\"",
     "build:clean": "rimraf build"
   },
   "devDependencies": {
+    "@types/chrome": "0.0.200",
     "chokidar": "3.5.3",
     "concurrently": "7.5.0",
     "cpy": "9.0.1",
@@ -57,5 +57,8 @@
     "ghost",
     "discard",
     "bin"
-  ]
+  ],
+  "dependencies": {
+    "@types/offscreencanvas": "2019.7.0"
+  }
 }

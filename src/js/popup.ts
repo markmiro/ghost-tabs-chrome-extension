@@ -40,9 +40,9 @@ document.addEventListener("keypress", (e) => {
 // ---
 
 {
-  const options = {};
+  const options: Options = {};
 
-  function updateFromOptions(options) {
+  function updateFromOptions(options: Options) {
     console.log("updateFromOptions", { options });
     if (options.enableFading) {
       document.getElementById("js-fading-options").classList.remove("dn");
@@ -56,12 +56,22 @@ document.addEventListener("keypress", (e) => {
       document.getElementById("js-options-form").removeAttribute("disabled");
       document.getElementById("js-enable-extension").classList.add("dn");
     } else {
-      document.getElementById("js-options-form").setAttribute("disabled", true);
+      document
+        .getElementById("js-options-form")
+        .setAttribute("disabled", "true");
       document.getElementById("js-enable-extension").classList.remove("dn");
     }
   }
 
-  const $optionsForm = document.getElementById("js-options-form");
+  const $optionsForm = document.getElementById(
+    "js-options-form"
+  ) as HTMLFormElement & {
+    showUnreadBadge: HTMLInputElement;
+    enableFading: HTMLInputElement;
+    fadeHalfLife: HTMLInputElement;
+    minFavIconOpacity: HTMLInputElement;
+    fadeTimeToReset: HTMLInputElement;
+  };
 
   // Prevent submission when clicking random buttons
   $optionsForm.addEventListener("submit", (e) => e.preventDefault());
@@ -75,15 +85,15 @@ document.addEventListener("keypress", (e) => {
     console.log("chrome.storage.local.get('options')", { options });
     $optionsForm.showUnreadBadge.checked = options.showUnreadBadge;
     $optionsForm.enableFading.checked = options.enableFading;
-    $optionsForm.fadeHalfLife.value = fadeHalfLife.valueToStep(
-      options.fadeHalfLife
-    );
-    $optionsForm.minFavIconOpacity.value = minFavIconOpacity.valueToStep(
-      options.minFavIconOpacity
-    );
-    $optionsForm.fadeTimeToReset.value = fadeTimeToReset.valueToStep(
-      options.fadeTimeToReset
-    );
+    $optionsForm.fadeHalfLife.value = fadeHalfLife
+      .valueToStep(options.fadeHalfLife)
+      .toString();
+    $optionsForm.minFavIconOpacity.value = minFavIconOpacity
+      .valueToStep(options.minFavIconOpacity)
+      .toString();
+    $optionsForm.fadeTimeToReset.value = fadeTimeToReset
+      .valueToStep(options.fadeTimeToReset)
+      .toString();
     updateFromOptions(options);
   });
 
@@ -95,39 +105,39 @@ document.addEventListener("keypress", (e) => {
   });
 
   $optionsForm.showUnreadBadge.addEventListener("change", (event) => {
-    options.showUnreadBadge = event.target.checked;
+    options.showUnreadBadge = (event.target as HTMLInputElement).checked;
     chrome.storage.local.set({ options });
     updateFromOptions(options);
   });
 
   $optionsForm.enableFading.addEventListener("change", (event) => {
-    options.enableFading = event.target.checked;
+    options.enableFading = (event.target as HTMLInputElement).checked;
     chrome.storage.local.set({ options });
     updateFromOptions(options);
   });
 
   $optionsForm.fadeHalfLife.addEventListener("input", (e) => {
-    const step = parseInt(e.target.value);
+    const step = parseInt((e.target as HTMLInputElement).value);
     options.fadeHalfLife = fadeHalfLife.stepValue(step);
     chrome.storage.local.set({ options });
     updateFromOptions(options);
   });
 
   $optionsForm.minFavIconOpacity.addEventListener("input", (e) => {
-    const step = parseInt(e.target.value);
+    const step = parseInt((e.target as HTMLInputElement).value);
     options.minFavIconOpacity = minFavIconOpacity.stepValue(step);
     chrome.storage.local.set({ options });
     updateFromOptions(options);
   });
 
   $optionsForm.fadeTimeToReset.addEventListener("input", (e) => {
-    const step = parseInt(e.target.value);
+    const step = parseInt((e.target as HTMLInputElement).value);
     options.fadeTimeToReset = fadeTimeToReset.stepValue(step);
     chrome.storage.local.set({ options });
     updateFromOptions(options);
   });
 
-  async function setEnabled(isEnabled) {
+  async function setEnabled(isEnabled: boolean) {
     options.enabled = isEnabled;
     await chrome.storage.local.set({ options });
     updateFromOptions(options);

@@ -8,7 +8,11 @@
 console.log("loaded background-headers.js");
 
 // https://github.com/WithoutHair/Disable-Content-Security-Policy/blob/79206a656c1bedf249adc80aa3d5b32b182e76ae/background.js
-async function allowCSPDataImage(tabId, url, existingValue) {
+async function allowCSPDataImage(
+  tabId: number,
+  url: string,
+  existingValue: string
+) {
   console.log(url, "disables CSP, current value:", existingValue.split(/;\s*/));
 
   // TODO: don't iterate each time
@@ -18,7 +22,7 @@ async function allowCSPDataImage(tabId, url, existingValue) {
   if (foundRule) return;
 
   // TODO: make a cheaper check for `img-src` than just parsing the whole CPS header
-  let csp = {};
+  let csp: Record<string, string[]> = {};
   existingValue.split(/;\s*/).forEach((item) => {
     const [key, ...values] = item.split(/\s+/);
     csp[key] = values;
@@ -29,19 +33,22 @@ async function allowCSPDataImage(tabId, url, existingValue) {
   const newValue = [...csp["img-src"], "data:"].join(" ");
   console.log(url, "new value", newValue);
 
-  const rule = {
+  const rule: chrome.declarativeNetRequest.Rule = {
     id: tabId,
     action: {
-      type: "modifyHeaders",
+      type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
       responseHeaders: [
         {
           header: "content-security-policy",
-          operation: "set",
+          operation: chrome.declarativeNetRequest.HeaderOperation.SET,
           value: `img-src ${newValue}`,
         },
       ],
     },
-    condition: { urlFilter: url, resourceTypes: ["main_frame"] },
+    condition: {
+      urlFilter: url,
+      resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
+    },
   };
 
   await chrome.declarativeNetRequest.updateSessionRules({ addRules: [rule] });
@@ -54,16 +61,16 @@ async function allowCSPDataImage(tabId, url, existingValue) {
 chrome.webRequest.onHeadersReceived.addListener(
   (details) => {
     console.log("headers recieved", details);
+    if (!details.responseHeaders) return;
     for (let i = 0; i < details.responseHeaders.length; i++) {
       if (
         details.responseHeaders[i].name.toLowerCase() ===
         "content-security-policy"
       ) {
-        // details.responseHeaders[i].value = "";
         allowCSPDataImage(
           details.tabId,
           details.url,
-          details.responseHeaders[i].value
+          details.responseHeaders[i].value ?? ""
         );
       }
     }

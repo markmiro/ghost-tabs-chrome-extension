@@ -1,15 +1,15 @@
 console.log("INSTALLED ghost tabs content script!");
 
-let options = {};
-let favIconUrl;
+let options: any = {};
+let favIconUrl: string;
 let tabFreshness = 1;
-let timeoutId;
-let intervalId;
-let timeHiddenTs = undefined;
+let timeoutId: number;
+let intervalId: number;
+let timeHiddenTs: number | undefined = undefined;
 let MINUTES = 5;
 
 // Visibility state
-let DEBUG_VARS = {
+let DEBUG_VARS: any = {
   visibilityState: undefined,
   hidden: undefined,
 };
@@ -143,7 +143,7 @@ document.addEventListener("securitypolicyviolation", (e) => {
         clearInterval(intervalId);
         clearTimeout(timeoutId);
 
-        let currErr = false;
+        let currErr: any;
         try {
           const timestamp = await chrome.runtime.sendMessage({
             action: "PING",

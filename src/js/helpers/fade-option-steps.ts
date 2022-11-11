@@ -1,6 +1,10 @@
-function closestValue(steps, key, value) {
+function closestValue<T>(
+  steps: T[],
+  key: Exclude<keyof T, "title">,
+  value: number
+) {
   for (let i = 0; i < steps.length; i++) {
-    if (steps[i][key] === value) {
+    if ((steps[i][key] as any) === value) {
       return i;
     }
   }
@@ -19,9 +23,9 @@ export const fadeHalfLife = {
     { title: "8 hours", ms: 1000 * 60 * 60 * 8 },
     { title: "16 hours", ms: 1000 * 60 * 60 * 16 },
   ],
-  stepValue: (s) => fadeHalfLife.steps[s].ms,
-  valueToStep: (v) => closestValue(fadeHalfLife.steps, "ms", v),
-  updateValueTitle: (v) => {
+  stepValue: (s: number) => fadeHalfLife.steps[s].ms,
+  valueToStep: (v: number) => closestValue(fadeHalfLife.steps, "ms", v),
+  updateValueTitle: (v: number) => {
     const step = fadeHalfLife.valueToStep(v);
     document.getElementById("fadeHalfLifeTitle").innerText =
       fadeHalfLife.steps[step].title;
@@ -36,9 +40,10 @@ export const minFavIconOpacity = {
     { title: "25%", opacity: 0.25 },
     { title: "50%", opacity: 0.5 },
   ],
-  stepValue: (s) => minFavIconOpacity.steps[s].opacity,
-  valueToStep: (v) => closestValue(minFavIconOpacity.steps, "opacity", v),
-  updateValueTitle: (v) => {
+  stepValue: (s: number) => minFavIconOpacity.steps[s].opacity,
+  valueToStep: (v: number) =>
+    closestValue(minFavIconOpacity.steps, "opacity", v),
+  updateValueTitle: (v: number) => {
     const step = minFavIconOpacity.valueToStep(v);
     document.getElementById("minFavIconOpacityTitle").innerText =
       minFavIconOpacity.steps[step].title;
@@ -53,9 +58,9 @@ export const fadeTimeToReset = {
     { title: "2 seconds", ms: 1000 * 2 },
     { title: "5 seconds", ms: 1000 * 5 },
   ],
-  stepValue: (s) => fadeTimeToReset.steps[s].ms,
-  valueToStep: (v) => closestValue(fadeTimeToReset.steps, "ms", v),
-  updateValueTitle: (v) => {
+  stepValue: (s: number) => fadeTimeToReset.steps[s].ms,
+  valueToStep: (v: number) => closestValue(fadeTimeToReset.steps, "ms", v),
+  updateValueTitle: (v: number) => {
     const step = fadeTimeToReset.valueToStep(v);
     document.getElementById("fadeTimeToResetTitle").innerText =
       fadeTimeToReset.steps[step].title;

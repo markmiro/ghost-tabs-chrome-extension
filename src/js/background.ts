@@ -44,7 +44,7 @@ function openOnInstallPage() {
   });
 }
 
-const defaultOptions = {
+const defaultOptions: Options = {
   enabled: true,
   showUnreadBadge: true,
   enableFading: true,

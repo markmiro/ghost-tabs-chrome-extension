@@ -11,11 +11,12 @@ import {
 if (isInWorker())
   throw new Error("`util-dom.js` is not available in web workers.");
 
-async function isSvg(url) {
+const isSvgCache: Record<string, boolean> = {};
+async function isSvg(url: string) {
   if (!url) return false;
 
-  if (isSvg.cache[url]) {
-    return isSvg.cache[url];
+  if (isSvgCache[url]) {
+    return isSvgCache[url];
   }
   if (getUrlExtension(url) === ".svg") {
     return true;
@@ -33,17 +34,16 @@ async function isSvg(url) {
   const response = await fetch(url);
   const blob = await response.blob();
   const bool = blob.type.includes("svg");
-  isSvg.cache[url] = bool;
+  isSvgCache[url] = bool;
   return bool;
 }
-isSvg.cache = {};
 
 // https://levelup.gitconnected.com/draw-an-svg-to-canvas-and-download-it-as-image-in-javascript-f7f7713cf81f
 // Can't fix the SVG in background script because Image element isn't available in web workers.
-function fixSvg(favIconUrl) {
+function fixSvg(favIconUrl: string) {
   const width = 32;
   const height = 32;
-  return new Promise((resolve) => {
+  return new Promise<string>((resolve) => {
     let image = new Image();
     // Add cross origin because sites like GitHub throw a `Tainted canvases may not be exported` error
     // https://stackoverflow.com/a/22716873
@@ -62,18 +62,18 @@ function fixSvg(favIconUrl) {
   });
 }
 
-export async function fadeIcon(url, amount) {
+export async function fadeIcon(url: string, amount: number) {
   if (await isSvg(url)) {
     return fadeIconBase(await fixSvg(url), amount);
   }
   return fadeIconBase(url, amount);
 }
 
-export async function unreadIcon(url, amount) {
+export async function unreadIcon(url: string) {
   if (await isSvg(url)) {
-    return unreadIconBase(await fixSvg(url), amount);
+    return unreadIconBase(await fixSvg(url));
   }
-  return unreadIconBase(url, amount);
+  return unreadIconBase(url);
 }
 
 export function getFaviconLinks() {
@@ -81,7 +81,7 @@ export function getFaviconLinks() {
 }
 
 // Used for when we know which favicon URL is primary, but we got that `favIconUrl` from the `chrome.tabs` API
-function setPrimary(favIconUrl) {
+function setPrimary(favIconUrl: string) {
   const baseUrl = document.location.origin;
   const favIconUrlObj = new URL(favIconUrl, baseUrl);
   const links = getFaviconLinks();
@@ -181,11 +181,14 @@ export const existingFavicons = {
 };
 
 // https://stackoverflow.com/a/260876
-function setFavicon(href) {
+function setFavicon(href: string) {
   existingFavicons.clear();
 
-  const el = document.getElementById("gtce-icon");
+  const el = document.getElementById("gtce-icon") as HTMLLinkElement;
   if (el) {
+    if (el.tagName !== "LINK") {
+      throw new TypeError("Expected element to be a <link>");
+    }
     el.href = href;
   } else {
     // Create a new link element
@@ -201,7 +204,7 @@ function setFavicon(href) {
   // https://github.com/Elliot67/env-specific-favicon/blob/main/src/contentScripts/index.ts#L53
 }
 
-export function resetIcon(favIconUrl) {
+export function resetIcon(favIconUrl: string) {
   setFavicon(favIconUrl);
   // Reverting the DOM to the original state causes the favicon to go back to a modified state.
   // Approaches I've tried:
@@ -213,7 +216,7 @@ export function resetIcon(favIconUrl) {
   // The only way to revert the favicon back to "normal" in a consisten way is to update to a data URL that corresponds to the original favicon url
 }
 
-export async function fadeIconViaWorker(favIconUrl, opacity) {
+export async function fadeIconViaWorker(favIconUrl: string, opacity: number) {
   if (await isSvg(favIconUrl)) {
     favIconUrl = await fixSvg(favIconUrl);
   }
@@ -229,7 +232,7 @@ export async function fadeIconViaWorker(favIconUrl, opacity) {
   }
 }
 
-export async function unreadIconViaWorker(favIconUrl, opacity) {
+export async function unreadIconViaWorker(favIconUrl: string, opacity: number) {
   if (await isSvg(favIconUrl)) {
     favIconUrl = await fixSvg(favIconUrl);
   }

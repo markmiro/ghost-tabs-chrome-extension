@@ -2,12 +2,16 @@ lockfileVersion: 5.4
 
 specifiers:
   '@types/chrome': 0.0.200
+  '@types/offscreencanvas': 2019.7.0
   chokidar: 3.5.3
   concurrently: 7.5.0
   cpy: 9.0.1
   prettier: 2.7.1
   rimraf: 3.0.2
   typescript: 4.8.4
+
+dependencies:
+  '@types/offscreencanvas': 2019.7.0
 
 devDependencies:
   '@types/chrome': 0.0.200
@@ -61,6 +65,10 @@ packages:
   /@types/har-format/1.2.9:
     resolution: {integrity: sha512-rffW6MhQ9yoa75bdNi+rjZBAvu2HhehWJXlhuWXnWdENeuKe82wUgAwxYOb7KRKKmxYN+D/iRKd2NDQMLqlUmg==}
     dev: true
+
+  /@types/offscreencanvas/2019.7.0:
+    resolution: {integrity: sha512-PGcyveRIpL1XIqK8eBsmRBt76eFgtzuPiSTyKHZxnGemp2yzGzWpjYKAfK3wIMiU7eH+851yEpiuP8JZerTmWg==}
+    dev: false
 
   /aggregate-error/4.0.1:
     resolution: {integrity: sha512-0poP0T7el6Vq3rstR8Mn4V/IQrpBLO6POkUSrN7RhyY+GF/InCFShQzsQ39T25gkHhLgSLByyAz+Kjb+c2L98w==}

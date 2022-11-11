@@ -14,23 +14,24 @@ export async function injectContentScript() {
   }
 }
 
-export function sleep(ms) {
+export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // In theory, data urls can be used for favicons, but in practice, I haven't seen it.
 // If this starts to be more common, I'll have to resort to a much more complicated solution
 // that involves tracking data urls that have been used.
-export function isFavIconUntouched(favIconUrl) {
+export function isFavIconUntouched(favIconUrl: string) {
   return !favIconUrl.startsWith("data:");
 }
 
-export function freshness(timeMs, halfLifeMs) {
+export function freshness(timeMs: number, halfLifeMs: number) {
   // https://en.wikipedia.org/wiki/Exponential_decay#Half-life
   // N(t) = N0 * 2 ^ (-t / halfT)
   return Math.pow(2, -timeMs / halfLifeMs);
 }
 
+declare var WorkerGlobalScope: any;
 export function isInWorker() {
   return (
     typeof WorkerGlobalScope !== "undefined" &&
@@ -39,17 +40,17 @@ export function isInWorker() {
 }
 
 // https://github.com/markmiro/hashdrop/blob/03c5a087eeca49c41e0bf9583f9634451e712c10/frontend/src/util/dropUtils.ts
-export function blobToDataUrl(blob) {
-  return new Promise((resolve, reject) => {
+export function blobToDataUrl(blob: Blob) {
+  return new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
+    reader.onloadend = () => resolve(reader.result as string);
     reader.onerror = reject;
     reader.readAsDataURL(blob);
   });
 }
 
-async function urlToBlob(url) {
-  if (!url) return;
+async function urlToBlob(url: string) {
+  if (!url) throw new Error("Expected a url.");
   // https://trezy.com/blog/loading-images-with-web-workers
   const response = await fetch(url);
   // Once the file has been fetched, we'll convert it to a `Blob`
@@ -58,7 +59,7 @@ async function urlToBlob(url) {
   return blob;
 }
 
-export function getUrlExtension(url) {
+export function getUrlExtension(url: string) {
   // Note: outlook.live.com and microsoft.com do something like this: `.ico?v=4`
   const regex = /(\.[a-z]{1,5})(\?\w+=\w+)?$/i;
   const matched = url?.match(regex);
@@ -68,14 +69,14 @@ export function getUrlExtension(url) {
   return extension.toLowerCase();
 }
 
-export function hasProperIconExtension(url) {
+export function hasProperIconExtension(url: string) {
   // In most situations, we can just do some REGEX to determine the icon type from the file
   const iconExtensions = [".ico", ".png", ".jpg", ".jpeg", ".svg"];
   const urlExtensionMatch = getUrlExtension(url);
   return iconExtensions.includes(urlExtensionMatch);
 }
 
-async function isSvg(url) {
+async function isSvg(url: string) {
   if (!url) return false;
   // NOTE: calling `urlToBlob` from a content script fails.
   let fileBlob = await urlToBlob(url);
@@ -107,9 +108,9 @@ export async function getDefaultIconUrl() {
 }
 
 // Takes icon loading from ~50ms to ~20ms, and sometimes makes it 6x faster (ebay.com icon)
-const bitmapCache = {};
+const bitmapCache: Record<string, ImageBitmap> = {};
 
-export async function fadeIcon(url, amount = 0.5) {
+export async function fadeIcon(url: string, amount = 0.5) {
   if (amount > 1 || amount < 0)
     console.error("Only accepts numbers between 0 and 1.");
 
@@ -132,7 +133,7 @@ export async function fadeIcon(url, amount = 0.5) {
     bitmapCache[url] = imageBitmap;
   }
   const canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
   ctx.globalAlpha = amount;
   ctx.filter = `grayscale(${(1 - amount) * 100}%)`;
   ctx.drawImage(imageBitmap, 0, 0);
@@ -171,7 +172,7 @@ export async function fadeIcon(url, amount = 0.5) {
   return returnDataUrl;
 }
 
-export async function unreadIcon(url) {
+export async function unreadIcon(url: string) {
   if (isInWorker() && (await isSvg(url))) {
     // https://bugs.chromium.org/p/chromium/issues/detail?id=606317
     throw new Error("SVG is not supported.");
@@ -184,7 +185,7 @@ export async function unreadIcon(url) {
   const imageBitmap = await createImageBitmap(fileBlob);
 
   const canvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height);
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
   ctx.globalAlpha = 0.6;
   ctx.filter = "grayscale(100%)";
   ctx.drawImage(imageBitmap, 0, 0);
