@@ -1,5 +1,9 @@
 # TODO
 
+- manifest
+- bundle files?
+- typescript
+
 - "use strict";
 - Disable fading for specified tabs
 - Pause tab fading?
