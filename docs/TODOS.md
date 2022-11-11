@@ -1,14 +1,6 @@
 # TODO
 
-- manifest
-- bundle files?
-- typescript
-- css files
-
-- "use strict";
 - Disable fading for specified tabs
-- Pause tab fading?
-- Does it work with SPAs?
 
 Polish:
 
