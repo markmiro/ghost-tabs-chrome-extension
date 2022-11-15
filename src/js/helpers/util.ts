@@ -59,7 +59,7 @@ async function urlToBlob(url: string) {
   return blob;
 }
 
-export function getUrlExtension(url: string) {
+function getUrlExtension(url: string) {
   // Note: outlook.live.com and microsoft.com do something like this: `.ico?v=4`
   const regex = /(\.[a-z]{1,5})(\?\w+=\w+)?$/i;
   const matched = url?.match(regex);
@@ -69,18 +69,38 @@ export function getUrlExtension(url: string) {
   return extension.toLowerCase();
 }
 
-export function hasProperIconExtension(url: string) {
+function hasProperIconExtension(url: string) {
   // In most situations, we can just do some REGEX to determine the icon type from the file
   const iconExtensions = [".ico", ".png", ".jpg", ".jpeg", ".svg"];
   const urlExtensionMatch = getUrlExtension(url);
   return iconExtensions.includes(urlExtensionMatch);
 }
 
-async function isSvg(url: string) {
+const isSvgCache: Record<string, boolean> = {};
+export async function isSvg(url: string) {
   if (!url) return false;
+
+  if (isSvgCache[url]) {
+    return isSvgCache[url];
+  }
+  if (getUrlExtension(url) === ".svg") {
+    return true;
+  }
+  if (hasProperIconExtension(url)) {
+    return false;
+  }
+
+  // Usually, just looking at the extension is enough, but for sites like linkedin.com we just load the icon
+  // What linkedin.com does:
+  // <link rel="icon" type="image/svg+xml" href="https://static-exp1.licdn.com/sc/h/akt4ae504epesldzj74dzred8" id="favicon-svg">
+  // On the homepage it even looks something like this
+  // <link rel="icon" href="https://static-exp1.licdn.com/sc/h/akt4ae504epesldzj74dzred8">
+
   // NOTE: calling `urlToBlob` from a content script fails.
   let fileBlob = await urlToBlob(url);
-  return await fileBlob.type.includes("svg"); // image/svg+xml
+  const bool = fileBlob.type.includes("svg"); // image/svg+xml
+  isSvgCache[url] = bool;
+  return bool;
 }
 
 function isDarkMode() {

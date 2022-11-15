@@ -1,42 +1,14 @@
 import {
+  isSvg,
   fadeIcon as fadeIconBase,
   unreadIcon as unreadIconBase,
   isInWorker,
   isFavIconUntouched,
   sleep,
-  getUrlExtension,
-  hasProperIconExtension,
 } from "./util.js";
 
 if (isInWorker())
   throw new Error("`util-dom.js` is not available in web workers.");
-
-const isSvgCache: Record<string, boolean> = {};
-async function isSvg(url: string) {
-  if (!url) return false;
-
-  if (isSvgCache[url]) {
-    return isSvgCache[url];
-  }
-  if (getUrlExtension(url) === ".svg") {
-    return true;
-  }
-  if (hasProperIconExtension(url)) {
-    return false;
-  }
-
-  // Usually, just looking at the extension is enough, but for sites like linkedin.com we just load the icon
-  // What linkedin.com does:
-  // <link rel="icon" type="image/svg+xml" href="https://static-exp1.licdn.com/sc/h/akt4ae504epesldzj74dzred8" id="favicon-svg">
-  // On the homepage it even looks something like this
-  // <link rel="icon" href="https://static-exp1.licdn.com/sc/h/akt4ae504epesldzj74dzred8">
-
-  const response = await fetch(url);
-  const blob = await response.blob();
-  const bool = blob.type.includes("svg");
-  isSvgCache[url] = bool;
-  return bool;
-}
 
 // https://levelup.gitconnected.com/draw-an-svg-to-canvas-and-download-it-as-image-in-javascript-f7f7713cf81f
 // Can't fix the SVG in background script because Image element isn't available in web workers.
