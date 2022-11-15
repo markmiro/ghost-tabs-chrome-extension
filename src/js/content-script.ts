@@ -1,4 +1,9 @@
 console.log("INSTALLED ghost tabs content script!");
+var installTs = Date.now();
+console.log("INSTALLED ghost tabs content script!", installTs);
+
+(globalThis as any).installTs = installTs;
+// (window as any).installTs = installTs;
 
 let options: any = {};
 let favIconUrl: string;
