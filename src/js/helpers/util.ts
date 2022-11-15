@@ -59,10 +59,10 @@ async function urlToBlob(url: string) {
   return blob;
 }
 
+const urlExtensionRegex = /(\.[a-z]{1,5})(\?\w+=\w+)?$/i;
 function getUrlExtension(url: string) {
   // Note: outlook.live.com and microsoft.com do something like this: `.ico?v=4`
-  const regex = /(\.[a-z]{1,5})(\?\w+=\w+)?$/i;
-  const matched = url?.match(regex);
+  const matched = url?.match(urlExtensionRegex);
   if (!matched) return;
   // Get the right regex capture group
   const [_wholeMatch, extension, _queryString] = matched;
