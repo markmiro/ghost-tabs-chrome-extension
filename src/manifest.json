@@ -24,13 +24,19 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["js/content-script.js"]
+      "js": ["js/content-script-runner.js"]
     }
   ],
   "web_accessible_resources": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "resources": ["js/helpers/util.js", "js/helpers/util-dom.js"]
+      "resources": [
+        "js/content-script-module.js",
+        "js/helpers/self-clean-content-script.js",
+        "js/helpers/util.js",
+        "js/helpers/util-dom.js",
+        "js/helpers/pool.js"
+      ]
     }
   ]
 }

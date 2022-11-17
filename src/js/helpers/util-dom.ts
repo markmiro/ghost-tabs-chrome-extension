@@ -5,6 +5,7 @@ import {
   isInWorker,
   isFavIconUntouched,
   sleep,
+  blobToDataUrl,
 } from "./util.js";
 
 if (isInWorker())
@@ -152,8 +153,39 @@ export const existingFavicons = {
   },
 };
 
+export async function blankIconDataUrl() {
+  const SIDE = 32;
+  const canvas = new OffscreenCanvas(SIDE, SIDE);
+  const ctx = canvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
+  ctx.fillStyle = "red";
+  ctx.fillRect(0, 0, SIDE, SIDE);
+  const returnBlob = await canvas.convertToBlob();
+  const returnDataUrl = await blobToDataUrl(returnBlob);
+  return returnDataUrl;
+}
+
+export async function ping() {
+  let currErr: any;
+  let timestamp: number;
+  try {
+    timestamp = await chrome.runtime.sendMessage({
+      action: "PING",
+    });
+    if (!timestamp) {
+      currErr = new Error("PING response is missing a timestamp.");
+    }
+  } catch (err) {
+    currErr = err;
+  }
+  return {
+    ok: !currErr,
+    error: currErr,
+    timestamp,
+  };
+}
+
 // https://stackoverflow.com/a/260876
-function setFavicon(href: string) {
+export function setFavicon(href: string) {
   existingFavicons.clear();
 
   const el = document.getElementById("gtce-icon") as HTMLLinkElement;
