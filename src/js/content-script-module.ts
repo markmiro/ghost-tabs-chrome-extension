@@ -2,6 +2,7 @@
 // Also, need to add any imports and their imports to the `manifest.json` file:
 // `web_accessible_resources.resources`
 // ---
+import { log } from "./helpers/console.js";
 import { selfClean } from "./helpers/self-clean-content-script.js";
 import {
   blankIconDataUrl,
@@ -15,8 +16,8 @@ selfClean(async () => {
   const redRectHref = await blankIconDataUrl();
   setFavicon(redRectHref);
 
-  console.log("getFaviconUrl()", favIconUrl);
-  console.log("redRectHref", redRectHref);
+  log("getFaviconUrl()", favIconUrl);
+  log("redRectHref", redRectHref);
 
   return () => {
     resetIcon(favIconUrl);

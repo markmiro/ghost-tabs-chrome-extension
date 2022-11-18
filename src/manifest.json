@@ -33,6 +33,7 @@
       "resources": [
         "js/content-script-module.js",
         "js/helpers/self-clean-content-script.js",
+        "js/helpers/console.js",
         "js/helpers/util.js",
         "js/helpers/util-dom.js",
         "js/helpers/pool.js"

@@ -1,3 +1,4 @@
+import { log } from "./console.js";
 import {
   isSvg,
   fadeIcon as fadeIconBase,
@@ -98,11 +99,11 @@ export async function getFaviconUrl() {
 
   // Loop until we get a url that doesn't start with `data:`
   for (let tries = 0; tries <= 10; tries++) {
-    console.log("try to find the correct icon...");
+    log("try to find the correct icon...");
     const urlCandidate = await chrome.runtime.sendMessage({
       action: "GET_FAVICONURL",
     });
-    console.log("response for GET_FAVICONURL", urlCandidate);
+    log("response for GET_FAVICONURL", urlCandidate);
     if (urlCandidate && isFavIconUntouched(urlCandidate)) {
       setPrimary(urlCandidate);
       return urlCandidate;
@@ -232,7 +233,7 @@ export async function fadeIconViaWorker(favIconUrl: string, opacity: number) {
     });
     setFavicon(newIconUrl);
   } catch (err) {
-    console.log(err);
+    log(err);
   }
 }
 

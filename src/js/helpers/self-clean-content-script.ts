@@ -1,4 +1,5 @@
 // self-clean-content-script.ts
+import { log } from "./console.js";
 import { pool } from "./pool.js";
 import { ping } from "./util-dom.js";
 
@@ -22,7 +23,7 @@ export async function selfClean(cb: (p: typeof pool) => Promise<() => void>) {
   async function pingBackground() {
     // If this fails, it means the extension is uninstalled.
     const res = await ping();
-    console.log("PING RESPONSE", res);
+    log("PING RESPONSE", res);
     if (!res.ok) {
       reset();
     }
