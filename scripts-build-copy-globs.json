@@ -1,5 +1,6 @@
 [
   "src/**/*",
+  "!src/**/*.DS_Store",
   "!src/**/*.md",
   "!src/**/*.sh",
   "!src/**/*.ts",
