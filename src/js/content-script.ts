@@ -5,7 +5,7 @@ console.log("INSTALLED ghost tabs content script!", installTs);
 (globalThis as any).installTs = installTs;
 // (window as any).installTs = installTs;
 
-let options: any = {};
+let options: Options = {};
 let favIconUrl: string;
 let tabFreshness = 1;
 let timeoutId: number;
