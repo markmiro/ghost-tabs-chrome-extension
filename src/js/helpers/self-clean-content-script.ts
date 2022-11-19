@@ -4,7 +4,7 @@ import { pool } from "./pool.js";
 import { ping } from "./util-dom.js";
 
 /** How often we check to see if extension uninstalled */
-const PING_INTERVAL_MIN = 1;
+const PING_INTERVAL_MIN = 1 / 30;
 
 /**
  * After extension is uninstalled, this script will ensure the `cb` return function is called.

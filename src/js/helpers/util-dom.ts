@@ -9,6 +9,10 @@ import {
   blobToDataUrl,
 } from "./util.js";
 
+/** Guarantee a 404 response */
+const FAIL_LOAD_FAVICON_URL =
+  document.location.origin + "/gtce_ghost-tabs-chrome-extension_should-404.ico";
+
 if (isInWorker())
   throw new Error("`util-dom.js` is not available in web workers.");
 
@@ -51,7 +55,8 @@ export async function unreadIcon(url: string) {
 }
 
 export function getFaviconLinks() {
-  return document.querySelectorAll("link[rel~='icon']");
+  // Add `:not(#gtce-icon)` because `getFaviconUrl()` will otherwise try to fetch a link url when the dom is dirty (modified by the extension)
+  return document.querySelectorAll("link[rel~='icon']:not(#gtce-icon)");
 }
 
 // Used for when we know which favicon URL is primary, but we got that `favIconUrl` from the `chrome.tabs` API
@@ -133,6 +138,9 @@ export const existingFavicons = {
   // Messing with the links should be find since it's all in the head, and most websites don't change
   // content up there dynamically.
   clear() {
+    if (document.getElementById("gtce-icon")) {
+      document.head.removeChild(document.getElementById("gtce-icon"));
+    }
     const allFavIcons = getFaviconLinks();
     for (const favicon of allFavIcons) {
       if (
@@ -190,7 +198,11 @@ export async function ping() {
 
 // https://stackoverflow.com/a/260876
 export function setFavicon(href: string) {
+  log("setFavicon", href);
   existingFavicons.clear();
+
+  // Force a globe icon
+  if (!href) href = FAIL_LOAD_FAVICON_URL;
 
   const el = document.getElementById("gtce-icon") as HTMLLinkElement;
   if (el) {
@@ -212,8 +224,13 @@ export function setFavicon(href: string) {
   // https://github.com/Elliot67/env-specific-favicon/blob/main/src/contentScripts/index.ts#L53
 }
 
-export function resetIcon(favIconUrl: string) {
-  setFavicon(favIconUrl);
+export async function resetIcon(favIconUrl: string) {
+  if (favIconUrl) {
+    setFavicon(favIconUrl);
+  } else {
+    // Force globe icon
+    setFavicon(FAIL_LOAD_FAVICON_URL);
+  }
   // Reverting the DOM to the original state causes the favicon to go back to a modified state.
   // Approaches I've tried:
   // - Adding a version query string to the original DOM hrefs doesn't help (https://stackoverflow.com/a/7116701).
