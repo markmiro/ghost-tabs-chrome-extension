@@ -7,3 +7,11 @@ declare interface Options {
   minFavIconOpacity?: number;
   fadeTimeToReset?: number;
 }
+
+declare type MessageRequest =
+  | {
+      action: "MARK_UNREAD";
+    }
+  | {
+      action: "MARK_READ";
+    };

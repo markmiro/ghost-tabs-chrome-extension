@@ -9,6 +9,7 @@ import {
   getFaviconUrl,
   resetIcon,
   setFavicon,
+  unreadIconViaWorker,
 } from "./helpers/util-dom.js";
 
 function withOptions(handler: (options: Options) => void) {
@@ -32,12 +33,26 @@ selfClean(async () => {
   const redRectHref = await blankIconDataUrl();
   setFavicon(redRectHref);
 
+  log("getFaviconUrl()", favIconUrl);
+  log("redRectHref", redRectHref);
+
   withOptions((options) => {
     log("OPTIONS", options);
   });
 
-  log("getFaviconUrl()", favIconUrl);
-  log("redRectHref", redRectHref);
+  chrome.runtime.onMessage.addListener(async (request: MessageRequest) => {
+    log("chrome.runtime.onMessage.addListener", request);
+    switch (request.action) {
+      case "MARK_READ":
+        resetIcon(favIconUrl);
+        break;
+      case "MARK_UNREAD":
+        unreadIconViaWorker(favIconUrl);
+        break;
+      default:
+        break;
+    }
+  });
 
   return () => {
     resetIcon(favIconUrl);
