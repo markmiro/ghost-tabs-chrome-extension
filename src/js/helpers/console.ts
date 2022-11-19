@@ -707,6 +707,9 @@ const emoji = randomEmoji();
 
 console.log(emoji);
 
+/**
+ * Use this log function to display a random emoji based on the extension install instance
+ */
 export function log(...data: any[]) {
   console.log(emoji, ...data);
 }
