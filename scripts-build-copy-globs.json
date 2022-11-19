@@ -3,7 +3,5 @@
   "!src/**/*.DS_Store",
   "!src/**/*.md",
   "!src/**/*.sh",
-  "!src/**/*.ts",
-  "!src/**/*-debug.*",
-  "!src/**/debug-*.*"
+  "!src/**/*.ts"
 ]

@@ -3,7 +3,6 @@
     "target": "esnext",
     "module": "ESNext",
     "rootDir": "./src",
-    "outDir": "./build",
     "typeRoots": [ "node_modules/@types" ],
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -21,8 +20,6 @@
     }
   },
   "exclude": [
-    "src/js/helpers/background-headers.ts",
-    "src/**/debug-*.ts",
-    "src/**/*-debug.ts"
+    "src/js/helpers/background-headers.ts"
   ]
 }

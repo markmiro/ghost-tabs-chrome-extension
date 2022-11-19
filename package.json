@@ -12,8 +12,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier --write .",
-    "build": "node scripts-build.mjs & tsc --project ./tsconfig.json",
-    "watch": "concurrently --kill-others --names 'COPY, TSC' \"node scripts-watch.mjs\" \"tsc --watch --project ./tsconfig.json --outDir ./build-watch\"",
+    "build": "node scripts-build.mjs & tsc --project ./tsconfig-build.json",
+    "watch": "concurrently --kill-others --names 'COPY, TSC' \"node scripts-watch.mjs\" \"tsc --watch --project ./tsconfig-watch.json\"",
     "build:clean": "rimraf build"
   },
   "devDependencies": {
