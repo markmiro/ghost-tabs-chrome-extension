@@ -135,7 +135,10 @@ export const existingFavicons = {
   clear() {
     const allFavIcons = getFaviconLinks();
     for (const favicon of allFavIcons) {
-      if (!favicon.getAttribute("data-gtce-href")) {
+      if (
+        !favicon.getAttribute("data-gtce-href") &&
+        favicon.id !== "gtce-icon"
+      ) {
         favicon.setAttribute("data-gtce-href", favicon.getAttribute("href"));
         favicon.setAttribute("href", "");
       }
