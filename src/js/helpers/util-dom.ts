@@ -240,14 +240,13 @@ export async function fadeIconViaWorker(favIconUrl: string, opacity: number) {
   }
 }
 
-export async function unreadIconViaWorker(favIconUrl: string, opacity: number) {
+export async function unreadIconViaWorker(favIconUrl: string) {
   if (await isSvg(favIconUrl)) {
     favIconUrl = await fixSvg(favIconUrl);
   }
   const newIconUrl = await chrome.runtime.sendMessage({
     action: "UNREAD_ICON",
     favIconUrl,
-    opacity,
   });
   setFavicon(newIconUrl);
 }
