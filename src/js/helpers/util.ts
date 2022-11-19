@@ -116,11 +116,11 @@ function isDarkMode() {
   );
 }
 
-export async function getDefaultIconUrl() {
-  const defaultLightIcon = await chrome.runtime.getURL(
+export function getDefaultIconUrl() {
+  const defaultLightIcon = chrome.runtime.getURL(
     "img/generated/earth-white.png"
   );
-  const defaultDarkIcon = await chrome.runtime.getURL(
+  const defaultDarkIcon = chrome.runtime.getURL(
     "img/generated/earth-black.png"
   );
   const defaultIconUrl = isDarkMode() ? defaultLightIcon : defaultDarkIcon;
@@ -141,7 +141,7 @@ export async function fadeIcon(url: string, amount = 0.5) {
 
   // TODO: move this to content-script since it can then listen to dark mode on the tab and update accordingly.
   // I haven't found a way to detect dark mode in the background.
-  let favIconUrl = await getDefaultIconUrl();
+  let favIconUrl = getDefaultIconUrl();
   if (url) favIconUrl = url;
 
   let imageBitmap;
@@ -198,7 +198,7 @@ export async function unreadIcon(url: string) {
     throw new Error("SVG is not supported.");
   }
 
-  let favIconUrl = await getDefaultIconUrl();
+  let favIconUrl = getDefaultIconUrl();
   if (url) favIconUrl = url;
 
   let fileBlob = await urlToBlob(favIconUrl);
