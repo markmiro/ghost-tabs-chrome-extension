@@ -14,7 +14,8 @@
     "prettier": "prettier --write .",
     "build": "node scripts-build.mjs & tsc --project ./tsconfig-build.json",
     "watch": "concurrently --kill-others --names 'COPY, TSC' \"node scripts-watch.mjs\" \"tsc --watch --project ./tsconfig-watch.json\"",
-    "build:clean": "rimraf build"
+    "build:clean": "rimraf build",
+    "watch:clean": "rimraf build-watch"
   },
   "devDependencies": {
     "@types/chrome": "0.0.200",
