@@ -3,7 +3,9 @@ export const DEBUG = false;
 // Requires these permissions in the manifest:
 // "host_permissions": ["http://*/*", "https://*/*"]
 // https://stackoverflow.com/questions/10994324/chrome-extension-content-script-re-injection-after-upgrade-or-install
+// NOTE: there's no danger in calling this multiple times on a page
 export async function injectContentScript() {
+  console.log("INJECT SCRIPT");
   for (const cs of chrome.runtime.getManifest().content_scripts) {
     for (const tab of await chrome.tabs.query({ url: cs.matches })) {
       chrome.scripting.executeScript({
