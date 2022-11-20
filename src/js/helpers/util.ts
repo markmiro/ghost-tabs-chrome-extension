@@ -52,6 +52,9 @@ export function blobToDataUrl(blob: Blob) {
 async function urlToBlob(url: string) {
   if (!url) throw new Error("Expected a url.");
   // https://trezy.com/blog/loading-images-with-web-workers
+  // If calling `fetch` from content script, we get a cors error on sites like https://stackoverflow.com
+  // If adding `{mode: "no-cors"}`, then we get an empty blob. This is expected according to this page?: https://stackoverflow.com/a/41030457
+  // So the only way to call `fetch` successfully is to do it from the background script.
   const response = await fetch(url);
   // Once the file has been fetched, we'll convert it to a `Blob`
   const blob = await response.blob();
