@@ -1,7 +1,7 @@
 To run, make sure `serve` is installed:
 
 ```sh
-$ npm install serve
+$ npm install -g serve
 ```
 
 To run:
