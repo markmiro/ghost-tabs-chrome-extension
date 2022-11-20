@@ -225,5 +225,7 @@ document.getElementById("js-open-csp-sites").onclick = async () => {
   });
 };
 
-document.getElementById("js-inject-content-script").onclick =
-  injectContentScript;
+document.getElementById("js-inject-script-all").onclick = () => {
+  alert("inject");
+  injectContentScript();
+};
