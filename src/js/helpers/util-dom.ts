@@ -82,10 +82,10 @@ function setPrimary(favIconUrl: string) {
 }
 
 export async function getFaviconUrl() {
-  // const primaryLink = document.querySelector(`link[data-gtce-primary]`);
-  // if (primaryLink) {
-
-  // }
+  const primaryLink = document.querySelector(`link[data-gtce-primary]`);
+  if (primaryLink) {
+    return primaryLink.getAttribute("data-gtce-href");
+  }
 
   // Strategy:
   // • If there is no link icon, don't try to get root favicon.ico
@@ -245,6 +245,7 @@ export async function fadeIconViaWorker(favIconUrl: string, opacity: number) {
   if (await isSvg(favIconUrl)) {
     favIconUrl = await fixSvg(favIconUrl);
   }
+
   try {
     const newIconUrl = await chrome.runtime.sendMessage({
       action: "FADE_ICON",
