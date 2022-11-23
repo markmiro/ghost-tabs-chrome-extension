@@ -6,6 +6,7 @@ import { log } from "./helpers/console.js";
 import { selfClean } from "./helpers/self-clean-content-script.js";
 import {
   blankIconDataUrl,
+  fadeIconViaWorker,
   getFaviconUrl,
   resetIcon,
   setFavicon,
@@ -28,10 +29,32 @@ function withOptions(handler: (options: Options) => void) {
   });
 }
 
+class DebugFade {
+  static INTERVAL = 500;
+  intervalId: number;
+  opacity = 1;
+  favIconUrl: string;
+  constructor(favIconUrl: string) {
+    this.favIconUrl = favIconUrl;
+  }
+  start() {
+    this.intervalId = setInterval(() => {
+      fadeIconViaWorker(this.favIconUrl, this.opacity);
+      this.opacity /= 2;
+    }, DebugFade.INTERVAL);
+  }
+  stop() {
+    this.opacity = 1;
+    clearInterval(this.intervalId);
+    fadeIconViaWorker(this.favIconUrl, this.opacity);
+  }
+}
+
 selfClean(async () => {
   const favIconUrl = await getFaviconUrl();
   const redRectHref = await blankIconDataUrl();
   setFavicon(redRectHref);
+  const debugFade = new DebugFade(favIconUrl);
 
   log("getFaviconUrl()", favIconUrl);
   log("redRectHref", redRectHref);
@@ -40,21 +63,47 @@ selfClean(async () => {
     log("OPTIONS", options);
   });
 
-  chrome.runtime.onMessage.addListener(async (request: MessageRequest) => {
-    log("chrome.runtime.onMessage.addListener", request);
-    switch (request.action) {
-      case "MARK_READ":
-        resetIcon(favIconUrl);
-        break;
-      case "MARK_UNREAD":
-        unreadIconViaWorker(favIconUrl);
-        break;
-      default:
-        break;
+  chrome.runtime.onMessage.addListener(
+    async (request: MessageRequest, _sender, sendResponse) => {
+      log("chrome.runtime.onMessage.addListener", request);
+      switch (request.action) {
+        case "MARK_READ":
+          resetIcon(favIconUrl);
+          break;
+        case "MARK_UNREAD":
+          unreadIconViaWorker(favIconUrl);
+          break;
+        case "DEBUG.FADE":
+          fadeIconViaWorker(favIconUrl, 0.5);
+          break;
+        case "DEBUG.UNFADE":
+          resetIcon(favIconUrl);
+          break;
+        case "DEBUG.PLAY_FADE":
+          alert("Click 'start' instead");
+          break;
+        case "DEBUG.START":
+          debugFade.start();
+          break;
+        case "DEBUG.STOP":
+          debugFade.stop();
+          break;
+        case "DEBUG.PRINT_VARS":
+          const vars = {
+            favIconUrl,
+            DebugFade,
+          };
+          log(vars);
+          sendResponse(vars);
+          break;
+        default:
+          break;
+      }
     }
-  });
+  );
 
   return () => {
     resetIcon(favIconUrl);
+    debugFade.stop();
   };
 });
