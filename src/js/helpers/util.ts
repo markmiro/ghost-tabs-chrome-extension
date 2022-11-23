@@ -20,6 +20,26 @@ export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export async function ping() {
+  let currErr: any;
+  let timestamp: number;
+  try {
+    timestamp = await chrome.runtime.sendMessage({
+      action: "PING",
+    });
+    if (!timestamp) {
+      currErr = new Error("PING response is missing a timestamp.");
+    }
+  } catch (err) {
+    currErr = err;
+  }
+  return {
+    ok: !currErr,
+    error: currErr,
+    timestamp,
+  };
+}
+
 // In theory, data urls can be used for favicons, but in practice, I haven't seen it.
 // If this starts to be more common, I'll have to resort to a much more complicated solution
 // that involves tracking data urls that have been used.

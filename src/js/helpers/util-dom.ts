@@ -176,26 +176,6 @@ export async function blankIconDataUrl() {
   return returnDataUrl;
 }
 
-export async function ping() {
-  let currErr: any;
-  let timestamp: number;
-  try {
-    timestamp = await chrome.runtime.sendMessage({
-      action: "PING",
-    });
-    if (!timestamp) {
-      currErr = new Error("PING response is missing a timestamp.");
-    }
-  } catch (err) {
-    currErr = err;
-  }
-  return {
-    ok: !currErr,
-    error: currErr,
-    timestamp,
-  };
-}
-
 // https://stackoverflow.com/a/260876
 export function setFavicon(href: string) {
   log("setFavicon", href);

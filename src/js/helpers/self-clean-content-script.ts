@@ -1,7 +1,7 @@
 // self-clean-content-script.ts
 import { log } from "./console.js";
 import { pool } from "./pool.js";
-import { ping } from "./util-dom.js";
+import { ping } from "./util.js";
 
 /** How often we check to see if extension uninstalled */
 const PING_INTERVAL_MIN = 1 / 10;
