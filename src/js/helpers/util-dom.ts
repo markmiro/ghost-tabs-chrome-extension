@@ -81,10 +81,10 @@ function setPrimary(favIconUrl: string) {
   }
 }
 
-export async function getFaviconUrl() {
+export async function getFaviconUrl(): Promise<string> {
   const primaryLink = document.querySelector(`link[data-gtce-primary]`);
   if (primaryLink) {
-    return primaryLink.getAttribute("data-gtce-href");
+    return primaryLink.getAttribute("data-gtce-href") || "";
   }
 
   // Strategy:
@@ -98,14 +98,14 @@ export async function getFaviconUrl() {
     if (response.ok) {
       return response.url;
     } else {
-      return undefined;
+      return "";
     }
   }
 
   // Loop until we get a url that doesn't start with `data:`
   for (let tries = 0; tries <= 10; tries++) {
     log("try to find the correct icon...");
-    const urlCandidate = await chrome.runtime.sendMessage({
+    const urlCandidate: string = await chrome.runtime.sendMessage({
       action: "GET_FAVICONURL",
     });
     log("response for GET_FAVICONURL", urlCandidate);
@@ -117,7 +117,7 @@ export async function getFaviconUrl() {
     await sleep(tries * 200);
   }
 
-  return undefined;
+  return "";
 }
 
 export const existingFavicons = {
