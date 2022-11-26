@@ -36,6 +36,7 @@
         "js/helpers/console.js",
         "js/helpers/util.js",
         "js/helpers/util-dom.js",
+        "js/helpers/dom-conflict-check.js",
         "js/helpers/pool.js"
       ]
     }

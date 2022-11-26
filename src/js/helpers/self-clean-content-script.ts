@@ -2,6 +2,7 @@
 import { log } from "./console.js";
 import { pool } from "./pool.js";
 import { ping } from "./util.js";
+import { conflictCheck } from "./dom-conflict-check.js";
 
 /** How often we check to see if extension uninstalled */
 const PING_INTERVAL_MIN = 1 / 10;
@@ -14,9 +15,12 @@ const PING_INTERVAL_MIN = 1 / 10;
  */
 export async function selfClean(cb: (p: typeof pool) => Promise<() => void>) {
   const cleanup = await cb(pool);
+  const conflictCleanup = conflictCheck(reset);
 
   function reset() {
+    log("----CLEAN UP!----");
     cleanup();
+    conflictCleanup();
     pool.clearAll();
   }
 

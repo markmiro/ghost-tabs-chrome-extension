@@ -1,4 +1,12 @@
-import { log } from "./console.js";
+/**
+ * How this works
+ * There are two kinds of favicon links
+ * 1. The kind are the ones the page comes with
+ * 2. The the icon we add
+ * In the first kind, there's also a primary icon and the rest of them that haven't been chosen for whatever reason
+ */
+
+import { emoji, log } from "./console.js";
 import {
   isSvg,
   fadeIcon as fadeIconBase,
@@ -169,8 +177,12 @@ export async function blankIconDataUrl() {
   const SIDE = 32;
   const canvas = new OffscreenCanvas(SIDE, SIDE);
   const ctx = canvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
-  ctx.fillStyle = "red";
-  ctx.fillRect(0, 0, SIDE, SIDE);
+  // ctx.fillStyle = "red";
+  // ctx.fillRect(0, 0, SIDE, SIDE);
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = "29px sans-serif";
+  ctx.fillText(emoji, 16, 16);
   const returnBlob = await canvas.convertToBlob();
   const returnDataUrl = await blobToDataUrl(returnBlob);
   return returnDataUrl;

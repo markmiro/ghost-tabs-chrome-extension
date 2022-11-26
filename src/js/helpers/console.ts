@@ -703,7 +703,7 @@ const emojis = [
 ];
 const randomEmoji = () => emojis[Math.floor(Math.random() * emojis.length)];
 
-const emoji = randomEmoji();
+export const emoji = randomEmoji();
 
 console.log(emoji);
 
