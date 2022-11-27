@@ -17,6 +17,7 @@ import {
   blobToDataUrl,
 } from "./util.js";
 
+
 /** Guarantee a 404 response */
 const FAIL_LOAD_FAVICON_URL =
   document.location.origin + "/gtce_ghost-tabs-chrome-extension_should-404.ico";
@@ -177,8 +178,8 @@ export async function blankIconDataUrl() {
   const SIDE = 32;
   const canvas = new OffscreenCanvas(SIDE, SIDE);
   const ctx = canvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
-  // ctx.fillStyle = "red";
-  // ctx.fillRect(0, 0, SIDE, SIDE);
+  ctx.fillStyle = "#00ff00";
+  ctx.fillRect(0, 0, SIDE, SIDE);
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.font = "29px sans-serif";
