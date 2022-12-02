@@ -50,17 +50,34 @@ class DebugFade {
   }
 }
 
-selfClean(async () => {
+selfClean(async function func(pool) {
   const favIconUrl = await getFaviconUrl();
-  const redRectHref = await blankIconDataUrl();
-  setFavicon(redRectHref);
+  let unread = document.visibilityState === "hidden";
+  // const redRectHref = await blankIconDataUrl();
+  // log("redRectHref", redRectHref);
+  // setFavicon(redRectHref);
   const debugFade = new DebugFade(favIconUrl);
 
   log("getFaviconUrl()", favIconUrl);
-  log("redRectHref", redRectHref);
+  let timeoutId = 0;
 
   withOptions((options) => {
     log("OPTIONS", options);
+    if (options.showUnreadBadge && unread) {
+      unreadIconViaWorker(favIconUrl);
+    } else {
+      resetIcon(favIconUrl);
+    }
+
+    pool.addDocListener("visibilitychange", () => {
+      clearTimeout(timeoutId);
+      if (document.visibilityState === "visible") {
+        unread = false;
+        timeoutId = setTimeout(() => {
+          resetIcon(favIconUrl);
+        }, options.fadeTimeToReset);
+      }
+    });
   });
 
   chrome.runtime.onMessage.addListener(
@@ -90,6 +107,7 @@ selfClean(async () => {
           break;
         case "DEBUG.PRINT_VARS":
           const vars = {
+            unread,
             favIconUrl,
             DebugFade,
           };
