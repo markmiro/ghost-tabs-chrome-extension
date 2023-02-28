@@ -1,5 +1,11 @@
 # TODO
 
+- Make sure `selfClean` doesn't create a race condition
+  - After reloading extension, old content script will try to reset favicon back to normal
+  - Maybe inject an inject ts into the dom
+    - and `selfClean` will check if timestamp of the script matches the timestamp in the dom
+      - if no match, then it avoids manipulating the dom
+      - maybe do this at a lower level (dom-utils)?
 - Disable fading for specified tabs
 
 Polish:
