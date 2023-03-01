@@ -72,15 +72,22 @@ document
 
     let all = "";
     let i = 0;
-    for await (const tabVars of allTabVars) {
-      all += `<pre>${JSON.stringify(
-        { title: tabs[i].title, ...tabVars },
-        null,
-        "  "
-      )}</pre>`;
-      i++;
+    try {
+      for await (const tabVars of allTabVars) {
+        all += `<pre>${JSON.stringify(
+          { title: tabs[i].title, ...tabVars },
+          null,
+          "  "
+        )}</pre>`;
+        i++;
+      }
+      document.getElementById("js-tab-data").innerHTML = `<div>${all}</div>`;
+    } catch (err) {
+      if (err) {
+        console.error(err);
+        alert(err);
+      }
     }
-    document.getElementById("js-tab-data").innerHTML = `<div>${all}</div>`;
   });
 
 document
