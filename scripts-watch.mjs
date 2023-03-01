@@ -13,6 +13,7 @@ const destDir = (pathStr) =>
   );
 
 const copyFile = async (path) => {
+  if (path.endsWith(".DS_Store")) return;
   // Using `flat` because we don't want to replicate the source directory structure
   const outputs = await cpy(path, destDir(path), { flat: true });
   console.log(
