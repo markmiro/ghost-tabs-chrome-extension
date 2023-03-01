@@ -1,5 +1,13 @@
 # TODO
 
+## Bugs
+
+- When window is re-opened, tab icon is just the globe for lots of the tabs.
+
+---
+
+## Features
+
 - Make sure `selfClean` doesn't create a race condition
   - After reloading extension, old content script will try to reset favicon back to normal
   - Maybe inject an inject ts into the dom
@@ -19,7 +27,6 @@ Polish:
 - Add cache of favicons for faster loading
 
 Features:
-
 - Show CSP error in popup.js by sending CSP error to tab, and then displaying it back later.
   - Maybe show a message asking if user wants to enable working on more tabs, but using more permissions
 - Make icon red over time?
