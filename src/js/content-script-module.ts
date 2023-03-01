@@ -5,11 +5,9 @@
 import { log } from "./helpers/console.js";
 import { selfClean } from "./helpers/self-clean-content-script.js";
 import {
-  blankIconDataUrl,
   fadeIconViaWorker,
   getFaviconUrl,
   resetIcon,
-  setFavicon,
   unreadIconViaWorker,
 } from "./helpers/util-dom.js";
 
@@ -60,6 +58,7 @@ selfClean(async function func(pool) {
 
   log("getFaviconUrl()", favIconUrl);
   let timeoutId = 0;
+  let intervalId = 0;
 
   withOptions((options) => {
     log("OPTIONS", options);
@@ -89,6 +88,9 @@ selfClean(async function func(pool) {
           break;
         case "MARK_UNREAD":
           unreadIconViaWorker(favIconUrl);
+          break;
+        case "DEBUG.FADE_AMOUNT":
+          fadeIconViaWorker(favIconUrl, request.fadeAmount);
           break;
         case "DEBUG.FADE":
           fadeIconViaWorker(favIconUrl, 0.5);
@@ -123,5 +125,7 @@ selfClean(async function func(pool) {
   return () => {
     resetIcon(favIconUrl);
     debugFade.stop();
+    clearTimeout(timeoutId);
+    clearInterval(intervalId);
   };
 });

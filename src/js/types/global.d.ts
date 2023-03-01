@@ -12,6 +12,7 @@ declare type MessageRequest =
   | { action: "MARK_UNREAD" }
   | { action: "MARK_READ" }
   | { action: "DEBUG.FADE" }
+  | { action: "DEBUG.FADE_AMOUNT"; fadeAmount: number }
   | { action: "DEBUG.UNFADE" }
   | { action: "DEBUG.PLAY_FADE" }
   | { action: "DEBUG.START" }

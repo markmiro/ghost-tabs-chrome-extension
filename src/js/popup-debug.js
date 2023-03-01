@@ -1,6 +1,15 @@
-import { getDefaultIconUrl, injectContentScript } from "./helpers/util.js";
+import {
+  getDefaultIconUrl,
+  injectContentScript,
+  sleep,
+} from "./helpers/util.js";
 import { fadeIcon } from "./helpers/util-dom.js";
-import { CSP_SITES, POPULAR_SITES, TEST_PAGES } from "./helpers/util-debug.js";
+import {
+  CSP_SITES,
+  POPULAR_SITES,
+  DEMO_SITES,
+  TEST_PAGES,
+} from "./helpers/util-debug.js";
 
 document.getElementById("js-start").addEventListener("click", async () => {
   const tabs = await chrome.tabs.query({ pinned: false, windowType: "normal" });
@@ -222,6 +231,41 @@ document.getElementById("js-open-csp-sites").onclick = async () => {
   chrome.windows.create({
     ...commonCreateData,
     url: CSP_SITES,
+  });
+};
+
+document.getElementById("js-open-demo-sites").onclick = async () => {
+  await chrome.windows.create({
+    ...commonCreateData,
+    url: DEMO_SITES.map((site) => site.url),
+  });
+  alert(
+    "1) Iterate through all tabs\n2)Click 'Reload all'\n3)Click 'DEMO init'"
+  );
+};
+
+document.getElementById("js-open-demo-sites-init").onclick = async () => {
+  alert("init");
+  const tabs = await chrome.tabs.query({
+    currentWindow: true,
+    pinned: false,
+    windowType: "normal",
+  });
+  DEMO_SITES.map(async ({ url, unread, fadeAmount }, i) => {
+    // alert(`${url}\n\n${tabs[i].url}`);
+    if (unread) {
+      chrome.tabs.sendMessage(tabs[i].id, {
+        action: "MARK_UNREAD",
+      });
+    } else {
+      await chrome.tabs.sendMessage(tabs[i].id, {
+        action: "MARK_READ",
+      });
+      chrome.tabs.sendMessage(tabs[i].id, {
+        action: "DEBUG.FADE_AMOUNT",
+        fadeAmount,
+      });
+    }
   });
 };
 
