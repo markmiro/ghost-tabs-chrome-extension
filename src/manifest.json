@@ -32,6 +32,7 @@
       "matches": ["http://*/*", "https://*/*"],
       "resources": [
         "js/content-script-module.js",
+        "js/content-script-debug.js",
         "js/helpers/self-clean-content-script.js",
         "js/helpers/console.js",
         "js/helpers/util.js",
