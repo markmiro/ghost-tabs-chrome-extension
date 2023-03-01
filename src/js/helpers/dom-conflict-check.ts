@@ -9,7 +9,7 @@ const DATA_GTCE = {
 const $html = document.getElementsByTagName("html")[0];
 $html.setAttribute(DATA_GTCE.id, id);
 
-export function conflictCheck(cb: () => void) {
+export function domConflictCheck(cb: () => void) {
   const observer = new MutationObserver((mutationList) => {
     for (const mutation of mutationList) {
       if (mutation.type === "attributes") {
