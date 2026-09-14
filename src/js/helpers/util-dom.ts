@@ -17,6 +17,16 @@ import {
   blobToDataUrl,
 } from "./util.js";
 
+// Set once a newer copy of the content script has taken over the page. Everything that
+// writes to the DOM checks it: work already in flight here — a fade still waiting on the
+// background to render it, say — would otherwise land on top of what the new script drew.
+// Guarding at this level rather than at the call sites means an `await` can't slip past it.
+let hasReleasedDom = false;
+
+/** Give up the page. Nothing in this script writes to the DOM after this. */
+export function releaseDom() {
+  hasReleasedDom = true;
+}
 
 /** Guarantee a 404 response */
 const FAIL_LOAD_FAVICON_URL =
@@ -70,6 +80,10 @@ export function getFaviconLinks() {
 
 // Used for when we know which favicon URL is primary, but we got that `favIconUrl` from the `chrome.tabs` API
 function setPrimary(favIconUrl: string) {
+  // `getFaviconUrl` retries for a while, so it can still be running when a newer script
+  // takes over — and that script reads `data-gtce-primary` to decide which icon is the
+  // real one. Don't answer for it.
+  if (hasReleasedDom) return;
   const baseUrl = document.location.origin;
   const favIconUrlObj = new URL(favIconUrl, baseUrl);
   const links = getFaviconLinks();
@@ -191,6 +205,7 @@ export async function blankIconDataUrl() {
 
 // https://stackoverflow.com/a/260876
 export function setFavicon(href: string) {
+  if (hasReleasedDom) return;
   log("setFavicon", href);
   existingFavicons.clear();
 

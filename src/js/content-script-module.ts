@@ -9,6 +9,7 @@ import {
   fadedIconUrlViaWorker,
   fadeIconViaWorker,
   getFaviconUrl,
+  releaseDom,
   resetIcon,
   setFavicon,
   unreadIconUrlViaWorker,
@@ -51,9 +52,13 @@ class DebugFade {
     }, DebugFade.INTERVAL);
   }
   stop() {
+    this.cancel();
+    fadeIconViaWorker(this.favIconUrl, this.opacity);
+  }
+  /** Stop the timer without repainting, for when we no longer own the favicon. */
+  cancel() {
     this.opacity = 1;
     clearInterval(this.intervalId);
-    fadeIconViaWorker(this.favIconUrl, this.opacity);
   }
 }
 
@@ -212,14 +217,24 @@ selfClean(async function func(pool) {
   }
   chrome.runtime.onMessage.addListener(onMessage);
 
-  return () => {
+  return (reason: CleanupReason) => {
     stopWatchingOptions();
     chrome.runtime.onMessage.removeListener(onMessage);
     // Drop any icon that's still being rendered.
     paintId++;
-    resetIcon(favIconUrl);
-    debugFade.stop();
+    // Stop without repainting: `stop()` would draw a copy of the icon on top of the reset.
+    debugFade.cancel();
     pool.clearTimer(resetTimeoutId);
     pool.clearTimer(fadeIntervalId);
+
+    if (reason === "SUPERSEDED") {
+      // A newer content script has already drawn its own icon. Putting the original
+      // favicon back now would undo it, and the new script has no way to tell that
+      // happened. Drop the page instead, which also blocks anything still in flight.
+      releaseDom();
+      return;
+    }
+
+    resetIcon(favIconUrl);
   };
 });

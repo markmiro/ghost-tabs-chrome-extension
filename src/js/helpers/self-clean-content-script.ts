@@ -13,13 +13,21 @@ const PING_INTERVAL_MIN = 1 / 10;
  * The idea is that the content script should not leave anything behind once it's done.
  * @param cb
  */
-export async function selfClean(cb: (p: typeof pool) => Promise<() => void>) {
+export async function selfClean(
+  cb: (p: typeof pool) => Promise<(reason: CleanupReason) => void>
+) {
   const cleanup = await cb(pool);
-  const conflictCleanup = domConflictCheck(reset);
+  // A newer content script has claimed the page. It isn't enough to just stop: whatever
+  // this script does on the way out lands on top of what the new one has already drawn.
+  const conflictCleanup = domConflictCheck(() => reset("SUPERSEDED"));
 
-  function reset() {
-    log("----CLEAN UP!----");
-    cleanup();
+  let hasReset = false;
+  function reset(reason: CleanupReason) {
+    // The conflict observer and the ping can both decide it's time to go.
+    if (hasReset) return;
+    hasReset = true;
+    log("----CLEAN UP!----", reason);
+    cleanup(reason);
     conflictCleanup();
     pool.clearAll();
   }
@@ -29,7 +37,7 @@ export async function selfClean(cb: (p: typeof pool) => Promise<() => void>) {
     const res = await ping();
     log("PING RESPONSE", res);
     if (!res.ok) {
-      reset();
+      reset("EXTENSION_GONE");
     }
   }
 
