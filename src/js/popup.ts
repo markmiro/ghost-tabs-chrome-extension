@@ -37,6 +37,36 @@ document.addEventListener("keypress", (e) => {
   });
 }
 
+{
+  // A page whose content security policy blocks `data:` images silently refuses the faded
+  // favicon, so the tab looks like the extension just isn't running. Ask the tab whether
+  // that's what happened, so the popup can say so instead of leaving it a mystery.
+  chrome.tabs.query({ currentWindow: true, active: true }, async (tabs) => {
+    const tab = tabs?.[0];
+    if (!tab?.id) return;
+
+    let status: TabStatus | undefined;
+    try {
+      status = await chrome.tabs.sendMessage(tab.id, { action: "GET_STATUS" });
+    } catch {
+      // No content script to answer: chrome:// urls, the web store, pinned tabs. The
+      // "not supported" notice above already covers those.
+      return;
+    }
+    if (!status?.isDataUrlBlocked) return;
+
+    document.getElementById("js-csp-blocked").innerHTML = `
+      <div class="db pa3 bg-light-yellow black">
+        <b>⚠️ This tab's favicon can't be faded</b>.
+        The site's content security policy refuses <code>data:</code> images,
+        which is how the faded icon is delivered. Nothing the extension can
+        change from here.
+      </div>
+      <hr />
+    `;
+  });
+}
+
 // ---
 
 {

@@ -63,6 +63,22 @@ class DebugFade {
 }
 
 selfClean(async function func(pool) {
+  // A page whose CSP won't allow `data:` images rejects the faded favicon without any
+  // visible sign, so the tab just looks like the extension isn't working. Latch that here
+  // and hand it to the popup on request, so it can explain what's going on.
+  let isDataUrlBlocked = false;
+  pool.addDocListener("securitypolicyviolation", (e) => {
+    // Chrome reports a blocked `data:` url as just "data". Which directive gets named
+    // depends on what the page set: `img-src` if it has one, otherwise `default-src`.
+    // `img-src-elem` is the more specific form and takes precedence when present.
+    const isBlockedDataImage =
+      e.blockedURI === "data" &&
+      /^(img-src|img-src-elem|default-src)\b/.test(e.violatedDirective);
+    if (!isBlockedDataImage) return;
+    log("CSP blocked a data: image — this tab can't be faded", e);
+    isDataUrlBlocked = true;
+  });
+
   const favIconUrl = await getFaviconUrl();
   let unread = document.visibilityState === "hidden";
   /** When the tab was hidden, which is when its freshness started to drop. Cleared once it's read. */
@@ -181,6 +197,11 @@ selfClean(async function func(pool) {
         if (!options.enabled) break;
         unread = true;
         update();
+        break;
+      case "GET_STATUS":
+        // Answer synchronously: this listener is `async`, so the message channel is
+        // gone by the time anything after an `await` would run.
+        sendResponse({ isDataUrlBlocked, favIconUrl } as TabStatus);
         break;
       case "DEBUG.FADE_AMOUNT":
         fadeIconViaWorker(favIconUrl, request.fadeAmount);

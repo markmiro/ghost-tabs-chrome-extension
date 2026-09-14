@@ -339,6 +339,43 @@ describe("popup actions", () => {
     );
     assert.equal(options.showUnreadBadge, false);
   });
+
+  it("a tab whose CSP blocks data: images reports it, and the popup says so", async () => {
+    const scenario = "CSP blocks data: images";
+    await openTab("png-multiple", { active: true });
+    // In the background it gets an unread badge, which is a `data:` image the page refuses.
+    const blockedId = await openTab("csp-no-data-images", { active: false });
+    const okId = await openTab("ico", { active: false });
+    await waitForIcon(okId, hasBadge, {
+      label: "control tab badged",
+      scenario,
+    });
+
+    const blocked = await waitFor(
+      async () => {
+        const s = await sendToTab(blockedId, { action: "GET_STATUS" });
+        return s?.isDataUrlBlocked && s;
+      },
+      { label: "CSP tab to report the block" }
+    );
+    assert.match(blocked.favIconUrl, /icon32\.png$/);
+    recorder.add(scenario, "blocked tab", await tabState(blockedId));
+    const ok = await sendToTab(okId, { action: "GET_STATUS" });
+    assert.equal(ok.isDataUrlBlocked, false);
+
+    // The popup asks the active tab, so bring the blocked one forward and open it there.
+    await activate(blockedId);
+    await browser.sw(() => chrome.action.openPopup());
+    const warning = await browser.extensionPage("popup.html", async () => {
+      for (let i = 0; i < 50; i++) {
+        const text = document.getElementById("js-csp-blocked")?.innerText;
+        if (text) return text;
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      return "";
+    });
+    assert.match(warning, /can't be faded/);
+  });
 });
 
 describe("options", () => {

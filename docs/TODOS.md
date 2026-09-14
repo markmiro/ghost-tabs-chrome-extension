@@ -35,7 +35,8 @@ Polish:
 
 Features:
 
-- Show CSP error in popup.js by sending CSP error to tab, and then displaying it back later.
+- ~~Show CSP error in popup.js by sending CSP error to tab, and then displaying it back later.~~
+  The popup now warns when the active tab's CSP blocks `data:` images.
   - Maybe show a message asking if user wants to enable working on more tabs, but using more permissions
 - Make icon red over time?
 - Badge with hours inactive?
