@@ -15,13 +15,26 @@ type PoolItem =
 
 export const pool = {
   items: [] as PoolItem[],
-  setTimeout: (handler: TimerHandler, timeout?: number) => {
-    const id = setTimeout(handler, timeout);
+  setTimeout: (handler: () => void, timeout?: number) => {
+    const id = setTimeout(() => {
+      pool.clearTimer(id);
+      handler();
+    }, timeout);
     pool.items.push({ type: "TIMEOUT", id });
+    return id;
   },
-  setInterval: (handler: TimerHandler, timeout?: number) => {
+  setInterval: (handler: () => void, timeout?: number) => {
     const id = setInterval(handler, timeout);
     pool.items.push({ type: "INTERVAL", id });
+    return id;
+  },
+  /** Cancel a timeout or interval from this pool. Ignores ids that are already gone (or 0). */
+  clearTimer: (id: number) => {
+    // Timeouts and intervals share one id space, so either clear works for both.
+    clearInterval(id);
+    pool.items = pool.items.filter(
+      (item) => item.type === "DOC_LISTENER" || item.id !== id
+    );
   },
   addDocListener: <K extends keyof DocumentEventMap>(
     listenerType: K,

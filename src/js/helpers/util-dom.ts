@@ -234,30 +234,42 @@ export async function resetIcon(favIconUrl: string) {
   // The only way to revert the favicon back to "normal" in a consisten way is to update to a data URL that corresponds to the original favicon url
 }
 
-export async function fadeIconViaWorker(favIconUrl: string, opacity: number) {
+/** Render a faded icon in the background and return it as a data url, without setting it. */
+export async function fadedIconUrlViaWorker(
+  favIconUrl: string,
+  opacity: number
+): Promise<string> {
   if (await isSvg(favIconUrl)) {
     favIconUrl = await fixSvg(favIconUrl);
   }
+  return chrome.runtime.sendMessage({
+    action: "FADE_ICON",
+    favIconUrl,
+    opacity,
+  });
+}
 
+/** Render the unread icon in the background and return it as a data url, without setting it. */
+export async function unreadIconUrlViaWorker(
+  favIconUrl: string
+): Promise<string> {
+  if (await isSvg(favIconUrl)) {
+    favIconUrl = await fixSvg(favIconUrl);
+  }
+  return chrome.runtime.sendMessage({
+    action: "UNREAD_ICON",
+    favIconUrl,
+  });
+}
+
+export async function fadeIconViaWorker(favIconUrl: string, opacity: number) {
   try {
-    const newIconUrl = await chrome.runtime.sendMessage({
-      action: "FADE_ICON",
-      favIconUrl,
-      opacity,
-    });
-    setFavicon(newIconUrl);
+    setFavicon(await fadedIconUrlViaWorker(favIconUrl, opacity));
   } catch (err) {
     log(err);
   }
 }
 
 export async function unreadIconViaWorker(favIconUrl: string) {
-  if (await isSvg(favIconUrl)) {
-    favIconUrl = await fixSvg(favIconUrl);
-  }
-  const newIconUrl = await chrome.runtime.sendMessage({
-    action: "UNREAD_ICON",
-    favIconUrl,
-  });
-  setFavicon(newIconUrl);
+  setFavicon(await unreadIconUrlViaWorker(favIconUrl));
 }
