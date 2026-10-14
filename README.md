@@ -22,6 +22,38 @@ Install deps
 pnpm install
 ```
 
+Node 22.12 or newer is required. `.node-version` tracks the current Node 24 line.
+
+## Unit tests
+
+```sh
+pnpm test
+```
+
+`pnpm run typecheck` checks the extension projects and the tests without writing output.
+
+## Browser tests
+
+```sh
+pnpm run e2e:install # once: downloads the Chromium build Playwright uses
+pnpm run e2e         # build, then run headless
+HEADED=1 pnpm run e2e:run # watch it in a visible window
+```
+
+These load the built extension into a real Chromium, open the [test pages](test-favicon-pages/), and check the favicon Chrome actually shows in each tab: unread badge on background tabs, reset when the tab is viewed, fading at each opacity, the animated debug fade, the popup, and the options. Each run writes a filmstrip of every favicon it saw to `e2e/artifacts/<timestamp>/filmstrip.html`.
+
+Tests marked `# TODO` describe behavior the UI promises but the loaded content script doesn't implement yet. They run and report without failing.
+
+`EXTENSION_DIR=build-watch pnpm run e2e:run` tests a different build.
+
+## Health check
+
+```sh
+pnpm health
+```
+
+Runs install, typecheck, unit tests, build, a check of the build output, `pnpm watch`, and the browser tests against both `build` and `build-watch`. Logs go to `e2e/artifacts/health/`. Pass `--repeat 3` to run the browser tests several times.
+
 ## Development build
 
 ```sh
