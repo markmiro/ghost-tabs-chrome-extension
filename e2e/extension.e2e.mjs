@@ -14,7 +14,7 @@ import { createRecorder } from "./report.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const EXTENSION_DIR = path.resolve(
-  process.env.EXTENSION_DIR ?? path.join(ROOT, "build"),
+  process.env.EXTENSION_DIR ?? path.join(ROOT, "build")
 );
 const ARTIFACTS_DIR = path.resolve(
   process.env.E2E_ARTIFACTS_DIR ??
@@ -22,8 +22,8 @@ const ARTIFACTS_DIR = path.resolve(
       ROOT,
       "e2e",
       "artifacts",
-      new Date().toISOString().replace(/[:.]/g, "-"),
-    ),
+      new Date().toISOString().replace(/[:.]/g, "-")
+    )
 );
 
 // Mirrors `defaultOptions` in src/js/background.ts.
@@ -68,7 +68,7 @@ async function openTab(page, { active = false, pinned = false } = {}) {
       (await chrome.tabs.create({ url, active, pinned })).id,
     `${server.origin}/${page}.html`,
     active,
-    pinned,
+    pinned
   );
   // The content script marks <html data-gtce-id> once it has started.
   await waitFor(async () => (await tabState(tabId)).page?.contentScriptId, {
@@ -90,7 +90,7 @@ const setOptions = (patch) =>
 async function waitForIcon(
   tabId,
   predicate,
-  { label, scenario, timeout = 8000 },
+  { label, scenario, timeout = 8000 }
 ) {
   let last;
   try {
@@ -99,7 +99,7 @@ async function waitForIcon(
         last = await tabState(tabId);
         return predicate(last) && last;
       },
-      { label, timeout, interval: 150 },
+      { label, timeout, interval: 150 }
     );
   } finally {
     if (last && scenario) recorder.add(scenario, label, last);
@@ -116,13 +116,13 @@ async function renderFade(tabId, amount, scenario) {
     {
       label: `fade ${amount}`,
       scenario,
-    },
+    }
   ).catch(async () => {
     // Same bytes as before (e.g. re-rendering the same amount) is fine too.
     const s = await tabState(tabId);
     assert.ok(
       s.isDataUrl && s.stats,
-      `expected a rendered data: icon after fade ${amount}`,
+      `expected a rendered data: icon after fade ${amount}`
     );
     return s;
   });
@@ -167,11 +167,11 @@ describe("install", () => {
           target: { tabId: id },
           func: () => chrome.runtime.sendMessage({ action: "PING" }),
         }),
-      tabId,
+      tabId
     );
     assert.ok(
       !Number.isNaN(Date.parse(result)),
-      `PING should return an ISO timestamp, got ${result}`,
+      `PING should return an ISO timestamp, got ${result}`
     );
   });
 });
@@ -197,7 +197,7 @@ describe("unread badge and fading, per favicon type", () => {
       recorder.add(scenario, "activated +0.3s", stillUnread);
       assert.ok(
         hasBadge(stillUnread),
-        "badge should survive until fadeTimeToReset elapses",
+        "badge should survive until fadeTimeToReset elapses"
       );
       const read = await waitForIcon(tabId, (s) => !hasBadge(s), {
         label: "read",
@@ -215,19 +215,19 @@ describe("unread badge and fading, per favicon type", () => {
       const ratio = (s) => s.stats.alpha / full.stats.alpha;
       assert.ok(
         Math.abs(ratio(half) - 0.5) < 0.08,
-        `50% fade gave alpha ratio ${ratio(half).toFixed(3)}`,
+        `50% fade gave alpha ratio ${ratio(half).toFixed(3)}`
       );
       assert.ok(
         Math.abs(ratio(tenth) - 0.1) < 0.05,
-        `10% fade gave alpha ratio ${ratio(tenth).toFixed(3)}`,
+        `10% fade gave alpha ratio ${ratio(tenth).toFixed(3)}`
       );
       assert.ok(
         half.stats.saturation <= full.stats.saturation,
-        "fading should not add colour",
+        "fading should not add colour"
       );
       assert.ok(
         tenth.stats.saturation <= half.stats.saturation,
-        "fading should not add colour",
+        "fading should not add colour"
       );
     });
   }
@@ -252,16 +252,16 @@ describe("animated fade", () => {
     for (let i = 1; i < alphas.length; i++) {
       assert.ok(
         alphas[i] < alphas[i - 1],
-        `alpha should only go down: ${alphas.map((a) => a.toFixed(3)).join(" → ")}`,
+        `alpha should only go down: ${alphas.map((a) => a.toFixed(3)).join(" → ")}`
       );
     }
     assert.ok(
       alphas.length >= 4,
-      `expected at least 4 distinct fade steps, saw ${alphas.length}`,
+      `expected at least 4 distinct fade steps, saw ${alphas.length}`
     );
     assert.ok(
       alphas.at(-1) < full.stats.alpha * 0.1,
-      `icon should be nearly invisible, alpha ${alphas.at(-1)}`,
+      `icon should be nearly invisible, alpha ${alphas.at(-1)}`
     );
 
     await sendToTab(tabId, { action: "DEBUG.STOP" });
@@ -271,7 +271,7 @@ describe("animated fade", () => {
       {
         label: "stopped",
         scenario,
-      },
+      }
     );
     assert.ok(restored.stats.saturation > 0.3, "colour should be back");
   });
@@ -294,7 +294,7 @@ describe("popup actions", () => {
           url: `chrome-extension://${id}/popup.html`,
           active: true,
         }),
-      browser.extensionId,
+      browser.extensionId
     );
     const shown = await browser.extensionPage("popup.html", async () => {
       // Wait for popup.ts to fill the form from storage.
@@ -331,11 +331,11 @@ describe("popup actions", () => {
     const { options } = await waitFor(
       async () => {
         const data = await browser.sw(() =>
-          chrome.storage.local.get("options"),
+          chrome.storage.local.get("options")
         );
         return data.options.fadeHalfLife === 3000 && data;
       },
-      { label: "popup to save options" },
+      { label: "popup to save options" }
     );
     assert.equal(options.showUnreadBadge, false);
   });
@@ -351,7 +351,7 @@ describe("options", () => {
     recorder.add(scenario, "pinned, background 2.5s", s);
     assert.ok(
       isOriginal(s),
-      `expected the page's own icon, got ${s.favIconUrl.slice(0, 60) || "(none)"}`,
+      `expected the page's own icon, got ${s.favIconUrl.slice(0, 60) || "(none)"}`
     );
   });
 
@@ -396,9 +396,9 @@ describe("known gaps", () => {
       // After 8s at a 3s half-life, freshness is ~16%. Allow lots of slack.
       assert.ok(
         last.isDataUrl && last.stats.alpha < start.stats.alpha * 0.5,
-        `alpha ${last.stats?.alpha} after 8s hidden`,
+        `alpha ${last.stats?.alpha} after 8s hidden`
       );
-    },
+    }
   );
 
   it(
@@ -415,6 +415,6 @@ describe("known gaps", () => {
         scenario,
         timeout: 4000,
       });
-    },
+    }
   );
 });

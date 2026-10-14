@@ -24,7 +24,7 @@ export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export async function waitFor(
   fn,
-  { timeout = 10_000, interval = 100, label = "condition" } = {},
+  { timeout = 10_000, interval = 100, label = "condition" } = {}
 ) {
   const start = Date.now();
   let last;
@@ -38,7 +38,7 @@ export async function waitFor(
     await sleep(interval);
   }
   throw new Error(
-    `Timed out after ${timeout}ms waiting for ${label}. Last value: ${String(last)}`,
+    `Timed out after ${timeout}ms waiting for ${label}. Last value: ${String(last)}`
   );
 }
 
@@ -47,7 +47,7 @@ export async function startServer(root) {
   const server = http.createServer((req, res) => {
     const filePath = path.join(
       root,
-      decodeURIComponent(new URL(req.url, "http://x").pathname),
+      decodeURIComponent(new URL(req.url, "http://x").pathname)
     );
     if (
       !filePath.startsWith(root) ||
@@ -90,7 +90,7 @@ class Cdp {
       cdp.#pending.delete(data.id);
       if (data.error)
         handlers.reject(
-          new Error(`${data.error.message} (${data.error.code})`),
+          new Error(`${data.error.message} (${data.error.code})`)
         );
       else handlers.resolve(data.result);
     };
@@ -137,7 +137,7 @@ export async function launch({ extensionDir, headed = false }) {
       ...(headed ? ["--window-size=1100,700"] : ["--headless"]),
       "about:blank",
     ],
-    { stdio: ["ignore", "ignore", "pipe"] },
+    { stdio: ["ignore", "ignore", "pipe"] }
   );
   // Don't leave a browser behind if the test process dies or gets killed mid-run.
   const killBrowser = () => proc.exitCode === null && proc.kill("SIGKILL");
@@ -154,7 +154,7 @@ export async function launch({ extensionDir, headed = false }) {
       fs.readFileSync(portFile, "utf8").split("\n")[0],
     {
       label: `Chromium to start (stderr: ${stderr})`,
-    },
+    }
   );
   const { webSocketDebuggerUrl } = await (
     await fetch(`http://127.0.0.1:${port}/json/version`)
@@ -166,10 +166,10 @@ export async function launch({ extensionDir, headed = false }) {
       const { targetInfos } = await cdp.send("Target.getTargets");
       return targetInfos.find(
         (t) =>
-          t.type === "service_worker" && t.url.endsWith("/js/background.js"),
+          t.type === "service_worker" && t.url.endsWith("/js/background.js")
       );
     },
-    { label: "extension service worker" },
+    { label: "extension service worker" }
   );
   const extensionId = new URL(swTarget.url).host;
   const { sessionId } = await cdp.send("Target.attachToTarget", {
@@ -186,11 +186,11 @@ export async function launch({ extensionDir, headed = false }) {
         awaitPromise: true,
         returnByValue: true,
       },
-      sessionId,
+      sessionId
     );
     if (exceptionDetails) {
       throw new Error(
-        exceptionDetails.exception?.description ?? exceptionDetails.text,
+        exceptionDetails.exception?.description ?? exceptionDetails.text
       );
     }
     return result.value;
@@ -202,11 +202,11 @@ export async function launch({ extensionDir, headed = false }) {
       sw(
         async () =>
           !!globalThis.chrome?.storage &&
-          "options" in (await chrome.storage.local.get("options")),
+          "options" in (await chrome.storage.local.get("options"))
       ),
     {
       label: "extension to install default options",
-    },
+    }
   );
 
   /**
@@ -218,9 +218,9 @@ export async function launch({ extensionDir, headed = false }) {
     const target = await waitFor(
       async () =>
         (await cdp.send("Target.getTargets")).targetInfos.find(
-          (t) => t.type === "page" && t.url.startsWith(url),
+          (t) => t.type === "page" && t.url.startsWith(url)
         ),
-      { label: `extension page ${pagePath}` },
+      { label: `extension page ${pagePath}` }
     );
     const { sessionId: pageSession } = await cdp.send("Target.attachToTarget", {
       targetId: target.targetId,
@@ -234,11 +234,11 @@ export async function launch({ extensionDir, headed = false }) {
           awaitPromise: true,
           returnByValue: true,
         },
-        pageSession,
+        pageSession
       );
       if (exceptionDetails)
         throw new Error(
-          exceptionDetails.exception?.description ?? exceptionDetails.text,
+          exceptionDetails.exception?.description ?? exceptionDetails.text
         );
       return result.value;
     } finally {

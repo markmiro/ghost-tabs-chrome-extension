@@ -22,11 +22,11 @@ export function createRecorder() {
       fs.mkdirSync(dir, { recursive: true });
       fs.writeFileSync(
         path.join(dir, "frames.json"),
-        JSON.stringify({ summary, frames }, null, 2),
+        JSON.stringify({ summary, frames }, null, 2)
       );
       fs.writeFileSync(
         path.join(dir, "filmstrip.html"),
-        filmstrip(frames, summary),
+        filmstrip(frames, summary)
       );
       return dir;
     },
@@ -36,7 +36,7 @@ export function createRecorder() {
 const esc = (s) =>
   String(s).replace(
     /[&<>"]/g,
-    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]
   );
 
 function filmstrip(frames, summary) {
@@ -57,11 +57,11 @@ function filmstrip(frames, summary) {
               ${f.stats ? `α ${f.stats.alpha.toFixed(2)} · sat ${f.stats.saturation.toFixed(2)}${f.stats.blueFraction > 0.01 ? " · 🔵" : ""}` : "n/a"}<br>
               <span class="t">${(f.t / 1000).toFixed(1)}s</span>
             </figcaption>
-          </figure>`,
+          </figure>`
           )
           .join("")}
       </div>
-    </section>`,
+    </section>`
     )
     .join("");
   return `<!doctype html>
