@@ -61,19 +61,14 @@ async function allowCSPDataImage(
 chrome.webRequest.onHeadersReceived.addListener(
   (details) => {
     console.log("headers recieved", details);
-    if (!details.responseHeaders) return;
+    if (!details.responseHeaders) return undefined;
     for (let i = 0; i < details.responseHeaders.length; i++) {
-      if (
-        details.responseHeaders[i].name.toLowerCase() ===
-        "content-security-policy"
-      ) {
-        allowCSPDataImage(
-          details.tabId,
-          details.url,
-          details.responseHeaders[i].value ?? ""
-        );
+      const header = details.responseHeaders[i];
+      if (header?.name.toLowerCase() === "content-security-policy") {
+        allowCSPDataImage(details.tabId, details.url, header.value ?? "");
       }
     }
+    return undefined;
   },
   { urls: ["*://*/*"], types: ["main_frame"] },
   ["responseHeaders"]

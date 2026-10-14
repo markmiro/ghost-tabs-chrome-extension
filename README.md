@@ -22,6 +22,16 @@ Install deps
 pnpm install
 ```
 
+Node 22.12 or newer is required. `.node-version` tracks the current Node 24 line.
+
+## Unit tests
+
+```sh
+pnpm test
+```
+
+`pnpm run typecheck` checks the extension projects and the tests without writing output.
+
 ## Development build
 
 ```sh

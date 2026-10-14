@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "types": ["chrome"]
+  },
+  "include": ["test/**/*.ts", "vitest.config.mts", "src/**/*.ts"],
+  "exclude": ["src/js/helpers/background-headers.ts"]
+}
