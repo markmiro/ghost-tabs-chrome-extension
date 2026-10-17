@@ -367,54 +367,239 @@ describe("options", () => {
   });
 });
 
-// Behaviour the UI promises that the currently loaded content script (content-script-module.ts)
-// doesn't implement. Marked `todo` so they're reported on every run without failing it; drop the
-// `todo` once the feature lands.
-describe("known gaps", () => {
-  it(
-    "a hidden tab fades over time following fadeHalfLife",
-    {
-      todo: "time-based fading lives in content-script.ts, which the manifest no longer loads",
-    },
-    async () => {
-      const scenario = "time-based fade (3s half-life)";
-      await setOptions({
-        fadeHalfLife: 3000,
-        minFavIconOpacity: 0,
-        fadeTimeToReset: 0,
-      });
-      const tabId = await openTab("png-multiple", { active: true });
-      const start = await tabState(tabId);
-      recorder.add(scenario, "visible", start);
-      await openTab("ico", { active: true }); // pushes the first tab into the background
-      let last;
-      for (let i = 1; i <= 4; i++) {
-        await sleep(2000);
-        last = await tabState(tabId);
-        recorder.add(scenario, `hidden ${i * 2}s`, last);
-      }
-      // After 8s at a 3s half-life, freshness is ~16%. Allow lots of slack.
+// A 3s half-life (the popup's fastest setting) so fading shows up within a test.
+const FAST_FADE = { fadeHalfLife: 3000, minFavIconOpacity: 0 };
+
+/** Alpha of a tab's icon relative to `base`, the same page's own icon while it was visible. */
+const alphaRatio = (s, base) =>
+  s.stats ? s.stats.alpha / base.stats.alpha : NaN;
+const isFadedBelow = (base, max) => (s) =>
+  s.isDataUrl && !hasBadge(s) && alphaRatio(s, base) < max;
+
+/** Open `page` in the foreground, then push it into the background. Returns its visible icon too. */
+async function openThenHide(page) {
+  const tabId = await openTab(page, { active: true });
+  const visible = await waitForIcon(tabId, isOriginal, { label: "visible" });
+  await openTab("ico", { active: true });
+  return { tabId, visible };
+}
+
+describe("time-based fading", () => {
+  it("a hidden tab fades over time following fadeHalfLife", async () => {
+    const scenario = "time-based fade (3s half-life)";
+    await setOptions({ ...FAST_FADE, fadeTimeToReset: 0 });
+    const tabId = await openTab("png-multiple", { active: true });
+    const start = await waitForIcon(tabId, isOriginal, {
+      label: "visible",
+      scenario,
+    });
+    await openTab("ico", { active: true }); // pushes the first tab into the background
+    const ratios = [];
+    let last;
+    for (let i = 1; i <= 4; i++) {
+      await sleep(2000);
+      last = await tabState(tabId);
+      recorder.add(scenario, `hidden ${i * 2}s`, last);
+      ratios.push(alphaRatio(last, start));
+    }
+    for (let i = 1; i < ratios.length; i++) {
       assert.ok(
-        last.isDataUrl && last.stats.alpha < start.stats.alpha * 0.5,
-        `alpha ${last.stats?.alpha} after 8s hidden`
+        ratios[i] < ratios[i - 1],
+        `alpha should only go down: ${ratios.map((r) => r.toFixed(3)).join(" → ")}`
       );
     }
-  );
+    // After 8s at a 3s half-life, freshness is ~16%. Allow lots of slack.
+    assert.ok(
+      last.isDataUrl && last.stats.alpha < start.stats.alpha * 0.5,
+      `alpha ${last.stats?.alpha} after 8s hidden`
+    );
+  });
 
-  it(
-    "Turn Off (enabled=false) resets every faded or unread icon",
-    { todo: "content-script-module.ts ignores options.enabled" },
-    async () => {
-      const scenario = "turn off";
-      await openTab("png-multiple", { active: true });
-      const tabId = await openTab("ico", { active: false });
-      await waitForIcon(tabId, hasBadge, { label: "unread", scenario });
-      await setOptions({ enabled: false });
-      await waitForIcon(tabId, isOriginal, {
-        label: "after turn off",
-        scenario,
-        timeout: 4000,
-      });
+  it("fading stops at minFavIconOpacity", async () => {
+    const scenario = "stops at minFavIconOpacity (25%)";
+    await setOptions({ ...FAST_FADE, minFavIconOpacity: 0.25 });
+    const { tabId, visible } = await openThenHide("png-multiple");
+    await waitForIcon(tabId, isFadedBelow(visible, 0.3), {
+      label: "near minimum",
+      scenario,
+      timeout: 15_000,
+    });
+    // Without the minimum it would be at ~1/8 by now.
+    await sleep(4000);
+    const later = await tabState(tabId);
+    recorder.add(scenario, "+4s", later);
+    assert.ok(
+      Math.abs(alphaRatio(later, visible) - 0.25) < 0.06,
+      `expected ~25% alpha, got ${alphaRatio(later, visible).toFixed(3)}`
+    );
+    await sleep(2000);
+    const after = await tabState(tabId);
+    recorder.add(scenario, "+6s", after);
+    assert.equal(
+      after.favIconUrl,
+      later.favIconUrl,
+      "icon should stop changing once it's at the minimum"
+    );
+  });
+
+  it("viewing a faded tab restores it after fadeTimeToReset, and it starts over", async () => {
+    const scenario = "view a faded tab";
+    await setOptions(FAST_FADE);
+    const { tabId, visible } = await openThenHide("png-multiple");
+    await waitForIcon(tabId, isFadedBelow(visible, 0.5), {
+      label: "faded",
+      scenario,
+      timeout: 15_000,
+    });
+
+    await activate(tabId);
+    await sleep(300);
+    const glance = await tabState(tabId);
+    recorder.add(scenario, "activated +0.3s", glance);
+    assert.ok(
+      isFadedBelow(visible, 0.6)(glance),
+      "should stay faded until fadeTimeToReset elapses"
+    );
+    await waitForIcon(tabId, isOriginal, { label: "reset", scenario });
+
+    // Hiding it again fades from full, not from where it was before.
+    await openTab("ico", { active: true });
+    await sleep(500);
+    const rehidden = await tabState(tabId);
+    recorder.add(scenario, "hidden again +0.5s", rehidden);
+    assert.ok(
+      isOriginal(rehidden) || alphaRatio(rehidden, visible) > 0.75,
+      `expected a nearly fresh icon, got alpha ratio ${alphaRatio(rehidden, visible).toFixed(3)}`
+    );
+  });
+
+  it("enableFading=false keeps hidden tabs at their own icon", async () => {
+    const scenario = "enableFading=false";
+    await setOptions({ ...FAST_FADE, enableFading: false });
+    const { tabId } = await openThenHide("png-multiple");
+    await sleep(4000);
+    const s = await tabState(tabId);
+    recorder.add(scenario, "hidden 4s", s);
+    assert.ok(isOriginal(s), "hidden tab should not fade");
+  });
+
+  it("an unread tab keeps its badge instead of fading", async () => {
+    const scenario = "unread, 3s half-life";
+    await setOptions(FAST_FADE);
+    await openTab("png-multiple", { active: true });
+    const tabId = await openTab("ico", { active: false });
+    await waitForIcon(tabId, hasBadge, { label: "unread", scenario });
+    await sleep(4000);
+    const s = await tabState(tabId);
+    recorder.add(scenario, "background 4s", s);
+    assert.ok(hasBadge(s), "badge should stay until the tab is viewed");
+  });
+
+  it("with showUnreadBadge=false, a tab opened in the background fades instead", async () => {
+    const scenario = "showUnreadBadge=false, 3s half-life";
+    await setOptions({ ...FAST_FADE, showUnreadBadge: false });
+    const visible = await tabState(
+      await openTab("png-multiple", { active: true })
+    );
+    const tabId = await openTab("png-multiple", { active: false });
+    await waitForIcon(tabId, isFadedBelow(visible, 0.5), {
+      label: "faded",
+      scenario,
+      timeout: 15_000,
+    });
+  });
+
+  it("option changes apply to tabs that are already hidden", async () => {
+    const scenario = "live option changes";
+    const { tabId, visible } = await openThenHide("png-multiple");
+    await sleep(2000);
+    const slow = await tabState(tabId);
+    recorder.add(scenario, "1h half-life, hidden 2s", slow);
+    assert.ok(
+      isOriginal(slow) || alphaRatio(slow, visible) > 0.95,
+      "barely any fade at a 1 hour half-life"
+    );
+
+    // Freshness is measured from when the tab was hidden, so it drops right away.
+    await setOptions(FAST_FADE);
+    await waitForIcon(tabId, isFadedBelow(visible, 0.3), {
+      label: "3s half-life",
+      scenario,
+      timeout: 8000,
+    });
+
+    // Raising the minimum brings the icon back up to it.
+    await setOptions({ minFavIconOpacity: 0.5 });
+    await waitForIcon(
+      tabId,
+      (s) => s.isDataUrl && Math.abs(alphaRatio(s, visible) - 0.5) < 0.06,
+      { label: "min 50%", scenario }
+    );
+  });
+});
+
+describe("turn off / turn on", () => {
+  it("Turn Off (enabled=false) resets every faded or unread icon", async () => {
+    const scenario = "turn off";
+    await setOptions(FAST_FADE);
+    const { tabId: faded, visible } = await openThenHide("png-multiple");
+    const unread = await openTab("ico", { active: false });
+    await waitForIcon(unread, hasBadge, { label: "unread", scenario });
+    await waitForIcon(faded, isFadedBelow(visible, 0.5), {
+      label: "faded",
+      scenario,
+      timeout: 15_000,
+    });
+
+    await setOptions({ enabled: false });
+    await waitForIcon(unread, isOriginal, {
+      label: "unread tab after turn off",
+      scenario,
+      timeout: 4000,
+    });
+    await waitForIcon(faded, isOriginal, {
+      label: "faded tab after turn off",
+      scenario,
+      timeout: 4000,
+    });
+
+    // Nothing keeps running in the background.
+    await sleep(3000);
+    for (const tabId of [faded, unread]) {
+      const s = await tabState(tabId);
+      recorder.add(scenario, "off +3s", s);
+      assert.ok(isOriginal(s), "icons should stay original while off");
     }
-  );
+  });
+
+  it("turning back on (enabled=true) resumes fading and badges", async () => {
+    const scenario = "turn back on";
+    await setOptions({ ...FAST_FADE, enabled: false });
+    const { tabId, visible } = await openThenHide("png-multiple");
+    await sleep(3000);
+    const off = await tabState(tabId);
+    recorder.add(scenario, "off, hidden 3s", off);
+    assert.ok(isOriginal(off), "no fading while off");
+
+    await setOptions({ enabled: true });
+    // Freshness starts over when it's turned back on, rather than jumping to 3s worth of fade.
+    await sleep(300);
+    const resumed = await tabState(tabId);
+    recorder.add(scenario, "on +0.3s", resumed);
+    assert.ok(
+      isOriginal(resumed) || alphaRatio(resumed, visible) > 0.75,
+      `expected a nearly fresh icon, got alpha ratio ${alphaRatio(resumed, visible).toFixed(3)}`
+    );
+    await waitForIcon(tabId, isFadedBelow(visible, 0.5), {
+      label: "fading again",
+      scenario,
+      timeout: 15_000,
+    });
+
+    const opened = await openTab("ico", { active: false });
+    await waitForIcon(opened, hasBadge, {
+      label: "new background tab",
+      scenario,
+    });
+  });
 });
