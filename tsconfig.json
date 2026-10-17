@@ -1,25 +1,26 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "ESNext",
     "module": "ESNext",
+    "moduleResolution": "bundler",
     "rootDir": "./src",
-    "typeRoots": [ "node_modules/@types" ],
+    "types": ["chrome"],
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": false,
     "alwaysStrict": true,
     "strictBindCallApply": true,
-    "noImplicitThis": true, 
+    "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,
     "noEmitOnError": true,
     "removeComments": true,
     "listEmittedFiles": true,
-    "paths": {
-      "*": ["./src/js/types/*.d.ts"]
-    }
+    "skipLibCheck": true
   },
   "exclude": [
-    "src/js/helpers/background-headers.ts"
+    "src/js/helpers/background-headers.ts",
+    "test",
+    "vitest.config.mts"
   ]
 }

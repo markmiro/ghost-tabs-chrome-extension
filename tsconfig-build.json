@@ -5,6 +5,8 @@
   },
   "exclude": [
     "src/**/debug-*.ts",
-    "src/**/*-debug.ts"
+    "src/**/*-debug.ts",
+    "test",
+    "vitest.config.mts"
   ]
 }
