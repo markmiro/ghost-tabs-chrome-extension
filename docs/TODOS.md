@@ -2,13 +2,20 @@
 
 ## Bugs
 
-- When window is re-opened, tab icon is just the globe for lots of the tabs.
-- Make sure `selfClean` doesn't create a race condition
-  - After reloading extension, old content script will try to reset favicon back to normal
-  - Maybe inject an inject ts into the dom
-    - and `selfClean` will check if timestamp of the script matches the timestamp in the dom
-      - if no match, then it avoids manipulating the dom
-      - maybe do this at a lower level (dom-utils)?
+None open.
+
+Fixed:
+
+- ~~When window is re-opened, tab icon is just the globe for lots of the tabs.~~
+  Chrome only resolves favicons for tabs it renders, so `GET_FAVICONURL` came back
+  empty for every restored background tab. `getFaviconUrl` now falls back to the
+  page's own `<link rel=icon>` instead of returning "" and forcing the globe.
+- ~~Make sure `selfClean` doesn't create a race condition.~~ The marker in the DOM
+  already existed (`dom-conflict-check`), but the superseded script still ran its
+  full cleanup and put the original favicon back over the new script's icon.
+  Cleanup now takes a reason, and `releaseDom()` latches a flag in `util-dom` so
+  in-flight work can't write to the page either — the lower-level guard this note
+  was asking about.
 
 ---
 
@@ -27,6 +34,7 @@ Polish:
 - Add cache of favicons for faster loading
 
 Features:
+
 - Show CSP error in popup.js by sending CSP error to tab, and then displaying it back later.
   - Maybe show a message asking if user wants to enable working on more tabs, but using more permissions
 - Make icon red over time?

@@ -8,6 +8,13 @@ declare interface Options {
   fadeTimeToReset?: number;
 }
 
+/** Why a content script is shutting down. */
+declare type CleanupReason =
+  /** The extension was uninstalled, disabled, or reloaded. Put the page back as we found it. */
+  | "EXTENSION_GONE"
+  /** A newer copy of this script took over the page. It owns the DOM now — hands off. */
+  | "SUPERSEDED";
+
 declare type MessageRequest =
   | { action: "MARK_UNREAD" }
   | { action: "MARK_READ" }

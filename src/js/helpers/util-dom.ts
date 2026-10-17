@@ -17,6 +17,16 @@ import {
   blobToDataUrl,
 } from "./util.js";
 
+// Set once a newer copy of the content script has taken over the page. Everything that
+// writes to the DOM checks it: work already in flight here — a fade still waiting on the
+// background to render it, say — would otherwise land on top of what the new script drew.
+// Guarding at this level rather than at the call sites means an `await` can't slip past it.
+let hasReleasedDom = false;
+
+/** Give up the page. Nothing in this script writes to the DOM after this. */
+export function releaseDom() {
+  hasReleasedDom = true;
+}
 
 /** Guarantee a 404 response */
 const FAIL_LOAD_FAVICON_URL =
@@ -70,6 +80,10 @@ export function getFaviconLinks() {
 
 // Used for when we know which favicon URL is primary, but we got that `favIconUrl` from the `chrome.tabs` API
 function setPrimary(favIconUrl: string) {
+  // `getFaviconUrl` retries for a while, so it can still be running when a newer script
+  // takes over — and that script reads `data-gtce-primary` to decide which icon is the
+  // real one. Don't answer for it.
+  if (hasReleasedDom) return;
   const baseUrl = document.location.origin;
   const favIconUrlObj = new URL(favIconUrl, baseUrl);
   const links = getFaviconLinks();
@@ -88,6 +102,25 @@ function setPrimary(favIconUrl: string) {
       break;
     }
   }
+}
+
+/**
+ * The page's own idea of its favicon, read straight from the DOM.
+ *
+ * A fallback for when Chrome won't say which icon it picked. When a page declares several
+ * this takes the first, which won't always be Chrome's choice — Chrome sniffs the actual
+ * image dimensions, which we can't do from here, and its rules are odd besides (see
+ * test-favicon-pages/README.md). That's fine: they're all icons of the same page, and a
+ * faded version of one of them beats a globe.
+ */
+function faviconHrefFromLinks(): string {
+  for (const $el of getFaviconLinks()) {
+    // `data-gtce-href` first, since by now we may have blanked `href` ourselves.
+    const href = $el.getAttribute("data-gtce-href") || $el.getAttribute("href");
+    // `baseURI` rather than `origin`, so a relative href resolves against the page's path.
+    if (href) return new URL(href, document.baseURI).href;
+  }
+  return "";
 }
 
 export async function getFaviconUrl(): Promise<string> {
@@ -126,7 +159,13 @@ export async function getFaviconUrl(): Promise<string> {
     await sleep(tries * 200);
   }
 
-  return "";
+  // Chrome never told us which icon it picked. That's routine when a window is reopened:
+  // it only resolves favicons for tabs it actually renders, so every restored background
+  // tab comes back empty here. Returning "" made `resetIcon` force the 404 globe, and
+  // since `existingFavicons.clear()` had already blanked the page's own links there was
+  // nothing left to fall back to — which is why so many tabs came back as globes.
+  log("no favIconUrl from Chrome, falling back to the page's own icon links");
+  return faviconHrefFromLinks();
 }
 
 export const existingFavicons = {
@@ -191,6 +230,7 @@ export async function blankIconDataUrl() {
 
 // https://stackoverflow.com/a/260876
 export function setFavicon(href: string) {
+  if (hasReleasedDom) return;
   log("setFavicon", href);
   existingFavicons.clear();
 
