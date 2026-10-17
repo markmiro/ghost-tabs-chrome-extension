@@ -36,7 +36,7 @@ describe("tabIcon", () => {
 
   it("stops at minFavIconOpacity", () => {
     expect(
-      tabIcon(options, { unread: false, hiddenMs: HALF_LIFE * 10 }),
+      tabIcon(options, { unread: false, hiddenMs: HALF_LIFE * 10 })
     ).toEqual({ kind: "FADED", opacity: 0.1 });
   });
 
@@ -50,8 +50,8 @@ describe("tabIcon", () => {
     expect(
       tabIcon(
         { ...options, showUnreadBadge: false },
-        { unread: true, hiddenMs: HALF_LIFE },
-      ),
+        { unread: true, hiddenMs: HALF_LIFE }
+      )
     ).toEqual({ kind: "FADED", opacity: 0.5 });
   });
 
@@ -69,8 +69,8 @@ describe("tabIcon", () => {
     expect(
       tabIcon(
         { ...options, showUnreadBadge: false, enableFading: false },
-        { unread: true, hiddenMs: HALF_LIFE },
-      ),
+        { unread: true, hiddenMs: HALF_LIFE }
+      )
     ).toEqual({ kind: "ORIGINAL" });
   });
 
@@ -95,23 +95,23 @@ describe("isStillFading", () => {
   it("keeps going while the icon is above the minimum", () => {
     expect(isStillFading(options, { unread: false, hiddenMs: 0 })).toBe(true);
     expect(isStillFading(options, { unread: false, hiddenMs: HALF_LIFE })).toBe(
-      true,
+      true
     );
   });
 
   it("stops once the minimum is reached", () => {
     expect(
-      isStillFading(options, { unread: false, hiddenMs: HALF_LIFE * 4 }),
+      isStillFading(options, { unread: false, hiddenMs: HALF_LIFE * 4 })
     ).toBe(false);
   });
 
   it("stops once the icon is invisible, even with no minimum", () => {
     const noMin = { ...options, minFavIconOpacity: 0 };
     expect(
-      isStillFading(noMin, { unread: false, hiddenMs: HALF_LIFE * 6 }),
+      isStillFading(noMin, { unread: false, hiddenMs: HALF_LIFE * 6 })
     ).toBe(true);
     expect(
-      isStillFading(noMin, { unread: false, hiddenMs: HALF_LIFE * 7 }),
+      isStillFading(noMin, { unread: false, hiddenMs: HALF_LIFE * 7 })
     ).toBe(false);
   });
 
@@ -121,14 +121,14 @@ describe("isStillFading", () => {
     expect(
       isStillFading(
         { ...options, enableFading: false },
-        { unread: false, hiddenMs: 0 },
-      ),
+        { unread: false, hiddenMs: 0 }
+      )
     ).toBe(false);
     expect(
       isStillFading(
         { ...options, enabled: false },
-        { unread: false, hiddenMs: 0 },
-      ),
+        { unread: false, hiddenMs: 0 }
+      )
     ).toBe(false);
   });
 
@@ -136,8 +136,8 @@ describe("isStillFading", () => {
     expect(
       isStillFading(
         { ...options, showUnreadBadge: false },
-        { unread: true, hiddenMs: 0 },
-      ),
+        { unread: true, hiddenMs: 0 }
+      )
     ).toBe(true);
   });
 });

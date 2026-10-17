@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { freshness, isFavIconUntouched, isSvg } from "../src/js/helpers/util.js";
+import {
+  freshness,
+  isFavIconUntouched,
+  isSvg,
+} from "../src/js/helpers/util.js";
 
 describe("freshness", () => {
   it("starts at full freshness", () => {
@@ -27,9 +31,7 @@ describe("favicon urls", () => {
   it("detects svg icons from the url without fetching", async () => {
     await expect(isSvg("")).resolves.toBe(false);
     await expect(isSvg("https://example.com/icon.svg")).resolves.toBe(true);
-    await expect(isSvg("https://example.com/icon.svg?v=4")).resolves.toBe(
-      true
-    );
+    await expect(isSvg("https://example.com/icon.svg?v=4")).resolves.toBe(true);
     await expect(isSvg("https://example.com/icon.png")).resolves.toBe(false);
     await expect(isSvg("https://example.com/icon.jpg")).resolves.toBe(false);
     await expect(isSvg("https://example.com/icon.jpeg")).resolves.toBe(false);

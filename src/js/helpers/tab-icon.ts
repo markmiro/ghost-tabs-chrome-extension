@@ -29,7 +29,7 @@ export function tabIcon(options: Options, tab: TabState): TabIcon {
   }
   const opacity = Math.max(
     options.minFavIconOpacity,
-    freshness(tab.hiddenMs, options.fadeHalfLife),
+    freshness(tab.hiddenMs, options.fadeHalfLife)
   );
   // Leave the page's own favicon alone until there's actually something to fade.
   if (opacity >= 1) return { kind: "ORIGINAL" };
